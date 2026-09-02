@@ -6,15 +6,42 @@ import gsap from 'gsap';
 import { getDayShipCurve, getDayIslandPositions, harborBoatPositions } from './DayPath';
 
 /* ─────────────────────────────────────────────────────────────────────────── *
- * ActiveShip — the one ship that is currently sailing for a selected day.     *
- * Derived from Ship.jsx but uses per-day CatmullRom path & island positions.  *
+ * BOAT COORDINATE SYSTEM                                                       *
+ *   The Ship.glb has its visual bow pointing along LOCAL +Z when rotation=0.  *
+ *   Harbor docked boats confirm this: rotation={[0,0,0]} + comment "+Z ocean" *
+ *   All rotation math uses this axis as the canonical forward direction.       *
+ * ─────────────────────────────────────────────────────────────────────────── */
+const BOAT_FORWARD_AXIS = new THREE.Vector3(0, 0, 1); // GLB bow = local +Z
+
+/* ─── Camera tuning constants ─────────────────────────────────────────────── */
+const CAMERA_HEIGHT     = 22;   // world units above the boat pivot
+const CAMERA_BACK       = 60;   // world units behind the bow (local -Z)
+const LOOK_AHEAD        = 50;   // world units in front of bow for look-at target
+const CAMERA_MIN_Y      = 10;   // never clip below this world height
+const ROT_SPEED         = 2.4;  // max radians/sec for quaternion.rotateTowards
+const CAM_LERP          = 0.08; // camera position lerp factor (per frame)
+
+/* ─── Debug: set true to show direction arrows in the scene ───────────────── */
+const DEBUG_ARROWS = false;
+
+/* ─── Reusable temporaries (avoid per-frame alloc) ───────────────────────── */
+const _boatQuat    = new THREE.Quaternion();
+const _targetQuat  = new THREE.Quaternion();
+const _upAxis      = new THREE.Vector3(0, 1, 0);
+const _localOffset = new THREE.Vector3();
+const _boatFwd     = new THREE.Vector3();
+const _targetCam   = new THREE.Vector3();
+const _lookTarget  = new THREE.Vector3();
+
+/* ─────────────────────────────────────────────────────────────────────────── *
+ * ActiveShip — the sailing ship for a selected day.                           *
  * ─────────────────────────────────────────────────────────────────────────── */
 export function ActiveShip({ day, onDock, isMobile = false }) {
   const shipRef  = useRef(null);
   const { camera } = useThree();
   const { scene: rawScene } = useGLTF('/models/Ship.glb');
 
-  // Clone so it is independent from the Harbor's instances
+  // Clone so this instance is independent from the Harbor's
   const shipScene = useMemo(() => rawScene.clone(true), [rawScene]);
 
   const islandPositions = useMemo(() => getDayIslandPositions(day), [day]);
@@ -28,12 +55,13 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
   const uCurrent = useRef(0);
   const lCurrent = useRef(0);
 
-  // --- Camera helpers ---
-  const fMultiplier        = useRef(isMobile ? 0.2 : 0.3);
-  const pMultiplier        = useRef(1);
-  const cameraTarget       = useRef(new THREE.Vector3());
+  // --- Camera smooth-follow refs ---
+  const camPos             = useRef(new THREE.Vector3());
+  const camLookRef         = useRef(new THREE.Vector3());
   const cameraDockedLerp   = useRef(0);
   const wasDockedState     = useRef(false);
+  const fMultiplier        = useRef(isMobile ? 0.2 : 0.3);
+  const pMultiplier        = useRef(1);
 
   // --- Docking state ---
   const [dockedIndex, setDockedIndex] = useState(null);
@@ -46,21 +74,20 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
   const dirChangeTimer    = useRef(1);
   const scrollAccumulator = useRef(0);
 
-  // Set initial ship orientation from path tangent
+  // ─── Set initial orientation once path is ready ─────────────────────────
   useEffect(() => {
-    // Bow faces +Z — align group rotation with path start tangent
-    const tangent = shipPath.getTangentAt(0);
-    shipScene.rotation.y = 0;
-    if (shipRef.current) {
-      shipRef.current.rotation.y = Math.atan2(tangent.x, tangent.z);
-    }
+    if (!shipRef.current) return;
+    const tangent   = shipPath.getTangentAt(0);
+    const facingYaw = Math.atan2(tangent.x, tangent.z); // align +Z bow with tangent
+    shipRef.current.rotation.set(0, facingYaw, 0);
+    shipScene.rotation.set(0, 0, 0); // GLB internal rotation stays neutral
   }, [shipPath, shipScene]);
 
-  // Reset progress when day changes
+  // ─── Reset when day changes ──────────────────────────────────────────────
   useEffect(() => {
-    hCurrent.current      = 0;
-    uCurrent.current      = 0;
-    lCurrent.current      = 0;
+    hCurrent.current        = 0;
+    uCurrent.current        = 0;
+    lCurrent.current        = 0;
     prevDockedIndex.current = null;
     setDockedIndex(null);
     setIsReversed(false);
@@ -69,7 +96,7 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
     scrollAccumulator.current = 0;
   }, [day]);
 
-  // ─── Input listeners ────────────────────────────────────────────────────
+  // ─── Input listeners ─────────────────────────────────────────────────────
   useEffect(() => {
     const handleWheel = (e) => {
       if (e.preventDefault) e.preventDefault();
@@ -151,7 +178,7 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
   useFrame((state, delta) => {
     const time = state.clock.elapsedTime;
 
-    // Smooth progress
+    // ── 1. Smooth progress ──
     if (isChangingDir) {
       dirChangeTimer.current = Math.min(1, dirChangeTimer.current + 1.2 * delta);
       if (dirChangeTimer.current >= 1) setIsChangingDir(false);
@@ -163,26 +190,32 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
     const position = shipPath.getPointAt(progress);
     const tangent  = shipPath.getTangentAt(progress);
 
-    // ── Ship transform ──
+    // ── 2. Ship orientation — quaternion slerp toward path tangent ──
     if (shipRef.current) {
+      // Yaw that aligns local +Z bow with the path tangent direction
+      const rawYaw    = Math.atan2(tangent.x, tangent.z);
+      const facingYaw = isReversed ? rawYaw + Math.PI : rawYaw;
+
+      _targetQuat.setFromAxisAngle(_upAxis, facingYaw);
+
+      // Smooth slerp — faster when changing direction, smoother otherwise
+      const rotSpeed = isChangingDir ? ROT_SPEED * 1.4 : ROT_SPEED;
+      shipRef.current.quaternion.rotateTowards(_targetQuat, rotSpeed * delta);
+
+      // Positional bobbing
       shipRef.current.position.set(
         position.x,
         position.y + 3 + 0.4 * Math.sin(1.5 * time),
         position.z
       );
 
-      // Rotation — bow (+Z) faces direction of travel
-      const targetYaw = Math.atan2(tangent.x, tangent.z); // aligns local +Z with path tangent
-      const facingYaw = isReversed ? targetYaw + Math.PI : targetYaw;
-      let yawDiff = facingYaw - shipRef.current.rotation.y;
-      if (yawDiff >  Math.PI) yawDiff -= 2 * Math.PI;
-      if (yawDiff < -Math.PI) yawDiff += 2 * Math.PI;
-      shipRef.current.rotation.y += yawDiff * (isChangingDir ? 0.35 : 0.25);
-      shipRef.current.rotation.x = 0; // keep bow level
-      shipRef.current.rotation.z  = 0.02 * Math.sin(0.8 * time); // subtle roll only
+      // Subtle roll — applied as Euler on top of quaternion
+      // Extract current rotation, add roll, re-apply
+      shipRef.current.rotation.z = 0.02 * Math.sin(0.8 * time);
+      shipRef.current.rotation.x = 0;
     }
 
-    // ── Docking detection ──
+    // ── 3. Docking detection ──
     if (dockedIndex === null) {
       for (let i = 0; i < islandPositions.length; i++) {
         if (i === prevDockedIndex.current) continue;
@@ -230,7 +263,14 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
       }
     }
 
-    // ── Camera ──
+    // ── 4. Camera — RIDER PERSPECTIVE ──
+    //    Camera sits behind and above the boat in LOCAL space,
+    //    then the offset is rotated by the boat's world quaternion.
+    //    This means the camera always follows the boat's heading.
+
+    if (!shipRef.current) return;
+
+    // Proximity-to-island scale factor (zoom out near islands)
     let minIslandDist = Infinity;
     for (const [px, , pz] of islandPositions) {
       const d = Math.sqrt((position.x - px) ** 2 + (position.z - pz) ** 2);
@@ -239,58 +279,108 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
     const scaleFactor =
       minIslandDist < 40  ? 0.65 :
       minIslandDist < 70  ? 0.75 :
-      minIslandDist < 100 ? 0.90 : 1.1;
+      minIslandDist < 100 ? 0.90 : 1.0;
     pMultiplier.current += (scaleFactor - pMultiplier.current) * 0.05;
-
     const combinedF = fMultiplier.current * pMultiplier.current;
-    const P = (isMobile ? 70 : 65) * combinedF;
 
+    // Get the boat's current world quaternion
+    _boatQuat.copy(shipRef.current.quaternion);
+
+    // Local-space camera offset: zero X (centered), above and BEHIND the bow
+    // "behind" = negative Z in boat-local space (bow is +Z)
+    const backDist = (isMobile ? 45 : CAMERA_BACK) * combinedF;
+    const heightV  = (isMobile ? 16 : CAMERA_HEIGHT) * combinedF;
+    _localOffset.set(0, heightV, -backDist);
+    _localOffset.applyQuaternion(_boatQuat); // rotate offset into world space
+
+    // Target camera world position
+    _targetCam.set(
+      position.x + _localOffset.x,
+      Math.max(CAMERA_MIN_Y, position.y + _localOffset.y),
+      position.z + _localOffset.z
+    );
+
+    // Look-ahead: a point in front of the bow in world space
+    _boatFwd.copy(BOAT_FORWARD_AXIS).applyQuaternion(_boatQuat);
+    const lookDist = isReversed ? -LOOK_AHEAD : LOOK_AHEAD;
+    _lookTarget.set(
+      position.x + _boatFwd.x * lookDist,
+      3,
+      position.z + _boatFwd.z * lookDist
+    );
+
+    // Docked override — smoothly pan camera to show the island
     const isDockedValid = dockedIndex !== null && dockedIndex < L;
     if (isDockedValid !== wasDockedState.current) {
       wasDockedState.current = isDockedValid;
       gsap.to(cameraDockedLerp, {
         current: isDockedValid ? 1 : 0,
-        duration: 0.8,
+        duration: 1.0,
         ease: isDockedValid ? 'power2.out' : 'power2.inOut',
         overwrite: true,
       });
     }
 
-    const direction = isReversed ? 1 : -1;
-    const offsetF   = isMobile ? 20 : 30;
-
-    let targetCamX = position.x + tangent.x * offsetF * direction;
-    let targetCamY = (isMobile ? 30 : 45) * combinedF;
-    let targetCamZ = position.z + P;
-    let targetLookX = position.x;
-    let targetLookY = 5;
-    let targetLookZ = position.z;
-
     if (isDockedValid) {
       const [dx, dy, dz] = islandPositions[dockedIndex];
-      const lerpAmt = cameraDockedLerp.current;
-      targetCamX  += (dx - 40 - targetCamX)  * lerpAmt;
-      targetCamY  += (45  - targetCamY)       * lerpAmt;
-      targetCamZ  += (dz + 40 - targetCamZ)   * lerpAmt;
-      targetLookX += (dx - targetLookX)       * lerpAmt;
-      targetLookY += (dy - targetLookY)       * lerpAmt;
-      targetLookZ += (dz - targetLookZ)       * lerpAmt;
+      const t = cameraDockedLerp.current;
+      // Lerp toward a side view of the island while still maintaining some height
+      _targetCam.x  += (dx - 50 - _targetCam.x) * t;
+      _targetCam.y  += (55  - _targetCam.y) * t;
+      _targetCam.z  += (dz + 50 - _targetCam.z) * t;
+      _lookTarget.x += (dx - _lookTarget.x) * t;
+      _lookTarget.y += (dy - _lookTarget.y) * t;
+      _lookTarget.z += (dz - _lookTarget.z) * t;
     }
 
-    const dur = isMobile ? 0.4 : 0.6;
-    gsap.to(camera.position, { x: targetCamX, y: targetCamY, z: targetCamZ, duration: dur, ease: 'power1.out', overwrite: true });
-    gsap.to(cameraTarget.current, {
-      x: targetLookX, y: targetLookY, z: targetLookZ,
-      duration: dur, ease: 'power1.out', overwrite: true,
-      onUpdate: () => camera.lookAt(cameraTarget.current),
-    });
+    // Smooth camera position using lerp (frame-rate independent feel)
+    camPos.current.lerp(_targetCam, CAM_LERP);
+    camLookRef.current.lerp(_lookTarget, CAM_LERP * 1.2);
+
+    camera.position.copy(camPos.current);
+    camera.lookAt(camLookRef.current);
   });
+
+  // ─── Debug: direction arrows ─────────────────────────────────────────────
+  // When DEBUG_ARROWS = true, renders three arrows in the scene:
+  //   GREEN  = boat forward (+Z bow direction)
+  //   YELLOW = path tangent direction
+  //   RED    = camera look-ahead target vector
+  const DebugArrows = () => {
+    if (!DEBUG_ARROWS || !shipRef.current) return null;
+    const pos = shipRef.current.position.clone();
+    const q   = shipRef.current.quaternion.clone();
+
+    const fwd  = BOAT_FORWARD_AXIS.clone().applyQuaternion(q);
+    const tang = shipPath.getTangentAt(lCurrent.current);
+
+    return (
+      <>
+        {/* Boat forward — GREEN */}
+        <arrowHelper args={[fwd, pos, 60, 0x00ff00, 10, 6]} />
+        {/* Path tangent — YELLOW */}
+        <arrowHelper args={[tang, pos, 60, 0xffff00, 10, 6]} />
+        {/* Look-ahead target — RED (point in front) */}
+        <arrowHelper
+          args={[
+            fwd,
+            new THREE.Vector3(pos.x, 3, pos.z),
+            LOOK_AHEAD,
+            0xff4444, 8, 5
+          ]}
+        />
+      </>
+    );
+  };
 
   const startPos = harborBoatPositions[day - 1];
 
   return (
-    <group ref={shipRef} position={[startPos[0], startPos[1] + 3, startPos[2]]}>
-      <primitive object={shipScene} scale={[20, 20, 20]} />
-    </group>
+    <>
+      <group ref={shipRef} position={[startPos[0], startPos[1] + 3, startPos[2]]}>
+        <primitive object={shipScene} scale={[20, 20, 20]} />
+      </group>
+      {DEBUG_ARROWS && <DebugArrows />}
+    </>
   );
 }

@@ -5,6 +5,29 @@ import * as THREE from 'three';
 import gsap from 'gsap';
 import { islandPositions, getShipCurve } from './TimelinePath';
 
+/* ─────────────────────────────────────────────────────────────────────────── *
+ * BOAT COORDINATE SYSTEM                                                       *
+ *   Ship.glb bow = LOCAL +Z (rotation=0 in harbour faces open ocean = +Z)    *
+ * ─────────────────────────────────────────────────────────────────────────── */
+const BOAT_FORWARD_AXIS = new THREE.Vector3(0, 0, 1);
+
+/* ─── Camera tuning constants ─────────────────────────────────────────────── */
+const CAMERA_HEIGHT     = 22;
+const CAMERA_BACK       = 60;
+const LOOK_AHEAD        = 50;
+const CAMERA_MIN_Y      = 10;
+const ROT_SPEED         = 2.4;
+const CAM_LERP          = 0.08;
+
+/* ─── Reusable temporaries ────────────────────────────────────────────────── */
+const _boatQuat    = new THREE.Quaternion();
+const _targetQuat  = new THREE.Quaternion();
+const _upAxis      = new THREE.Vector3(0, 1, 0);
+const _localOffset = new THREE.Vector3();
+const _boatFwd     = new THREE.Vector3();
+const _targetCam   = new THREE.Vector3();
+const _lookTarget  = new THREE.Vector3();
+
 export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) => {
   const shipRef = useRef(null);
   const { camera } = useThree();
@@ -33,28 +56,23 @@ export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) =
   const dirChangeTimer = useRef(1);
   const scrollAccumulator = useRef(0);
   
-  const cameraTarget = useRef(new THREE.Vector3());
+  const camPos          = useRef(new THREE.Vector3());
+  const camLookRef      = useRef(new THREE.Vector3());
   const cameraDockedLerp = useRef(0);
   const wasDockedState = useRef(false);
 
   useEffect(() => {
-    // Initial ship orientation — bow faces +Z, align with path start tangent
-    const tangent = shipPath.getTangentAt(0);
-    shipScene.rotation.y = 0; // handled by frame loop on parent group
-    if (shipRef.current) {
-      shipRef.current.rotation.y = Math.atan2(tangent.x, tangent.z);
-    }
+    // Initial orientation — bow (+Z) aligned with path start tangent
+    if (!shipRef.current) return;
+    const tangent   = shipPath.getTangentAt(0);
+    const facingYaw = Math.atan2(tangent.x, tangent.z);
+    shipRef.current.rotation.set(0, facingYaw, 0);
+    shipScene.rotation.set(0, 0, 0);
   }, [shipPath, shipScene]);
 
   // Input listeners
   useEffect(() => {
     let lastTouchY = 0;
-    let lastTouchDist = 0;
-
-    const getTouchDist = (touches) => {
-      if (touches.length < 2) return 0;
-      return Math.sqrt((touches[1].clientX - touches[0].clientX)**2 + (touches[1].clientY - touches[0].clientY)**2);
-    };
 
     const handleWheel = (e) => {
       if (e.preventDefault) e.preventDefault();
@@ -129,6 +147,7 @@ export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) =
     
     if (onProgress) onProgress();
     
+    // ── 1. Smooth progress ──
     if (isChangingDir) {
       dirChangeTimer.current = Math.min(1, dirChangeTimer.current + 1.2 * delta);
       if (dirChangeTimer.current >= 1) setIsChangingDir(false);
@@ -140,24 +159,25 @@ export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) =
     const position = shipPath.getPointAt(progress);
     const tangent = shipPath.getTangentAt(progress);
     
+    // ── 2. Ship orientation — quaternion slerp ──
     if (shipRef.current) {
-      // Bobbing
+      // Yaw to align local +Z bow with path tangent
+      const rawYaw    = Math.atan2(tangent.x, tangent.z);
+      const facingYaw = isReversed ? rawYaw + Math.PI : rawYaw;
+
+      _targetQuat.setFromAxisAngle(_upAxis, facingYaw);
+      const rotSpeed = isChangingDir ? ROT_SPEED * 1.4 : ROT_SPEED;
+      shipRef.current.quaternion.rotateTowards(_targetQuat, rotSpeed * delta);
+
+      // Positional bobbing
       shipRef.current.position.set(position.x, position.y + 3 + 0.4 * Math.sin(1.5 * time), position.z);
-      
-      // Rotation — bow (+Z) faces direction of travel
-      const targetYaw = Math.atan2(tangent.x, tangent.z); // aligns local +Z with path tangent
-      const facingYaw = isReversed ? targetYaw + Math.PI : targetYaw;
-      let yawDiff = facingYaw - shipRef.current.rotation.y;
-      
-      if (yawDiff > Math.PI) yawDiff -= 2 * Math.PI;
-      if (yawDiff < -Math.PI) yawDiff += 2 * Math.PI;
-      
-      shipRef.current.rotation.y += yawDiff * (isChangingDir ? 0.35 : 0.25);
-      shipRef.current.rotation.x = 0; // keep bow level
-      shipRef.current.rotation.z = 0.02 * Math.sin(0.8 * time); // subtle roll only
+
+      // Subtle roll
+      shipRef.current.rotation.z = 0.02 * Math.sin(0.8 * time);
+      shipRef.current.rotation.x = 0;
     }
     
-    // Docking logic
+    // ── 3. Docking logic ──
     if (dockedIndex === null) {
       for (let i = 0; i < islandPositions.length; i++) {
         if (i === prevDockedIndex.current) continue;
@@ -205,76 +225,70 @@ export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) =
       }
     }
     
-    // Camera logic
+    // ── 4. Camera — RIDER PERSPECTIVE ──
+    if (!shipRef.current) return;
+
     let minIslandDist = Infinity;
     for (const pos of islandPositions) {
       const d = Math.sqrt((position.x - pos[0])**2 + (position.z - pos[2])**2);
       if (d < minIslandDist) minIslandDist = d;
     }
-    
-    const scaleFactor = minIslandDist < 40 ? 0.65 : minIslandDist < 70 ? 0.75 : minIslandDist < 100 ? 0.9 : 1.1;
+    const scaleFactor = minIslandDist < 40 ? 0.65 : minIslandDist < 70 ? 0.75 : minIslandDist < 100 ? 0.9 : 1.0;
     pMultiplier.current += (scaleFactor - pMultiplier.current) * 0.05;
-    
     const combinedF = fMultiplier.current * pMultiplier.current;
-    const P = (isMobile ? 70 : 65) * combinedF;
-    
+
+    // Current boat world quaternion
+    _boatQuat.copy(shipRef.current.quaternion);
+
+    // Local-space camera offset (behind = -Z local, above = +Y local)
+    const backDist = (isMobile ? 45 : CAMERA_BACK) * combinedF;
+    const heightV  = (isMobile ? 16 : CAMERA_HEIGHT) * combinedF;
+    _localOffset.set(0, heightV, -backDist);
+    _localOffset.applyQuaternion(_boatQuat);
+
+    _targetCam.set(
+      position.x + _localOffset.x,
+      Math.max(CAMERA_MIN_Y, position.y + _localOffset.y),
+      position.z + _localOffset.z
+    );
+
+    // Look-ahead: point in front of the bow
+    _boatFwd.copy(BOAT_FORWARD_AXIS).applyQuaternion(_boatQuat);
+    const lookDist = isReversed ? -LOOK_AHEAD : LOOK_AHEAD;
+    _lookTarget.set(
+      position.x + _boatFwd.x * lookDist,
+      3,
+      position.z + _boatFwd.z * lookDist
+    );
+
+    // Docked override
     const isDockedValid = dockedIndex !== null && dockedIndex < islandPositions.length;
     if (isDockedValid !== wasDockedState.current) {
       wasDockedState.current = isDockedValid;
       gsap.to(cameraDockedLerp, {
         current: isDockedValid ? 1 : 0,
-        duration: 0.8,
+        duration: 1.0,
         ease: isDockedValid ? "power2.out" : "power2.inOut",
         overwrite: true
       });
     }
     
-    const direction = isReversed ? 1 : -1;
-    const offsetF = isMobile ? 20 : 30;
-    const lookOffsetX = isMobile ? (isReversed ? -15 : 15) : 0;
-    
-    let targetCamX = position.x + tangent.x * offsetF * direction;
-    let targetCamY = (isMobile ? 30 : 45) * combinedF;
-    let targetCamZ = position.z + P;
-    
-    let targetLookX = position.x + lookOffsetX;
-    let targetLookY = 5;
-    let targetLookZ = position.z;
-    
     if (isDockedValid) {
       const dPos = islandPositions[dockedIndex];
-      const lerpAmt = cameraDockedLerp.current;
-      targetCamX += (dPos[0] - 40 - targetCamX) * lerpAmt;
-      targetCamY += (45 - targetCamY) * lerpAmt;
-      targetCamZ += (dPos[2] + 40 - targetCamZ) * lerpAmt;
-      
-      targetLookX += (dPos[0] - targetLookX) * lerpAmt;
-      targetLookY += (dPos[1] - targetLookY) * lerpAmt;
-      targetLookZ += (dPos[2] - targetLookZ) * lerpAmt;
+      const t = cameraDockedLerp.current;
+      _targetCam.x  += (dPos[0] - 50 - _targetCam.x)  * t;
+      _targetCam.y  += (55 - _targetCam.y)             * t;
+      _targetCam.z  += (dPos[2] + 50 - _targetCam.z)   * t;
+      _lookTarget.x += (dPos[0] - _lookTarget.x)       * t;
+      _lookTarget.y += (dPos[1] - _lookTarget.y)       * t;
+      _lookTarget.z += (dPos[2] - _lookTarget.z)       * t;
     }
-    
-    const camDuration = isMobile ? 0.4 : 0.6;
-    
-    gsap.to(camera.position, {
-      x: targetCamX,
-      y: targetCamY,
-      z: targetCamZ,
-      duration: camDuration,
-      ease: "power1.out",
-      overwrite: true
-    });
-    
-    gsap.to(cameraTarget.current, {
-      x: targetLookX,
-      y: targetLookY,
-      z: targetLookZ,
-      duration: camDuration,
-      ease: "power1.out",
-      overwrite: true,
-      onUpdate: () => {
-        camera.lookAt(cameraTarget.current);
-      }
-    });
+
+    // Smooth follow
+    camPos.current.lerp(_targetCam, CAM_LERP);
+    camLookRef.current.lerp(_lookTarget, CAM_LERP * 1.2);
+    camera.position.copy(camPos.current);
+    camera.lookAt(camLookRef.current);
   });
 
   return (
