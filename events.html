@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Side Quests &amp; Events | Hackfest '26</title>
+  <meta name="description" content="Explore Hackfest'26 Side Quests — CTF challenges, treasure hunt and tech banter. Exciting additional events at NMAMIT, Nitte (April 17-19)." />
+  <meta name="author" content="Finite Loop Club" />
+  <meta property="og:title" content="Hackfest '26 Side Quests | CTF, Treasure Hunt &amp; Tech Banter" />
+  <meta property="og:description" content="Explore Hackfest'26 Side Quests — CTF challenges, treasure hunt and tech banter." />
+  <meta property="og:url" content="https://hackfest.dev/events" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/images/logos/hflogowithbg.webp" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .events-bg { position:fixed;inset:0;background:url('assets/images/backgrounds/shipwreck.jpeg') no-repeat center center/cover;z-index:-1;filter:brightness(0.4); }
+    .events-carousel-outer { position:relative;width:100vw;height:100vh;overflow:hidden;padding-top:80px;box-sizing:border-box; perspective:1000px; }
+    
+    .events-track { display:flex;width:100%;height:100%; position:relative; transform-style:preserve-3d; justify-content:center; align-items:center; cursor:grab; }
+    .events-track:active { cursor:grabbing; }
+    
+    .event-slide { 
+      position:absolute; width:100vw; height:100%; 
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      transition:transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease;
+      opacity:0; pointer-events:none; z-index:0; user-select:none;
+    }
+    
+    .circle-wrapper { position:relative;display:inline-flex;align-items:center;justify-content:center; }
+    
+    .event-circle { 
+      width:360px; height:360px; border-radius:50%; overflow:hidden; 
+      box-shadow: 0 0 30px rgba(0,0,0,0.6); 
+      position:relative; cursor:pointer; transition:transform 0.4s ease-in-out; 
+    }
+    .event-circle img { width:100%;height:100%;object-fit:cover;display:block;pointer-events:none; }
+    
+    /* Hover only scales up if it is not shrunken */
+    .event-slide[style*="translateZ(0px)"] .event-circle:hover:not([style*="scale"]) { transform:scale(1.04); }
+    
+    .thunder-canvas { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:10; }
+    
+    @keyframes mentor-appear-blink {
+      0% { opacity: 0; }
+      15% { opacity: 1; }
+      30% { opacity: 0; }
+      45% { opacity: 1; }
+      60% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+    
+    .mentor-bubble { 
+      position:absolute; top:50%; left:50%; 
+      transform:translate(-50%, -50%);
+      display:flex; flex-direction:column; align-items:center; gap:8px; 
+      opacity:0; pointer-events:none; z-index:20; 
+      transition: opacity 0.3s ease; 
+    }
+    .mentor-bubble.visible { 
+      opacity:1; pointer-events:auto; 
+      animation: mentor-appear-blink 1.2s ease-out forwards;
+    }
+    
+    .mentor-img-wrap { position:relative;width:90px;height:90px; }
+    .mentor-img { width:90px;height:90px;border-radius:50%;object-fit:cover;position:relative;z-index:1;display:block; }
+    .mentor-name { font-family:var(--font-pirate,serif);font-size:0.8rem;letter-spacing:0.04em;text-align:center;white-space:nowrap; padding:2px 8px; }
+    
+    /* Steering Wheel */
+    .steering-wheel-container { position:fixed;bottom:-80px;left:50%;transform:translateX(-50%);width:220px;height:220px;z-index:100;opacity:0.6;cursor:grab; border-radius: 50%; touch-action: none; transition: opacity 0.3s, transform 0.4s; }
+    .steering-wheel-container:hover { opacity: 1; }
+    .steering-wheel-container:active { cursor:grabbing; opacity: 1; }
+    .steering-wheel-container.hidden { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(100px); }
+    .steering-wheel { width:100%;height:100%;object-fit:contain;pointer-events:none; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8)); }
+    
+    @media(max-width:600px){ 
+      .event-circle{width:240px;height:240px} 
+      .mentor-img-wrap,.mentor-img{width:70px;height:70px;} 
+      .mentor-name{font-size:0.65rem;} 
+      .steering-wheel-container{width:160px;height:160px;bottom:-60px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="events-bg"></div>
+  <div id="loader">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at center,#1c1917,#0a0a0a 60%,#000);opacity:0.8;"></div>
+    <div id="loader-inner"><img id="loader-logo" src="assets/images/logos/hf-logo-banner.png" alt="Hackfest Logo" width="600" height="200" /></div>
+    <div id="loader-bottom-right">
+      <div id="loader-progress-wrap"><span id="loader-progress" class="fc">0%</span><br /><span id="loader-label">Loading Assets</span></div>
+      <img id="loader-steering" src="assets/images/backgrounds/steering.png" alt="Loading..." />
+    </div>
+  </div>
+  <a id="compass-btn" href="/login" aria-label="Open Compass">
+    <div class="compass-inner">
+      <svg class="compass-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z" />
+        <circle cx="12" cy="12" r="10" />
+      </svg>
+      <span class="compass-label fp">Compass</span>
+    </div>
+  </a>
+  <div id="navbar">
+    <div id="navbar-bg"></div>
+    <div id="navbar-border-outer"></div>
+    <div id="navbar-border-dashed"></div>
+    <div id="navbar-inner">
+      <a class="nav-logo" href="/"><img src="/assets/images/logos/logo-glow.png" alt="Hackfest Logo" /></a>
+      <nav id="nav-links" aria-label="Main navigation">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/about">About</a>
+        <a class="nav-link active" href="/events">Events</a>
+        <a class="nav-link" href="/timeline">Timeline</a>
+        <a class="nav-link" href="/contact">Contact</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="/login"><button class="nav-btn" type="button"><div class="nav-btn-bg"></div><span>Event Login</span></button></a>
+      </div>
+      <button id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+      </button>
+    </div>
+    <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+      <a class="mobile-nav-link" href="/">Home</a>
+      <a class="mobile-nav-link" href="/about">About</a>
+      <a class="mobile-nav-link active" href="/events">Events</a>
+      <a class="mobile-nav-link" href="/timeline">Timeline</a>
+      <a class="mobile-nav-link" href="/contact">Contact</a>
+      <a class="mobile-nav-link" href="/login">Event Login</a>
+    </div>
+  </div>
+
+  <main class="page-main" style="padding:0;overflow:hidden;">
+    <div class="events-carousel-outer">
+      <div class="events-track" id="events-track">
+        <div class="event-slide" id="slide-0"><div class="circle-wrapper" id="cw-0"><canvas class="thunder-canvas" id="tc-0"></canvas><div class="event-circle" id="ec-0"><img src="assets/images/Events/Promt Engg/logo.jpg" alt="Promt Engg" /></div><div class="mentor-bubble" id="mb-0"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Promt Engg/mentor/Shruti Kulkarni.png" alt="Shruti Kulkarni" /></div><span class="mentor-name">Shruti Kulkarni</span></div></div></div>
+        <div class="event-slide" id="slide-1"><div class="circle-wrapper" id="cw-1"><canvas class="thunder-canvas" id="tc-1"></canvas><div class="event-circle" id="ec-1"><img src="assets/images/Events/Event 2/logo.jpg" alt="Event 2" /></div><div class="mentor-bubble" id="mb-1"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 2/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
+        <div class="event-slide" id="slide-2"><div class="circle-wrapper" id="cw-2"><canvas class="thunder-canvas" id="tc-2"></canvas><div class="event-circle" id="ec-2"><img src="assets/images/Events/Event 3/logo.jpg" alt="Event 3" /></div><div class="mentor-bubble" id="mb-2"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 3/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
+        <div class="event-slide" id="slide-3"><div class="circle-wrapper" id="cw-3"><canvas class="thunder-canvas" id="tc-3"></canvas><div class="event-circle" id="ec-3"><img src="assets/images/Events/Event 4/logo.jpg" alt="Event 4" /></div><div class="mentor-bubble" id="mb-3"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 4/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
+        <div class="event-slide" id="slide-4"><div class="circle-wrapper" id="cw-4"><canvas class="thunder-canvas" id="tc-4"></canvas><div class="event-circle" id="ec-4"><img src="assets/images/Events/Event 5/logo.jpg" alt="Event 5" /></div><div class="mentor-bubble" id="mb-4"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 5/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
+        <div class="event-slide" id="slide-5"><div class="circle-wrapper" id="cw-5"><canvas class="thunder-canvas" id="tc-5"></canvas><div class="event-circle" id="ec-5"><img src="assets/images/Events/Event 6/logo.jpg" alt="Event 6" /></div><div class="mentor-bubble" id="mb-5"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 6/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
+        <div class="event-slide" id="slide-6"><div class="circle-wrapper" id="cw-6"><canvas class="thunder-canvas" id="tc-6"></canvas><div class="event-circle" id="ec-6"><img src="assets/images/Events/Event 7/logo.jpg" alt="Event 7" /></div><div class="mentor-bubble" id="mb-6"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 7/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
+        <div class="event-slide" id="slide-7"><div class="circle-wrapper" id="cw-7"><canvas class="thunder-canvas" id="tc-7"></canvas><div class="event-circle" id="ec-7"><img src="assets/images/Events/Event 8/logo.jpg" alt="Event 8" /></div><div class="mentor-bubble" id="mb-7"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 8/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
+        <div class="event-slide" id="slide-8"><div class="circle-wrapper" id="cw-8"><canvas class="thunder-canvas" id="tc-8"></canvas><div class="event-circle" id="ec-8"><img src="assets/images/Events/Event 9/logo.jpg" alt="Event 9" /></div><div class="mentor-bubble" id="mb-8"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 9/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
+        <div class="event-slide" id="slide-9"><div class="circle-wrapper" id="cw-9"><canvas class="thunder-canvas" id="tc-9"></canvas><div class="event-circle" id="ec-9"><img src="assets/images/Events/Event 10/logo.jpg" alt="Event 10" /></div><div class="mentor-bubble" id="mb-9"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 10/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
+      </div>
+    </div>
+  </main>
+  
+  <div class="steering-wheel-container" id="steering-wheel-container" aria-label="Steer through events">
+    <img src="assets/images/backgrounds/steering.png" class="steering-wheel" id="steering-wheel" alt="Steering Wheel" />
+  </div>
+
+  <footer id="site-footer">
+    <div class="footer-coral"><div class="footer-coral-img"></div></div>
+    <div class="footer-main">
+      <div class="footer-glow"></div>
+      <div class="footer-content">
+        <div class="footer-logos">
+          <div class="footer-logo-row"><a class="footer-logo-link" href="index.html"><img src="assets/images/logos/logo-footer.jpeg" alt="Hackfest" width="95" height="50" /></a></div>
+          <div class="footer-social">
+            <p>Connect with us:</p>
+            <ul class="footer-social-links" role="list">
+              <li><a class="footer-social-link" href="https://www.instagram.com/hackfest.dev" target="_blank" rel="noopener"><svg class="footer-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a></li>
+              <li><a class="footer-social-link" href="mailto:hackfest@finiteloop.club"><svg class="footer-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-map-col">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;">
+            <div class="footer-map-wrap"><iframe title="NMAMIT Location Map" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15538.662520521424!2d74.93399100000002!3d13.18347!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbb56415ad85e5b%3A0x10b77ac6f6afc7fa!2sNitte%20Mahalinga%20Adyantaya%20Memorial%20Institute%20of%20Technology%20-%20NMAMIT!5e0!3m2!1sen!2sin!4v1771872967031!5m2!1sen!2sin" width="250" height="180" style="border:0;" loading="lazy" allowfullscreen></iframe></div>
+            <div class="footer-address"><p>NMAM Institute of Technology, Nitte</p><p>Karkala, Udupi District, Karnataka</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copy"><p>2026 (c) Hackfest | All rights reserved</p></div>
+    </div>
+  </footer>
+
+  <script src="assets/js/ocean-canvas.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+  (function(){
+    var track=document.getElementById('events-track'),TOTAL=10,current=0;
+    var slides = [];
+    var slideResets = [];
+    var isFocusMode = false;
+    
+    // Steering wheel variables
+    var wheelContainer = document.getElementById('steering-wheel-container');
+    var wheelImg = document.getElementById('steering-wheel');
+    var wheelRot = 0;
+    var isWheelDragging = false;
+    var startAngle = 0;
+    var startRot = 0;
+    
+    var eventColors = ['#ff4d4d', '#4dffff', '#ffcc00', '#cc33ff', '#33ff33', '#ff9933', '#3366ff', '#ff33cc', '#ffff33', '#33cc33'];
+    
+    for(var i=0;i<TOTAL;i++){
+      slides.push(document.getElementById('slide-'+i));
+    }
+    
+    function goTo(idx){
+      var changed = (current !== idx);
+      if(changed) {
+        isFocusMode = false;
+        slideResets.forEach(function(r){ r(); });
+      }
+      current=idx;
+      syncUI();
+    }
+    
+    function syncUI(){
+      var normalizedCurrent = ((current % TOTAL) + TOTAL) % TOTAL;
+      
+      var isMobile = window.innerWidth <= 600;
+      
+      slides.forEach(function(slide, idx) {
+        var dist = idx - normalizedCurrent;
+        
+        if (dist > TOTAL / 2) dist -= TOTAL;
+        else if (dist < -TOTAL / 2) dist += TOTAL;
+        
+        var zIndex = 100 - Math.abs(dist);
+        var opacity = 0;
+        var transform = '';
+        var pointerEvents = 'none';
+        
+        if (dist === 0) {
+          opacity = 1;
+          transform = 'translateX(0px) translateZ(0px) rotateY(0deg) scale(1)';
+          pointerEvents = 'auto'; 
+        } else if (Math.abs(dist) <= 4) {
+          var sign = Math.sign(dist);
+          var absDist = Math.abs(dist);
+          var basePush = isMobile ? 120 : 250;
+          var spacing = isMobile ? 50 : 100;
+          var xOffset = sign * (basePush + absDist * spacing);
+          var zOffset = -220 * absDist;
+          var rotY = -sign * 25; 
+          
+          opacity = 1 - (absDist * 0.2); 
+          transform = 'translateX(' + xOffset + 'px) translateZ(' + zOffset + 'px) rotateY(' + rotY + 'deg) scale(' + (1 - absDist * 0.1) + ')';
+          
+          if(isFocusMode) {
+            opacity = 0;
+            pointerEvents = 'none';
+          } else {
+            pointerEvents = 'auto';
+          }
+        }
+        
+        slide.style.zIndex = zIndex;
+        slide.style.opacity = opacity;
+        slide.style.transform = transform;
+        slide.style.pointerEvents = pointerEvents;
+      });
+      
+      if(!isWheelDragging) {
+        wheelImg.style.transition = 'transform 0.4s ease-out';
+        wheelRot = current * 36;
+        wheelImg.style.transform = 'rotate(' + wheelRot + 'deg)';
+      }
+      
+      if(isFocusMode) {
+        wheelContainer.classList.add('hidden');
+      } else {
+        wheelContainer.classList.remove('hidden');
+      }
+    }
+    
+    document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')goTo(current+1);if(e.key==='ArrowLeft')goTo(current-1);});
+    window.addEventListener('resize',syncUI);
+    
+    // Steering Wheel Drag Logic
+    function getAngle(e) {
+      var rect = wheelContainer.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2;
+      var cy = rect.top + rect.height / 2;
+      var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
+    }
+    
+    function onWheelDragStart(e) {
+      if(isFocusMode) return;
+      e.preventDefault();
+      isWheelDragging = true;
+      wheelImg.style.transition = 'none';
+      startAngle = getAngle(e);
+      startRot = wheelRot;
+    }
+    
+    function onWheelDragMove(e) {
+      if(!isWheelDragging) return;
+      e.preventDefault();
+      var currentAngle = getAngle(e);
+      var deltaAngle = currentAngle - startAngle;
+      
+      if (deltaAngle > 180) deltaAngle -= 360;
+      if (deltaAngle < -180) deltaAngle += 360;
+      
+      wheelRot = startRot + deltaAngle;
+      wheelImg.style.transform = 'rotate(' + wheelRot + 'deg)';
+      
+      var targetRot = current * 36;
+      var diff = wheelRot - targetRot;
+      
+      if (diff > 25) { 
+        goTo(current + 1);
+        startRot = current * 36; 
+        startAngle = currentAngle;
+      } else if (diff < -25) { 
+        goTo(current - 1);
+        startRot = current * 36;
+        startAngle = currentAngle;
+      }
+    }
+    
+    function onWheelDragEnd() {
+      if(!isWheelDragging) return;
+      isWheelDragging = false;
+      syncUI(); 
+    }
+    
+    wheelContainer.addEventListener('mousedown', onWheelDragStart);
+    document.addEventListener('mousemove', onWheelDragMove, {passive:false});
+    document.addEventListener('mouseup', onWheelDragEnd);
+    
+    wheelContainer.addEventListener('touchstart', onWheelDragStart, {passive:false});
+    document.addEventListener('touchmove', onWheelDragMove, {passive:false});
+    document.addEventListener('touchend', onWheelDragEnd);
+    
+    // Mouse Drag & Touch Swipe & Wheel Controls for the background
+    var startX = 0;
+    var isDragging = false;
+    var isWheelScrolling = false;
+    
+    track.addEventListener('wheel', function(e) {
+      if(isWheelScrolling) return;
+      isWheelScrolling = true;
+      if (e.deltaY > 0 || e.deltaX > 0) goTo(current + 1);
+      else if (e.deltaY < 0 || e.deltaX < 0) goTo(current - 1);
+      setTimeout(function(){ isWheelScrolling = false; }, 600);
+    }, {passive: true});
+    
+    track.addEventListener('touchstart', function(e) {
+      if(e.target.closest('#steering-wheel-container')) return;
+      startX = e.touches[0].clientX;
+    }, {passive: true});
+    
+    track.addEventListener('touchend', function(e) {
+      var endX = e.changedTouches[0].clientX;
+      if (startX - endX > 50) goTo(current + 1);
+      else if (endX - startX > 50) goTo(current - 1);
+    }, {passive: true});
+    
+    track.addEventListener('mousedown', function(e) {
+      if(e.target.closest('.event-circle') || e.target.closest('#steering-wheel-container')) return;
+      startX = e.clientX;
+      isDragging = true;
+    });
+    
+    track.addEventListener('mouseup', function(e) {
+      if(!isDragging) return;
+      isDragging = false;
+      var endX = e.clientX;
+      if (startX - endX > 50) goTo(current + 1);
+      else if (endX - startX > 50) goTo(current - 1);
+    });
+    
+    track.addEventListener('mouseleave', function(e) {
+      isDragging = false;
+    });
+    
+    // Initial layout
+    syncUI();
+
+    function seg(x1,y1,x2,y2,r){if(Math.hypot(x2-x1,y2-y1)<4)return[[x1,y1],[x2,y2]];var mx=(x1+x2)/2+(Math.random()-.5)*r,my=(y1+y2)/2+(Math.random()-.5)*r;return seg(x1,y1,mx,my,r/2).concat(seg(mx,my,x2,y2,r/2));}
+    function mkBolt(cx,cy,R,a,mn,mx2,r){var sx=cx+Math.cos(a)*R,sy=cy+Math.sin(a)*R,len=mn+Math.random()*(mx2-mn),sk=(Math.random()-.5)*.6,ex=cx+Math.cos(a+sk)*(R+len),ey=cy+Math.sin(a+sk)*(R+len),segs=seg(sx,sy,ex,ey,r),br=null;if(segs.length>5&&Math.random()>.4){var bi=Math.floor(segs.length*.35+Math.random()*segs.length*.3),ba=a+(Math.random()-.5)*1.4,bl=10+Math.random()*18;br=seg(segs[bi][0],segs[bi][1],segs[bi][0]+Math.cos(ba)*bl,segs[bi][1]+Math.sin(ba)*bl,r*.5);}return{segs:segs,branch:br};}
+    function poly(c,pts,clr){c.beginPath();pts.forEach(function(p,i){if(i===0)c.moveTo(p[0],p[1]);else c.lineTo(p[0],p[1]);});c.stroke();}
+    function dBolts(c,bolts,e,prog,clr){bolts.forEach(function(b,i){var fl=Math.sin(e*.05+i*1.7)>-.2?1:.15,a=(1-prog)*fl;c.save();c.globalAlpha=a;c.strokeStyle=clr;c.lineWidth=2;c.shadowColor=clr;c.shadowBlur=18;poly(c,b.segs,clr);c.strokeStyle='rgba(255,255,255,.95)';c.lineWidth=.7;c.shadowBlur=5;poly(c,b.segs,clr);if(b.branch){c.strokeStyle=clr;c.lineWidth=1;c.shadowBlur=8;poly(c,b.branch,clr);}c.restore();});}
+    
+    for(var ei=0;ei<TOTAL;ei++)init(ei);
+    
+    function init(idx){
+      var circle=document.getElementById('ec-'+idx),tC=document.getElementById('tc-'+idx),mb=document.getElementById('mb-'+idx);
+      if(!circle||!tC)return;
+      var ctx=tC.getContext('2d');
+      var clr = eventColors[idx];
+      var nameEl = mb ? mb.querySelector('.mentor-name') : null;
+      if(nameEl) {
+        nameEl.style.color = clr;
+        nameEl.style.textShadow = '0 0 8px ' + clr;
+      }
+      
+      function rsz(){var r=circle.getBoundingClientRect(),s=Math.round(Math.max(r.width,r.height)*2.2);tC.width=s;tC.height=s;tC.style.width=s+'px';tC.style.height=s+'px';}
+      rsz();window.addEventListener('resize',rsz);
+      
+      var clk=false;
+      var lightRaf = null;
+      var orbitRaf = null;
+      var t1, t2, t3;
+      var normalizedCurrent;
+      
+      slideResets.push(function(){
+        if(!clk) return;
+        clk = false;
+        if(lightRaf) cancelAnimationFrame(lightRaf);
+        if(orbitRaf) cancelAnimationFrame(orbitRaf);
+        lightRaf = null;
+        orbitRaf = null;
+        clearTimeout(t1);
+        clearTimeout(t2);
+        clearTimeout(t3);
+        
+        circle.style.transform = ''; 
+        if(mb) {
+          mb.classList.remove('visible');
+          mb.style.transform = 'translate(-50%, -50%)';
+        }
+        ctx.clearRect(0, 0, tC.width, tC.height); 
+      });
+      
+      function fire(){
+        if(lightRaf)cancelAnimationFrame(lightRaf);
+        var W=tC.width,H=tC.height,cx=W/2,cy=H/2,R=circle.getBoundingClientRect().width/2,NUM=10+Math.floor(Math.random()*6),bolts=[];
+        for(var i=0;i<NUM;i++){var a=Math.PI*2*i/NUM+(Math.random()-.5)*.4;bolts.push(mkBolt(cx,cy,R,a,40,110,22));}
+        var DUR=1800,t0=null;
+        function drw(ts){
+          if(!t0)t0=ts;var e=ts-t0,p=Math.min(e/DUR,1);
+          ctx.clearRect(0,0,W,H);
+          var ra=(1-p)*.9*(.5+.5*Math.sin(e*.018));
+          ctx.save();ctx.globalAlpha=ra;ctx.strokeStyle=clr;ctx.lineWidth=5;ctx.shadowColor=clr;ctx.shadowBlur=50;ctx.beginPath();ctx.arc(cx,cy,R+2,0,Math.PI*2);ctx.stroke();ctx.restore();
+          dBolts(ctx,bolts,e,p,clr);
+          if(p<1) lightRaf=requestAnimationFrame(drw); else ctx.clearRect(0,0,W,H);
+        }
+        lightRaf=requestAnimationFrame(drw);
+      }
+      
+      circle.addEventListener('click',function(e){
+        normalizedCurrent = ((current % TOTAL) + TOTAL) % TOTAL;
+        if (normalizedCurrent !== idx) {
+          var dist = idx - normalizedCurrent;
+          if (dist > TOTAL / 2) dist -= TOTAL;
+          else if (dist < -TOTAL / 2) dist += TOTAL;
+          goTo(current + dist);
+          return;
+        }
+        
+        if(clk) return;
+        clk=true;
+        
+        isFocusMode = true;
+        syncUI();
+        
+        var initR = circle.offsetWidth / 2;
+        var orbitR = (initR * 0.4) + 95;
+        var startAngle = -Math.PI/4;
+        
+        fire();
+        
+        t1 = setTimeout(function(){
+          circle.style.transform = 'scale(0.4)'; 
+        }, 1800);
+        
+        t2 = setTimeout(function(){
+          if(mb) {
+            var ox = Math.cos(startAngle) * orbitR;
+            var oy = Math.sin(startAngle) * orbitR;
+            mb.style.transform = 'translate(calc(-50% + ' + ox + 'px), calc(-50% + ' + oy + 'px))';
+            mb.classList.add('visible');
+          }
+        }, 2200);
+        
+        t3 = setTimeout(function(){
+          var startTs = null;
+          function orbit(ts){
+            if(!startTs) startTs = ts;
+            var elapsed = ts - startTs;
+            var baseAngle = startAngle - (elapsed * 0.00008);
+            if(mb) {
+              var ox = Math.cos(baseAngle) * orbitR;
+              var oy = Math.sin(baseAngle) * orbitR;
+              mb.style.transform = 'translate(calc(-50% + ' + ox + 'px), calc(-50% + ' + oy + 'px))';
+            }
+            orbitRaf = requestAnimationFrame(orbit);
+          }
+          orbitRaf = requestAnimationFrame(orbit);
+        }, 3400);
+      });
+    }
+  })();
+  </script>
+</body>
+</html>

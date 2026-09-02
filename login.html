@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portal Login | Hackfest '26</title>
+  <meta name="description" content="Login to Hackfest'26 portal for registration and event check-in." />
+
+  <!-- Favicons -->
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      position: relative;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 28rem;
+      background: rgba(10, 15, 25, 0.85);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      border-radius: 1.25rem;
+      padding: 2.5rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(6, 182, 212, 0.15);
+      text-align: center;
+    }
+
+    .login-logo {
+      width: 4.5rem;
+      height: 4.5rem;
+      margin: 0 auto 1.5rem;
+      filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.6));
+    }
+
+    .login-title {
+      font-family: var(--font-pirate);
+      font-size: 2.5rem;
+      color: var(--cyan-100);
+      margin-bottom: 0.5rem;
+    }
+
+    .login-subtitle {
+      font-family: var(--font-serif);
+      font-size: 1.125rem;
+      color: rgba(165, 243, 252, 0.7);
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 0.875rem;
+      color: var(--cyan-200);
+      margin-bottom: 0.375rem;
+      letter-spacing: 0.05em;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(8, 51, 68, 0.4);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      border-radius: 0.5rem;
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--cyan-400);
+      box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+      background: rgba(8, 51, 68, 0.6);
+    }
+
+    .login-submit {
+      width: 100%;
+      padding: 0.875rem;
+      background: linear-gradient(to right, var(--cyan-600), var(--cyan-500));
+      color: #fff;
+      font-family: var(--font-pirate);
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      border-radius: 0.5rem;
+      margin-top: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .login-submit:hover {
+      background: linear-gradient(to right, var(--cyan-500), var(--cyan-400));
+      transform: scale(1.02);
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.5);
+    }
+
+    .back-home {
+      display: inline-block;
+      margin-top: 1.5rem;
+      font-family: var(--font-serif);
+      color: rgba(165, 243, 252, 0.7);
+      font-size: 0.875rem;
+      transition: color 0.2s ease;
+    }
+
+    .back-home:hover {
+      color: var(--cyan-300);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-container">
+    <div class="login-card fade-up">
+      <a href="/">
+        <img class="login-logo" src="/assets/images/logos/logo-glow.png" alt="Hackfest Logo" />
+      </a>
+      <h1 class="login-title">Captain's Deck</h1>
+      <p class="login-subtitle">Board the ship or verify your crew credentials</p>
+
+      <form onsubmit="event.preventDefault(); alert('Authentication portal mock — Registration is simulated.');">
+        <div class="form-group">
+          <label class="form-label" for="email">Sailor / Captain Email</label>
+          <input class="form-input" type="email" id="email" placeholder="captain@crew.dev" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Secret Cipher (Password)</label>
+          <input class="form-input" type="password" id="password" placeholder="••••••••" required />
+        </div>
+
+        <button class="login-submit" type="submit">Board Ship</button>
+      </form>
+
+      <a class="back-home" href="/">← Return to Harbor (Home)</a>
+    </div>
+  </div>
+
+  <script src="assets/js/ocean-canvas.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+
+</html>

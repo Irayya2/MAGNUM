@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Timeline | Hackfest '26</title>
+  <meta name="description"
+    content="Explore the complete interactive 3D timeline and schedule of Hackfest'26. Key dates, milestones, registration deadlines and more." />
+  <meta name="author" content="Finite Loop Club" />
+
+  <!-- OG -->
+  <meta property="og:title" content="Timeline | Hackfest '26" />
+  <meta property="og:description" content="Explore the complete schedule and interactive 3D timeline of Hackfest'26." />
+  <meta property="og:url" content="https://hackfest.dev/timeline" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/assets/images/logos/hflogowithbg.webp" />
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #020617;
+    }
+
+    #root {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── COMPASS BUTTON ──────────────────────────────────── -->
+  <a id="compass-btn" href="/login" aria-label="Open Compass">
+    <div class="compass-inner">
+      <svg class="compass-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z" />
+        <circle cx="12" cy="12" r="10" />
+      </svg>
+      <span class="compass-label fp">Compass</span>
+    </div>
+  </a>
+
+  <!-- ── NAVBAR ──────────────────────────────────────────── -->
+  <div id="navbar">
+    <div id="navbar-bg"></div>
+    <div id="navbar-border-outer"></div>
+    <div id="navbar-border-dashed"></div>
+    <div id="navbar-inner">
+      <a class="nav-logo" href="/">
+        <img src="/assets/images/logos/logo-glow.png" alt="Hackfest Logo" />
+      </a>
+      <nav id="nav-links" aria-label="Main navigation">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/about">About</a>
+        <a class="nav-link" href="/events">Events</a>
+        <a class="nav-link active" href="/timeline">Timeline</a>
+        <a class="nav-link" href="/contact">Contact</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="/login">
+          <button class="nav-btn" type="button">
+            <div class="nav-btn-bg"></div>
+            <span>Register Now</span>
+          </button>
+        </a>
+      </div>
+      <button id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+    <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+      <a class="mobile-nav-link" href="/">Home</a>
+      <a class="mobile-nav-link" href="/about">About</a>
+      <a class="mobile-nav-link" href="/events">Events</a>
+      <a class="mobile-nav-link active" href="/timeline">Timeline</a>
+      <a class="mobile-nav-link" href="/contact">Contact</a>
+      <a class="mobile-nav-link" href="/login">Register Now</a>
+    </div>
+  </div>
+
+  <!-- ── 3D TIMELINE ROOT ─────────────────────────────────── -->
+  <div id="root"></div>
+
+  <!-- ── SCRIPTS ──────────────────────────────────────────── -->
+  <script type="module" src="/src/main.jsx"></script>
+  <script src="/assets/js/main.js"></script>
+</body>
+
+</html>

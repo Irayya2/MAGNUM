@@ -1,0 +1,30 @@
+# HTTrack scraper artifacts (sensitive - contains auth tokens & logs)
+cookies.txt
+hts-log.txt
+hts-cache/
+
+# Analytics mirror (external service, not part of our code)
+analytics.finiteloop.club/
+
+# Node.js
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables (in case added later)
+.env
+.env.local
+.env.*.local

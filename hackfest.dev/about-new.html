@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About Us | Hackfest</title>
+  <meta name="description" content="Learn about Hackfest'26 – a 36-hour national hackathon at NMAMIT, Nitte, Karnataka. Organised by Finite Loop Club, bringing 500+ developers together for innovation." />
+  <meta name="author" content="Finite Loop Club" />
+  <meta name="keywords" content="Hackfest,Hackfest 26,Hackfest 2026,hackathon 2026,national hackathon India,college hackathon India,36 hour hackathon,coding competition,Karnataka Hackathons,Finite Loop Club,NMAMIT hackathon,NMAMIT,Nitte" />
+  <meta property="og:title" content="Hackfest - 36-Hour National Level Hackathon" />
+  <meta property="og:description" content="Hackfest is a 36-hour National Level Hackathon organised by Finite Loop Club at NMAMIT, Nitte. Win from a Rs.4,00,000+ prize pool. April 17-19, 2026." />
+  <meta property="og:url" content="https://hackfest.dev" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="logos/hflogowithbg.webp" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cyan-100:#cffafe; --cyan-200:#a5f3fc; --cyan-300:#67e8f9;
+      --cyan-400:#22d3ee; --cyan-500:#06b6d4; --cyan-900:#164e63;
+      --cyan-950:#083344; --amber-100:#fef3c7; --amber-200:#fde68a;
+      --amber-300:#fcd34d; --amber-400:#fbbf24; --amber-500:#f59e0b;
+      --stone-300:#d6d3d1; --stone-400:#a8a29e; --stone-500:#78716c;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #000; color: #fff;
+      min-height: 100vh; overflow-x: hidden;
+      user-select: none; -webkit-user-select: none;
+    }
+    .fp { font-family: 'Pirata One', cursive; }
+    .fc { font-family: 'Crimson Text', serif; }
+
+    /* LOADER */
+    #loader {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at center,#171717 0%,#0a0a0a 60%,#000 100%);
+      color: var(--amber-500);
+      transition: opacity .6s ease;
+    }
+    #loader.hide { opacity: 0; pointer-events: none; }
+    #loader-logo {
+      width: 240px; height: auto; object-fit: contain;
+      filter: drop-shadow(0 0 15px rgba(245,158,11,.5));
+      animation: fadeInEl .9s ease forwards .3s; opacity: 0;
+    }
+    #loader-pct-wrap {
+      position: absolute; bottom: 2rem; right: 2rem; text-align: right;
+    }
+    #loader-num {
+      display: block; font-family: 'Crimson Text',serif;
+      font-size: 1.5rem; font-weight: 700; line-height: 1;
+    }
+    .loader-lbl {
+      font-family: 'Crimson Text',serif; font-size: .625rem;
+      text-transform: uppercase; letter-spacing: .2em;
+      color: rgba(245,158,11,.6);
+    }
+    @keyframes fadeInEl { to { opacity: 1; } }
+
+    /* PARTICLE CANVAS */
+    #particle-canvas {
+      position: fixed; inset: 0; z-index: -10;
+      width: 100%; height: 100%; pointer-events: none;
+    }
+
+    /* NAVBAR */
+    #navbar {
+      position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%);
+      z-index: 100; width: 85%; max-width: 64rem;
+    }
+    .nav-bg {
+      position: absolute; inset: 0; border-radius: .5rem;
+      overflow: hidden; z-index: -1;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,.6);
+    }
+    .nav-bg img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; transform: scale(1.3);
+    }
+    .nav-ov1 { position:absolute;inset:0;background:rgba(0,0,0,.4); }
+    .nav-ov2 { position:absolute;inset:0;background:rgba(0,0,0,.2); }
+    .nav-dash {
+      position:absolute;inset:6px;border:2px dashed rgba(255,241,153,.3);
+      border-radius:6px;pointer-events:none;
+    }
+    .nav-inner {
+      position: relative; display: flex; align-items: center;
+      justify-content: space-between; padding: .75rem 1.5rem;
+    }
+    .nav-logo {
+      position: relative; flex-shrink: 0;
+      transition: transform .2s; text-decoration: none;
+    }
+    .nav-logo:hover { transform: scale(1.05); }
+    .nav-logo:active { transform: scale(.95); }
+    .nav-logo img {
+      width: 3rem; height: 3rem; object-fit: contain; display: block;
+      filter: drop-shadow(0 0 12px rgba(255,191,0,.7));
+    }
+    .nav-links {
+      display: none; align-items: center; gap: 1.5rem;
+    }
+    @media(min-width:768px){ .nav-links { display: flex; } }
+    .nav-link {
+      position: relative; font-family:'Pirata One',cursive;
+      font-size: 1.125rem; font-weight: 700; letter-spacing:.05em;
+      text-decoration: none; color: rgba(207,250,254,.7);
+      transition: color .4s;
+    }
+    .nav-link:hover { color: #fff; }
+    .nav-link .bar {
+      position:absolute;bottom:-4px;left:0;height:2px;width:100%;
+      background:var(--cyan-400);box-shadow:0 0 10px rgba(34,211,238,.8);
+      border-radius:9999px;transform:scaleX(0);transform-origin:left;
+      transition:transform .3s;
+    }
+    .nav-link:hover .bar { transform: scaleX(1); }
+    .nav-link.active { color:var(--cyan-400);filter:drop-shadow(0 0 8px rgba(34,211,238,.5)); }
+    .nav-link.active .bar { transform: scaleX(1); }
+    .nav-cta { display:none; align-items:center; gap:1rem; }
+    @media(min-width:768px){ .nav-cta { display:flex; } }
+    .nav-btn {
+      position:relative;padding:.375rem 1rem;
+      font-family:'Pirata One',cursive;font-size:1rem;font-weight:700;
+      color:var(--cyan-100);text-decoration:none;cursor:pointer;
+      transition:color .4s;
+    }
+    .nav-btn:hover { color:#fff; }
+    .nav-btn-bg {
+      position:absolute;inset:0;border:1px solid rgba(34,211,238,.4);
+      border-radius:.375rem;background:rgba(8,51,68,.2);
+      transition:background .4s;
+    }
+    .nav-btn:hover .nav-btn-bg { background:rgba(8,51,68,.4); }
+    .nav-btn span { position:relative;z-index:10; }
+    .hamburger {
+      display:flex;flex-direction:column;gap:5px;cursor:pointer;
+      padding:.5rem;background:none;border:none;
+    }
+    @media(min-width:768px){ .hamburger { display:none; } }
+    .hamburger span {
+      display:block;height:2px;width:2rem;
+      background:var(--cyan-400);border-radius:9999px;transition:all .3s;
+    }
+
+    /* MOBILE MENU */
+    #mobile-menu {
+      display:none;position:fixed;inset:0;z-index:200;
+      background:rgba(0,0,0,.95);flex-direction:column;
+      align-items:center;justify-content:center;gap:2rem;
+    }
+    #mobile-menu.open { display:flex; }
+    #close-menu {
+      position:absolute;top:1.5rem;right:1.5rem;
+      font-size:2.5rem;color:var(--cyan-400);
+      cursor:pointer;background:none;border:none;line-height:1;
+    }
+    #mobile-menu a {
+      font-family:'Pirata One',cursive;font-size:2rem;
+      color:rgba(207,250,254,.8);text-decoration:none;
+    }
+    #mobile-menu a:hover { color:#fff; }
+
+    /* MAIN */
+    main { position:relative;min-height:100vh;width:100%;overflow-x:hidden; }
+
+    /* BENTO */
+    .bento-section {
+      position:relative;z-index:10;
+      padding:8rem 1rem 4rem;min-height:100vh;
+    }
+    .bento-wrap { width:100%;max-width:80rem;margin:0 auto;padding:1rem; }
+    @media(min-width:768px){ .bento-wrap { padding:2rem; } }
+    .bento-grid {
+      display:grid;grid-template-columns:1fr;gap:1.5rem;
+    }
+    @media(min-width:768px){
+      .bento-grid {
+        grid-template-columns:repeat(12,1fr);
+        grid-auto-rows:180px;
+      }
+    }
+
+    /* BENTO CARD */
+    .bc {
+      position:relative;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+      background:rgba(0,0,0,.4);border:1px solid rgba(34,211,238,.3);
+      border-radius:.75rem;overflow:hidden;
+      transition:border-color .3s;height:100%;
+    }
+    .bc:hover { border-color:rgba(34,211,238,.6); }
+    .bc-inner {
+      position:relative;z-index:10;width:100%;height:100%;
+      padding:1.5rem;display:flex;flex-direction:column;justify-content:center;
+    }
+    .bc-glow {
+      position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(to bottom,rgba(34,211,238,.05),transparent);
+    }
+    .bc-hborder {
+      position:absolute;inset:-1px;border:1px solid rgba(34,211,238,.2);
+      border-radius:.75rem;opacity:.5;transition:opacity .5s;pointer-events:none;
+    }
+    .bc:hover .bc-hborder { opacity:1; }
+
+    /* HERO */
+    .hero-cell {
+      min-height:360px;
+    }
+    @media(min-width:768px){ .hero-cell { grid-column:span 12;grid-row:span 2;min-height:unset; } }
+    .hero-cell .bc-inner { align-items:center;text-align:center;justify-content:center; }
+    .hero-logo-wrap { position:relative;width:5rem;height:5rem;margin-bottom:1rem; }
+    @media(min-width:768px){ .hero-logo-wrap { width:6rem;height:6rem; } }
+    .hero-logo-glow {
+      position:absolute;inset:0;background:rgba(34,211,238,.2);
+      border-radius:9999px;filter:blur(1.5rem);
+    }
+    .hero-logo-img {
+      position:absolute;inset:0;width:100%;height:100%;
+      object-fit:contain;filter:drop-shadow(0 0 15px rgba(34,211,238,.6));
+    }
+    h1.hero-title {
+      font-family:'Pirata One',cursive;font-size:2.5rem;
+      color:var(--cyan-100);line-height:1.15;
+      filter:drop-shadow(0 0 10px rgba(34,211,238,.3));
+    }
+    @media(min-width:768px){ h1.hero-title { font-size:3.75rem; } }
+    .gradient-text {
+      background:linear-gradient(to bottom,var(--cyan-300),#3b82f6);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .hero-sub {
+      margin-top:1rem;color:rgba(165,243,252,.6);
+      font-family:'Pirata One',cursive;letter-spacing:.2em;
+      text-transform:uppercase;font-size:.75rem;
+      border-top:1px solid rgba(34,211,238,.3);padding-top:1rem;
+      max-width:28rem;margin-left:auto;margin-right:auto;width:100%;
+    }
+    @media(min-width:768px){ .hero-sub { font-size:.875rem; } }
+
+    /* DATE */
+    @media(min-width:768px){ .date-cell { grid-column:span 4;grid-row:span 1; } }
+    .date-flex { display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%; }
+    .date-month { color:rgba(6,182,212,.5);font-family:'Pirata One',cursive;font-size:1.25rem;margin-bottom:.25rem; }
+    .date-nums { display:flex;align-items:baseline;gap:.5rem; }
+    .date-side { font-size:1.875rem;font-weight:900;color:var(--stone-400); }
+    .date-main { font-size:3rem;font-weight:900;color:var(--cyan-300);filter:drop-shadow(0 0 15px rgba(34,211,238,.5)); }
+    .date-year { color:var(--stone-500);font-family:'Crimson Text',serif;font-size:.75rem;letter-spacing:.3em;margin-top:.25rem; }
+
+    /* TEXT TALL */
+    @media(min-width:768px){ .text-tall-cell { grid-column:span 4;grid-row:span 2;min-height:360px; } }
+    .tc-title {
+      font-family:'Pirata One',cursive;font-size:1.25rem;color:var(--cyan-200);
+      border-bottom:1px solid rgba(34,211,238,.3);padding-bottom:.5rem;
+      margin-bottom:1rem;display:inline-block;padding-right:3rem;
+    }
+    .tc-body {
+      color:var(--stone-300);font-family:'Crimson Text',serif;
+      font-size:1.125rem;line-height:1.7;text-align:justify;
+    }
+
+    /* STAT */
+    @media(min-width:768px){ .stat-cell { grid-column:span 4;grid-row:span 1; } }
+    .stat-flex { display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%; }
+    .stat-val { font-family:'Pirata One',cursive;font-size:3rem; }
+    .stat-lbl { font-size:.75rem;text-transform:uppercase;letter-spacing:.2em;margin-top:.25rem; }
+    .c-cyan  { color:var(--cyan-300); }
+    .c-plain { color:var(--cyan-100); }
+    .c-amber { color:var(--amber-200); }
+    .s-cyan  { color:rgba(6,182,212,.7); }
+    .s-stone { color:var(--stone-500); }
+    .s-amber { color:rgba(245,158,11,.5); }
+
+    /* LOCATION */
+    @media(min-width:768px){ .loc-cell { grid-column:span 4;grid-row:span 1; } }
+    .loc-flex { display:flex;align-items:center;gap:1rem;height:100%; }
+    .loc-icon { color:rgba(6,182,212,.5);flex-shrink:0; }
+    .loc-texts { display:flex;flex-direction:column;text-align:left; }
+    .loc-name { color:var(--stone-300);font-weight:700;font-size:.875rem; }
+    .loc-addr { color:var(--stone-500);font-size:.75rem;margin-top:.25rem;line-height:1.4; }
+    .loc-img { width:3rem;height:3rem;object-fit:contain;margin-left:auto;opacity:.7;transition:opacity .3s; }
+    .loc-img:hover { opacity:1; }
+
+    /* PRIZE */
+    .prize-cell { background:rgba(8,51,68,.3)!important;border-color:rgba(251,191,36,.2)!important; }
+    @media(min-width:768px){ .prize-cell-wrap { grid-column:1/-1;grid-row:span 1; } }
+    .prize-flex {
+      display:flex;flex-direction:column;align-items:center;
+      justify-content:center;gap:2.5rem;text-align:center;
+    }
+    @media(min-width:768px){ .prize-flex { flex-direction:row;justify-content:space-around;text-align:left; } }
+    .prize-lbl {
+      display:block;color:var(--stone-400);font-family:'Crimson Text',serif;
+      font-size:.875rem;text-transform:uppercase;letter-spacing:.2em;margin-bottom:.25rem;
+    }
+    .prize-amt {
+      font-family:'Pirata One',cursive;font-size:3rem;
+      color:var(--amber-400);filter:drop-shadow(0 0 10px rgba(251,191,36,.5));
+    }
+    .brochure-btn {
+      display:flex;align-items:center;gap:.75rem;padding:1rem 2rem;
+      border-radius:.5rem;background:rgba(8,51,68,.4);
+      border:1px solid rgba(34,211,238,.3);text-decoration:none;
+      transition:all .3s;flex-shrink:0;
+    }
+    .brochure-btn:hover { background:rgba(8,51,68,.6);border-color:rgba(34,211,238,.5); }
+    .brochure-btn span { font-family:'Pirata One',cursive;color:var(--cyan-100);font-size:1.125rem;transition:color .3s; }
+    .brochure-btn:hover span { color:var(--cyan-300); }
+    .brochure-btn svg { color:var(--cyan-400);transition:color .3s;flex-shrink:0; }
+    .brochure-btn:hover svg { color:var(--cyan-200); }
+
+    /* FOOTER */
+    footer { position:relative;z-index:20;width:100%;display:flex;flex-direction:column; }
+    .ft-coral { position:relative;height:10rem;width:100%;overflow:hidden;pointer-events:none; }
+    .ft-coral-img {
+      position:absolute;inset:0;z-index:10;width:100%;height:100%;
+      background:url('images/corals_cropped.png') repeat-x left top / auto 100%;
+      filter:brightness(.6) saturate(.8) hue-rotate(-5deg) contrast(1.0);
+    }
+    .ft-body {
+      position:relative;z-index:20;width:100%;
+      border-top:1px solid rgba(125,211,252,.4);
+      background:linear-gradient(to bottom,#8e8071,#6b5e50,#42392f);
+      backdrop-filter:blur(8px);
+    }
+    .ft-inner {
+      display:flex;flex-direction:column;align-items:center;
+      justify-content:space-evenly;gap:3rem;padding:2rem 1rem;
+    }
+    @media(min-width:1024px){ .ft-inner { flex-direction:row; } }
+    .ft-left { display:flex;flex-direction:column;align-items:center;gap:2rem; }
+    .ft-logo-row { display:flex;align-items:center;justify-content:center;gap:1.5rem; }
+    .ft-hf-logo {
+      width:95px;height:50px;object-fit:contain;
+      filter:drop-shadow(0 0 15px rgba(251,191,36,.6));transition:all .4s;
+    }
+    .ft-flc-logo { width:75px;height:50px;object-fit:contain;opacity:.85;transition:all .4s; }
+    .ft-flc-logo:hover { opacity:1; }
+    .ft-nmamit { width:180px;height:auto;filter:brightness(0) invert(1) opacity(.95);opacity:.85;transition:all .4s; }
+    .ft-nmamit:hover { opacity:1; }
+    .ft-social { display:flex;flex-direction:column;align-items:center;gap:1rem; }
+    .ft-social p { font-size:1rem;font-weight:500;color:#fef3c7; }
+    .ft-social ul { display:flex;gap:1.5rem;list-style:none; }
+    .ft-social ul li a { display:block;color:#fef3c7;transition:all .3s; }
+    .ft-social ul li a:hover { color:#fff;transform:scale(1.1); }
+    .ft-right { display:flex;flex-direction:column;align-items:center;gap:2rem; }
+    .ft-map { border-radius:.5rem;overflow:hidden;border:1px solid rgba(217,119,6,.3);box-shadow:0 0 20px rgba(251,191,36,.15); }
+    .ft-map iframe { display:block;border:0;filter:sepia(.3) hue-rotate(15deg) saturate(.9);transition:filter .4s; }
+    .ft-map iframe:hover { filter:sepia(0) saturate(1); }
+    .ft-addr { text-align:center; }
+    .ft-addr p:first-child { font-size:1.125rem;font-weight:700;color:#fef3c7; }
+    .ft-addr p:last-child  { font-size:.875rem;font-weight:500;color:rgba(254,243,199,.8); }
+    .ft-sponsor { font-size:1rem;font-weight:500;color:rgba(254,243,199,.9);text-align:center; }
+    .ft-sponsor a { color:#fef3c7;font-weight:700;text-decoration:underline;transition:all .3s; }
+    .ft-sponsor a:hover { color:#fff; }
+    .ft-copy {
+      width:100%;border-top:1px solid rgba(120,60,10,.4);
+      padding:1rem;text-align:center;font-size:.875rem;
+      font-weight:500;color:rgba(254,243,199,.6);
+    }
+
+    /* COMPASS */
+    .compass-btn {
+      position:fixed;left:0;top:50%;transform:translateY(-50%);
+      z-index:50;display:flex;align-items:center;text-decoration:none;
+    }
+    .compass-inner {
+      display:flex;align-items:center;
+      padding:.75rem 1rem .75rem .5rem;
+      background:linear-gradient(to right,rgba(245,158,11,.9),rgba(234,88,12,.9));
+      color:#fff;border-radius:0 9999px 9999px 0;
+      box-shadow:5px 0 20px -5px rgba(245,158,11,.5);
+      backdrop-filter:blur(8px);
+      border:1px solid rgba(251,191,36,.3);border-left:0;
+      transition:all .3s;
+    }
+    .compass-btn:hover .compass-inner {
+      padding-left:.75rem;padding-right:1.25rem;transform:scale(1.05);
+      background:linear-gradient(to right,#f59e0b,#f97316);
+    }
+    .compass-lbl {
+      font-family:'Pirata One',cursive;font-size:1.125rem;letter-spacing:.1em;
+      margin-left:.5rem;white-space:nowrap;max-width:0;overflow:hidden;opacity:0;
+      transition:all .5s ease;
+    }
+    .compass-btn:hover .compass-lbl { max-width:6rem;opacity:1; }
+
+    /* THEME TOGGLE */
+    #theme-toggle {
+      position:fixed;bottom:1.5rem;right:1.5rem;z-index:50;
+      width:3rem;height:3rem;border-radius:9999px;
+      background:rgba(0,0,0,.4);backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,.1);color:#fff;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;box-shadow:0 0 20px rgba(0,0,0,.3);
+      transition:background .3s;
+      opacity:0;transform:scale(.5);
+      animation:popIn .5s ease forwards 1.6s;
+    }
+    #theme-toggle:hover { background:rgba(0,0,0,.6); }
+    @keyframes popIn { to { opacity:1;transform:scale(1); } }
+
+    /* REVEAL */
+    .reveal { opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease; }
+    .reveal.visible { opacity:1;transform:translateY(0); }
+
+    ::selection { background:rgba(34,211,238,.3); }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <img id="loader-logo" src="logos/Logo@4x-8.png" alt="HF Logo" onerror="this.style.display='none'" />
+  <div id="loader-pct-wrap">
+    <span id="loader-num">0%</span>
+    <span class="loader-lbl">Loading Assets</span>
+  </div>
+</div>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="particle-canvas"></canvas>
+
+<!-- MOBILE MENU -->
+<div id="mobile-menu">
+  <button id="close-menu" aria-label="Close menu">&times;</button>
+  <a href="index.html">Home</a>
+  <a href="about-new.html" style="color:var(--cyan-400)">About</a>
+  <a href="events.html">Events</a>
+  <a href="timeline.html">Timeline</a>
+  <a href="contact.html">Contact</a>
+  <a href="login3417.html" style="color:var(--amber-400);border:1px solid var(--amber-500);padding:.5rem 1.5rem;border-radius:.5rem;margin-top:1rem;">Register Now</a>
+</div>
+
+<!-- NAVBAR -->
+<div style="position:fixed;top:0;left:0;width:100%;z-index:50;">
+  <nav id="navbar">
+    <div class="nav-bg">
+      <img src="images/teal-leather.webp" alt="" onerror="this.style.display='none'" />
+      <div class="nav-ov1"></div>
+      <div class="nav-ov2"></div>
+      <div class="nav-dash"></div>
+    </div>
+    <div class="nav-inner">
+      <!-- Logo -->
+      <a class="nav-logo" href="index.html" aria-label="Hackfest Home">
+        <img src="logos/logowithglow.webp" alt="Hackfest Logo" onerror="this.src='favicon-96x96.png'" />
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="nav-links">
+        <a class="nav-link" href="index.html">Home<span class="bar"></span></a>
+        <a class="nav-link active" href="about-new.html">About<span class="bar"></span></a>
+        <a class="nav-link" href="events.html">Events<span class="bar"></span></a>
+        <a class="nav-link" href="timeline.html">Timeline<span class="bar"></span></a>
+        <a class="nav-link" href="contact.html">Contact<span class="bar"></span></a>
+      </div>
+
+      <!-- CTA + Hamburger -->
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <div class="nav-cta">
+          <a href="login3417.html" class="nav-btn">
+            <div class="nav-btn-bg"></div>
+            <span>Register Now</span>
+          </a>
+        </div>
+        <button class="hamburger" id="open-menu" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<!-- MAIN -->
+<main>
+  <section class="bento-section">
+    <div class="bento-wrap">
+      <div class="bento-grid">
+
+        <!-- HERO: col-span-12, row-span-2 -->
+        <div class="hero-cell reveal">
+          <div class="bc" style="min-height:360px;">
+            <div class="bc-inner">
+              <div class="hero-logo-wrap">
+                <div class="hero-logo-glow"></div>
+                <img class="hero-logo-img" src="logos/logowithglow.webp" alt="HF Logo" onerror="this.src='favicon-96x96.png'" />
+              </div>
+              <h1 class="hero-title">
+                CodeQuest<br/>
+                <span class="gradient-text">The Grand Voyage</span>
+              </h1>
+              <p class="hero-sub">3 Day Long Sea Voyage</p>
+            </div>
+            <div class="bc-glow"></div>
+            <div class="bc-hborder"></div>
+          </div>
+        </div>
+
+        <!-- DATE: col-span-4 -->
+        <div class="date-cell reveal">
+          <div class="bc" style="min-height:180px;">
+            <div class="bc-inner">
+              <div class="date-flex">
+                <span class="date-month">April</span>
+                <div class="date-nums">
+                  <span class="date-side">17</span>
+                  <span class="date-main">18</span>
+                  <span class="date-side">19</span>
+                </div>
+                <span class="date-year">2026</span>
+              </div>
+            </div>
+            <div class="bc-glow"></div>
+            <div class="bc-hborder"></div>
+          </div>
+        </div>
+
+        <!-- WHAT IS HACKFEST: col-span-4, row-span-2 -->
+        <div class="text-tall-cell reveal">
+          <div class="bc" style="min-height:360px;">
+            <div class="bc-inner" style="justify-content:center;">
+              <h3 class="tc-title">What is Hackfest?</h3>
+              <p class="tc-body">NMAM Institute of Technology presents a national-level tech fest. A 36-hour hackathon where 60 teams from across the seas gather to foster innovation and showcase their skills in a 50-hour marathon of code and creativity.</p>
+            </div>
+            <div class="bc-glow"></div>
+            <div class="bc-hborder"></div>
+          </div>
+        </div>
+
+        <!-- ABOUT NMAMIT: col-span-4, row-span-2 -->
+        <div class="text-tall-cell reveal">
+          <div class="bc" style="min-height:360px;">
+            <div class="bc-inner" style="justify-content:center;">
+              <h3 class="tc-title">About NMAMIT</h3>
+              <p class="tc-body">NMAM Institute of Technology (1986) is an AICTE-approved constituent of Nitte (Deemed to be University), ranked 151&ndash;200 in National Institutional Ranking Framework 2025, with AICTE-CII &lsquo;Platinum&rsquo; industry linkage status and global collaborations.</p>
+            </div>
+            <div class="bc-glow"></div>
+            <div class="bc-hborder"></div>
+          </div>
+        </div>
+
+        <!-- 50 Hrs: col-span-4 -->
+        <div class="stat-cell reveal">
+          <div class="bc" style="min-height:180px;">
+            <div class="bc-inner">
+              <div class="stat-flex">
+                <span class="stat-val c-cyan">50Hrs</span>
+                <span class="stat-lbl s-cyan">On-Site Event</span>
+              </div>
+            </div>
+            <div class="bc-glow"></div>
+            <div class="bc-hborder"></div>
+          </div>
+        </div>
+
+        <!-- 36 Hrs: col-span-4 -->
+        <div class="stat-cell reveal">
+          <div class="bc" style="min-height:180px;">
+            <div class="bc-inner">
+              <div class="stat-flex">
+                <span class="stat-val c-plain">36Hrs</span>
+                <span class="stat-lbl s-stone">Non-Stop Coding</span>
+              </div>
+            </div>
+            <div class="bc-glow"></div>
+            <div class="bc-hborder"></div>
+          </div>
+        </div>
+
+        <!-- 5 Tracks: col-span-4 -->
+        <div class="stat-cell reveal">
+          <div class="bc" style="min-height:180px;">
+            <div class="bc-inner">
+              <div class="stat-flex">
+                <span class="stat-val c-amber">5 Tracks</span>
+                <span class="stat-lbl s-amber">Diverse Themes</span>
+              </div>
+            </div>
+            <div class="bc-glow"></div>
+            <div class="bc-hborder"></div>
+          </div>
+        </div>
+
+        <!-- LOCATION: col-span-4 -->
+        <div class="loc-cell reveal">
+          <div class="bc" style="min-height:180px;opacity:.85;">
+            <div class="bc-inner">
+              <div class="loc-flex">
+                <svg class="loc-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <div class="loc-texts">
+                  <span class="loc-name">NMAM Institute of Technology</span>
+                  <span class="loc-addr">Nitte, Karkala, Udupi District<br>Karnataka, India</span>
+                </div>
+                <img class="loc-img" src="logos/flc_logo_crop.png" alt="FLC Logo" onerror="this.style.display='none'" />
+              </div>
+            </div>
+            <div class="bc-glow"></div>
+            <div class="bc-hborder"></div>
+          </div>
+        </div>
+
+        <!-- PRIZE: col-span-12 -->
+        <div class="prize-cell-wrap reveal" style="grid-column:1/-1;">
+          <div class="bc prize-cell" style="min-height:180px;">
+            <div class="bc-inner">
+              <div class="prize-flex">
+                <div>
+                  <span class="prize-lbl">Total Prizes Worth</span>
+                  <span class="prize-amt">&#8377;4,00,000+</span>
+                </div>
+                <a href="images/brochure/Hackfest26Brochure.pdf" download class="brochure-btn">
+                  <span>Download Brochure</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 15V3"/>
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <path d="m7 10 5 5 5-5"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <div class="bc-glow"></div>
+            <div class="bc-hborder"></div>
+          </div>
+        </div>
+
+      </div><!-- /bento-grid -->
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ft-coral">
+      <div class="ft-coral-img"></div>
+    </div>
+    <div class="ft-body">
+      <div class="ft-inner">
+
+        <!-- Left -->
+        <div class="ft-left">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;">
+            <div class="ft-logo-row">
+              <a href="index.html"><img class="ft-hf-logo" src="logo.webp" alt="Hackfest" onerror="this.src='favicon-96x96.png'" /></a>
+              <a href="https://finiteloop.club/" target="_blank"><img class="ft-flc-logo" src="logos/flc_logo_crop.png" alt="Finite Loop Club" onerror="this.style.display='none'" /></a>
+            </div>
+            <a href="https://nitte.edu.in/nmamit/" target="_blank">
+              <img class="ft-nmamit" src="logos/NMAMITLogo.png" alt="NMAMIT" onerror="this.style.display='none'" />
+            </a>
+          </div>
+          <div class="ft-social">
+            <p>Connect with us:</p>
+            <ul>
+              <li>
+                <a href="https://www.instagram.com/hackfest.dev" target="_blank" aria-label="Instagram">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a href="mailto:hackfest@finiteloop.club" aria-label="Email">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/>
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="ft-right">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;">
+            <div class="ft-map">
+              <iframe
+                title="Maps"
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15538.662520521424!2d74.93399100000002!3d13.18347!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbb56415ad85e5b%3A0x10b77ac6f6afc7fa!2sNitte%20Mahalinga%20Adyantaya%20Memorial%20Institute%20of%20Technology%20-%20NMAMIT!5e0!3m2!1sen!2sin!4v1771872967031!5m2!1sen!2sin"
+                width="250" height="180" allowfullscreen loading="lazy" aria-hidden="false">
+              </iframe>
+            </div>
+            <div class="ft-addr">
+              <p>NMAM Institute of Technology, Nitte</p>
+              <p>Karkala, Udupi District, Karnataka</p>
+            </div>
+          </div>
+          <p class="ft-sponsor">
+            Interested to sponsor? Let us know
+            <a href="mailto:sponsors@hackfest.dev">sponsors@hackfest.dev</a>
+          </p>
+        </div>
+
+      </div>
+      <div class="ft-copy"><p>2026 &copy; Hackfest | All rights reserved</p></div>
+    </div>
+  </footer>
+</main>
+
+<!-- COMPASS -->
+<a class="compass-btn" href="login31ac.html" aria-label="Open Compass">
+  <div class="compass-inner">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/>
+      <circle cx="12" cy="12" r="10"/>
+    </svg>
+    <span class="compass-lbl">Compass</span>
+  </div>
+</a>
+
+<!-- THEME TOGGLE -->
+<button id="theme-toggle" aria-label="Toggle theme">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#facc15;filter:drop-shadow(0 0 8px rgba(250,204,21,.5))">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2"/><path d="M12 20v2"/>
+    <path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/>
+    <path d="M2 12h2"/><path d="M20 12h2"/>
+    <path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+  </svg>
+</button>
+
+<script>
+// LOADER
+(function(){
+  var loader=document.getElementById('loader');
+  var num=document.getElementById('loader-num');
+  var c=0;
+  var t=setInterval(function(){
+    c+=Math.floor(Math.random()*15)+3;
+    if(c>=100){c=100;clearInterval(t);}
+    num.textContent=c+'%';
+    if(c===100){
+      setTimeout(function(){
+        loader.classList.add('hide');
+        setTimeout(function(){loader.style.display='none';},600);
+      },300);
+    }
+  },100);
+})();
+
+// MOBILE MENU
+document.getElementById('open-menu').onclick=function(){document.getElementById('mobile-menu').classList.add('open');};
+document.getElementById('close-menu').onclick=function(){document.getElementById('mobile-menu').classList.remove('open');};
+
+// PARTICLE CANVAS
+(function(){
+  var c=document.getElementById('particle-canvas');
+  var ctx=c.getContext('2d');
+  var W,H,pts=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  function rnd(a,b){return Math.random()*(b-a)+a;}
+  for(var i=0;i<80;i++){
+    pts.push({
+      x:rnd(0,1),y:rnd(0,1),
+      r:rnd(0.3,1.6),
+      vx:rnd(-.04,.04),vy:rnd(-.06,-.02),
+      a:rnd(.3,.9),
+      col:Math.random()>.5?'34,211,238':'251,191,36'
+    });
+  }
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(0,0,0,0.85)';
+    ctx.fillRect(0,0,W,H);
+    pts.forEach(function(p){
+      p.x+=p.vx/W*60;p.y+=p.vy/H*60;
+      if(p.x<0)p.x=1;if(p.x>1)p.x=0;
+      if(p.y<0)p.y=1;if(p.y>1)p.y=0;
+      ctx.beginPath();
+      ctx.arc(p.x*W,p.y*H,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba('+p.col+','+p.a+')';
+      ctx.fill();
+    });
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+// SCROLL REVEAL
+(function(){
+  var els=document.querySelectorAll('.reveal');
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e,i){
+      if(e.isIntersecting){
+        setTimeout(function(){e.target.classList.add('visible');},i*80);
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:.1});
+  els.forEach(function(el){obs.observe(el);});
+})();
+</script>
+</body>
+</html>

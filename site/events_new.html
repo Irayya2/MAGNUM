@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Side Quests &amp; Events | Hackfest '26</title>
+  <meta name="description" content="Explore Hackfest'26 Side Quests — CTF challenges, treasure hunt and tech banter. Exciting additional events at NMAMIT, Nitte (April 17-19)." />
+  <meta name="author" content="Finite Loop Club" />
+  <meta property="og:title" content="Hackfest '26 Side Quests | CTF, Treasure Hunt &amp; Tech Banter" />
+  <meta property="og:description" content="Explore Hackfest'26 Side Quests — CTF challenges, treasure hunt and tech banter." />
+  <meta property="og:url" content="https://hackfest.dev/events" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/images/logos/hflogowithbg.webp" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .events-bg { position:fixed;inset:0;background:url('assets/images/backgrounds/shipwreck.jpeg') no-repeat center center/cover;z-index:-1;filter:brightness(0.4); }
+    .events-carousel-outer { position:relative;width:100vw;height:100vh;overflow:hidden;padding-top:80px;box-sizing:border-box; }
+    .events-track { display:flex;width:100%;height:100%;overflow-x:scroll;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:smooth; }
+    .events-track::-webkit-scrollbar { display:none; }
+    .event-slide { flex:0 0 100vw;width:100vw;height:100%;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative; }
+    .circle-wrapper { position:relative;display:inline-flex;align-items:center;justify-content:center; }
+    .event-circle { width:360px;height:360px;border-radius:50%;overflow:hidden;border:2.5px solid rgba(255,200,0,0.55);box-shadow:0 0 60px rgba(255,200,0,0.28),0 0 120px rgba(255,200,0,0.13),inset 0 0 60px rgba(255,200,0,0.08);animation:circle-pulse 4s ease-in-out infinite;position:relative;cursor:pointer;transition:box-shadow 0.4s ease,border-color 0.4s ease,transform 0.35s ease; }
+    .event-circle img { width:100%;height:100%;object-fit:cover;display:block;pointer-events:none; }
+    .event-circle:hover { border-color:rgba(255,200,0,0.9);transform:scale(1.04);box-shadow:0 0 90px rgba(255,200,0,0.55),0 0 180px rgba(255,200,0,0.25),inset 0 0 70px rgba(255,200,0,0.15); }
+    .event-circle::before { content:'';position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(255,200,0,0.2);animation:circle-ring 4s ease-in-out infinite;pointer-events:none; }
+    .event-circle::after { content:'';position:absolute;inset:-22px;border-radius:50%;border:1px solid rgba(255,200,0,0.09);animation:circle-ring 4s ease-in-out infinite 0.6s;pointer-events:none; }
+    @keyframes circle-pulse { 0%,100%{box-shadow:0 0 60px rgba(255,200,0,.28),0 0 120px rgba(255,200,0,.13),inset 0 0 60px rgba(255,200,0,.08)}50%{box-shadow:0 0 90px rgba(255,200,0,.45),0 0 170px rgba(255,200,0,.22),inset 0 0 80px rgba(255,200,0,.14)} }
+    @keyframes circle-ring { 0%,100%{opacity:.45;transform:scale(1)}50%{opacity:1;transform:scale(1.04)} }
+    .thunder-canvas { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:10; }
+    .thread-canvas { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:8;opacity:0;transition:opacity 1.2s ease; }
+    .thread-canvas.visible { opacity:1; }
+    .event-label { margin-top:2rem;font-family:var(--font-pirate,serif);font-size:2rem;color:#FFD700;text-shadow:0 0 20px rgba(255,200,0,.8),0 0 40px rgba(255,200,0,.4);letter-spacing:.1em;text-align:center; }
+    .carousel-dots { position:fixed;bottom:2.2rem;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:100; }
+    .carousel-dot { width:8px;height:8px;border-radius:50%;background:rgba(255,200,0,.3);border:1px solid rgba(255,200,0,.5);cursor:pointer;transition:background .3s,transform .3s; }
+    .carousel-dot.active { background:#FFD700;transform:scale(1.4);box-shadow:0 0 10px rgba(255,200,0,.8); }
+    .carousel-arrow { position:fixed;top:50%;transform:translateY(-50%);z-index:100;background:rgba(255,200,0,.1);border:1.5px solid rgba(255,200,0,.4);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#FFD700;font-size:1.4rem;transition:background .3s,border-color .3s,transform .2s;user-select:none;backdrop-filter:blur(4px); }
+    .carousel-arrow:hover { background:rgba(255,200,0,.25);border-color:rgba(255,200,0,.8);transform:translateY(-50%) scale(1.1); }
+    .carousel-arrow.prev { left:1.2rem; }
+    .carousel-arrow.next { right:1.2rem; }
+    .carousel-arrow.hidden { opacity:0;pointer-events:none; }
+    .event-counter { position:fixed;top:calc(80px + 1rem);right:1.5rem;font-family:var(--font-pirate,serif);font-size:.95rem;color:rgba(255,200,0,.7);letter-spacing:.08em;z-index:100; }
+    @media(max-width:600px){ .event-circle{width:240px;height:240px} .event-label{font-size:1.4rem} .carousel-arrow{width:38px;height:38px;font-size:1.1rem} }
+  </style>
+</head>
+<body>
+  <div class="events-bg"></div>
+  <div id="loader">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at center,#1c1917,#0a0a0a 60%,#000);opacity:0.8;"></div>
+    <div id="loader-inner"><img id="loader-logo" src="assets/images/logos/hf-logo-banner.png" alt="Hackfest Logo" width="600" height="200" /></div>
+    <div id="loader-bottom-right">
+      <div id="loader-progress-wrap"><span id="loader-progress" class="fc">0%</span><br /><span id="loader-label">Loading Assets</span></div>
+      <img id="loader-steering" src="assets/images/backgrounds/steering.png" alt="Loading..." />
+    </div>
+  </div>
+  <a id="compass-btn" href="login.html" aria-label="Open Compass">
+    <div class="compass-inner">
+      <svg class="compass-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z" />
+        <circle cx="12" cy="12" r="10" />
+      </svg>
+      <span class="compass-label fp">Compass</span>
+    </div>
+  </a>
+  <div id="navbar">
+    <div id="navbar-bg"></div>
+    <div id="navbar-border-outer"></div>
+    <div id="navbar-border-dashed"></div>
+    <div id="navbar-inner">
+      <a class="nav-logo" href="index.html"><img src="assets/images/logos/logo-glow.png" alt="Hackfest Logo" /></a>
+      <nav id="nav-links" aria-label="Main navigation">
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="about.html">About</a>
+        <a class="nav-link active" href="events.html">Events</a>
+        <a class="nav-link" href="timeline.html">Timeline</a>
+        <a class="nav-link" href="contact.html">Contact</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="login.html"><button class="nav-btn" type="button"><div class="nav-btn-bg"></div><span>Event Login</span></button></a>
+      </div>
+      <button id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+      </button>
+    </div>
+    <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+      <a class="mobile-nav-link" href="index.html">Home</a>
+      <a class="mobile-nav-link" href="about.html">About</a>
+      <a class="mobile-nav-link active" href="events.html">Events</a>
+      <a class="mobile-nav-link" href="timeline.html">Timeline</a>
+      <a class="mobile-nav-link" href="contact.html">Contact</a>
+      <a class="mobile-nav-link" href="login.html">Event Login</a>
+    </div>
+  </div>
+
+  <main class="page-main" style="padding:0;overflow:hidden;">
+    <div class="events-carousel-outer">
+      <div class="events-track" id="events-track">
+        <div class="event-slide" id="slide-0"><div class="circle-wrapper" id="cw-0"><canvas class="thunder-canvas" id="tc-0"></canvas><canvas class="thread-canvas" id="thc-0"></canvas><div class="event-circle" id="ec-0"><img src="assets/images/Events/Promt Engg/logo.jpg" alt="Promt Engg" /></div></div><span class="event-label">Promt Engg</span></div>
+        <div class="event-slide" id="slide-1"><div class="circle-wrapper" id="cw-1"><canvas class="thunder-canvas" id="tc-1"></canvas><canvas class="thread-canvas" id="thc-1"></canvas><div class="event-circle" id="ec-1"><img src="assets/images/Events/Event 2/logo.jpg" alt="Event 2" /></div></div><span class="event-label">Event 2</span></div>
+        <div class="event-slide" id="slide-2"><div class="circle-wrapper" id="cw-2"><canvas class="thunder-canvas" id="tc-2"></canvas><canvas class="thread-canvas" id="thc-2"></canvas><div class="event-circle" id="ec-2"><img src="assets/images/Events/Event 3/logo.jpg" alt="Event 3" /></div></div><span class="event-label">Event 3</span></div>
+        <div class="event-slide" id="slide-3"><div class="circle-wrapper" id="cw-3"><canvas class="thunder-canvas" id="tc-3"></canvas><canvas class="thread-canvas" id="thc-3"></canvas><div class="event-circle" id="ec-3"><img src="assets/images/Events/Event 4/logo.jpg" alt="Event 4" /></div></div><span class="event-label">Event 4</span></div>
+        <div class="event-slide" id="slide-4"><div class="circle-wrapper" id="cw-4"><canvas class="thunder-canvas" id="tc-4"></canvas><canvas class="thread-canvas" id="thc-4"></canvas><div class="event-circle" id="ec-4"><img src="assets/images/Events/Event 5/logo.jpg" alt="Event 5" /></div></div><span class="event-label">Event 5</span></div>
+        <div class="event-slide" id="slide-5"><div class="circle-wrapper" id="cw-5"><canvas class="thunder-canvas" id="tc-5"></canvas><canvas class="thread-canvas" id="thc-5"></canvas><div class="event-circle" id="ec-5"><img src="assets/images/Events/Event 6/logo.jpg" alt="Event 6" /></div></div><span class="event-label">Event 6</span></div>
+        <div class="event-slide" id="slide-6"><div class="circle-wrapper" id="cw-6"><canvas class="thunder-canvas" id="tc-6"></canvas><canvas class="thread-canvas" id="thc-6"></canvas><div class="event-circle" id="ec-6"><img src="assets/images/Events/Event 7/logo.jpg" alt="Event 7" /></div></div><span class="event-label">Event 7</span></div>
+        <div class="event-slide" id="slide-7"><div class="circle-wrapper" id="cw-7"><canvas class="thunder-canvas" id="tc-7"></canvas><canvas class="thread-canvas" id="thc-7"></canvas><div class="event-circle" id="ec-7"><img src="assets/images/Events/Event 8/logo.jpg" alt="Event 8" /></div></div><span class="event-label">Event 8</span></div>
+        <div class="event-slide" id="slide-8"><div class="circle-wrapper" id="cw-8"><canvas class="thunder-canvas" id="tc-8"></canvas><canvas class="thread-canvas" id="thc-8"></canvas><div class="event-circle" id="ec-8"><img src="assets/images/Events/Event 9/logo.jpg" alt="Event 9" /></div></div><span class="event-label">Event 9</span></div>
+        <div class="event-slide" id="slide-9"><div class="circle-wrapper" id="cw-9"><canvas class="thunder-canvas" id="tc-9"></canvas><canvas class="thread-canvas" id="thc-9"></canvas><div class="event-circle" id="ec-9"><img src="assets/images/Events/Event 10/logo.jpg" alt="Event 10" /></div></div><span class="event-label">Event 10</span></div>
+      </div>
+    </div>
+  </main>
+
+  <button class="carousel-arrow prev hidden" id="arrow-prev" aria-label="Previous event">&#8249;</button>
+  <button class="carousel-arrow next" id="arrow-next" aria-label="Next event">&#8250;</button>
+  <div class="carousel-dots" id="carousel-dots" role="tablist"></div>
+  <div class="event-counter" id="event-counter">1 / 10</div>
+
+  <footer id="site-footer">
+    <div class="footer-coral"><div class="footer-coral-img"></div></div>
+    <div class="footer-main">
+      <div class="footer-glow"></div>
+      <div class="footer-content">
+        <div class="footer-logos">
+          <div class="footer-logo-row"><a class="footer-logo-link" href="index.html"><img src="assets/images/logos/logo-footer.jpeg" alt="Hackfest" width="95" height="50" /></a></div>
+          <div class="footer-social">
+            <p>Connect with us:</p>
+            <ul class="footer-social-links" role="list">
+              <li><a class="footer-social-link" href="https://www.instagram.com/hackfest.dev" target="_blank" rel="noopener"><svg class="footer-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a></li>
+              <li><a class="footer-social-link" href="mailto:hackfest@finiteloop.club"><svg class="footer-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-map-col">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;">
+            <div class="footer-map-wrap"><iframe title="NMAMIT Location Map" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15538.662520521424!2d74.93399100000002!3d13.18347!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbb56415ad85e5b%3A0x10b77ac6f6afc7fa!2sNitte%20Mahalinga%20Adyantaya%20Memorial%20Institute%20of%20Technology%20-%20NMAMIT!5e0!3m2!1sen!2sin!4v1771872967031!5m2!1sen!2sin" width="250" height="180" style="border:0;" loading="lazy" allowfullscreen></iframe></div>
+            <div class="footer-address"><p>NMAM Institute of Technology, Nitte</p><p>Karkala, Udupi District, Karnataka</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copy"><p>2026 (c) Hackfest | All rights reserved</p></div>
+    </div>
+  </footer>
+
+  <script src="assets/js/ocean-canvas.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+  (function(){
+    var track=document.getElementById('events-track'),dotsWrap=document.getElementById('carousel-dots'),counter=document.getElementById('event-counter'),btnPrev=document.getElementById('arrow-prev'),btnNext=document.getElementById('arrow-next'),TOTAL=10,current=0,dots=[];
+    for(var i=0;i<TOTAL;i++){(function(idx){var d=document.createElement('button');d.className='carousel-dot'+(idx===0?' active':'');d.setAttribute('aria-label','Go to event '+(idx+1));d.setAttribute('role','tab');d.addEventListener('click',function(){goTo(idx);});dotsWrap.appendChild(d);dots.push(d);})(i);}
+    function goTo(idx){current=Math.max(0,Math.min(TOTAL-1,idx));track.scrollTo({left:current*window.innerWidth,behavior:'smooth'});syncUI();}
+    function syncUI(){dots.forEach(function(d,i){d.classList.toggle('active',i===current);});counter.textContent=(current+1)+' / '+TOTAL;btnPrev.classList.toggle('hidden',current===0);btnNext.classList.toggle('hidden',current===TOTAL-1);}
+    btnPrev.addEventListener('click',function(){goTo(current-1);});
+    btnNext.addEventListener('click',function(){goTo(current+1);});
+    document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')goTo(current+1);if(e.key==='ArrowLeft')goTo(current-1);});
+    var st;track.addEventListener('scroll',function(){clearTimeout(st);st=setTimeout(function(){var idx=Math.round(track.scrollLeft/window.innerWidth);if(idx!==current){current=idx;syncUI();}},80);});
+    window.addEventListener('resize',function(){track.scrollTo({left:current*window.innerWidth,behavior:'instant'});});
+    syncUI();
+    function seg(x1,y1,x2,y2,r){if(Math.hypot(x2-x1,y2-y1)<4)return[[x1,y1],[x2,y2]];var mx=(x1+x2)/2+(Math.random()-.5)*r,my=(y1+y2)/2+(Math.random()-.5)*r;return seg(x1,y1,mx,my,r/2).concat(seg(mx,my,x2,y2,r/2));}
+    function mkBolt(cx,cy,R,a,mn,mx2,r){var sx=cx+Math.cos(a)*R,sy=cy+Math.sin(a)*R,len=mn+Math.random()*(mx2-mn),sk=(Math.random()-.5)*.6,ex=cx+Math.cos(a+sk)*(R+len),ey=cy+Math.sin(a+sk)*(R+len),segs=seg(sx,sy,ex,ey,r),br=null;if(segs.length>5&&Math.random()>.4){var bi=Math.floor(segs.length*.35+Math.random()*segs.length*.3),ba=a+(Math.random()-.5)*1.4,bl=10+Math.random()*18;br=seg(segs[bi][0],segs[bi][1],segs[bi][0]+Math.cos(ba)*bl,segs[bi][1]+Math.sin(ba)*bl,r*.5);}return{segs:segs,branch:br};}
+    function poly(c,pts){c.beginPath();pts.forEach(function(p,i){if(i===0)c.moveTo(p[0],p[1]);else c.lineTo(p[0],p[1]);});c.stroke();}
+    function dBolts(c,bolts,e,prog){bolts.forEach(function(b,i){var fl=Math.sin(e*.05+i*1.7)>-.2?1:.15,a=(1-prog)*fl;c.save();c.globalAlpha=a;c.strokeStyle='rgba(255,200,0,.9)';c.lineWidth=2;c.shadowColor='#FFD700';c.shadowBlur=18;poly(c,b.segs);c.strokeStyle='rgba(255,255,255,.95)';c.lineWidth=.7;c.shadowBlur=5;poly(c,b.segs);if(b.branch){c.strokeStyle='rgba(255,200,0,.7)';c.lineWidth=1;c.shadowBlur=8;poly(c,b.branch);}c.restore();});}
+    for(var ei=0;ei<TOTAL;ei++)init(ei);
+    function init(idx){
+      var circle=document.getElementById('ec-'+idx),tC=document.getElementById('tc-'+idx),thC=document.getElementById('thc-'+idx);
+      if(!circle||!tC)return;
+      var ctx=tC.getContext('2d'),thx=thC.getContext('2d');
+      function rsz(){var r=circle.getBoundingClientRect(),s=Math.round(Math.max(r.width,r.height)*2.2);tC.width=s;tC.height=s;tC.style.width=s+'px';tC.style.height=s+'px';var ts=Math.round(Math.max(r.width,r.height)*2.6);thC.width=ts;thC.height=ts;thC.style.width=ts+'px';thC.style.height=ts+'px';}
+      rsz();window.addEventListener('resize',rsz);
+      var raf=null;
+      function fire(){if(raf)cancelAnimationFrame(raf);var W=tC.width,H=tC.height,cx=W/2,cy=H/2,R=circle.getBoundingClientRect().width/2,NUM=10+Math.floor(Math.random()*6),bolts=[];for(var i=0;i<NUM;i++){var a=Math.PI*2*i/NUM+(Math.random()-.5)*.4;bolts.push(mkBolt(cx,cy,R,a,40,110,22));}var DUR=1800,t0=null;function drw(ts){if(!t0)t0=ts;var e=ts-t0,p=Math.min(e/DUR,1);ctx.clearRect(0,0,W,H);var ra=(1-p)*.9*(.5+.5*Math.sin(e*.018));ctx.save();ctx.globalAlpha=ra;ctx.strokeStyle='#FFD700';ctx.lineWidth=5;ctx.shadowColor='#FFD700';ctx.shadowBlur=50;ctx.beginPath();ctx.arc(cx,cy,R+2,0,Math.PI*2);ctx.stroke();ctx.restore();dBolts(ctx,bolts,e,p);if(p<1)raf=requestAnimationFrame(drw);else ctx.clearRect(0,0,W,H);}raf=requestAnimationFrame(drw);}
+      var thR=null,thS=false;
+      function startThread(){if(thS)return;thS=true;thC.classList.add('visible');var TW=thC.width,TH=thC.height,cx=TW/2,cy=TH/2,R=circle.getBoundingClientRect().width/2+28;function drw(ts){thx.clearRect(0,0,TW,TH);var dO=-(ts*.06)%30,al=.55+.35*Math.sin(ts*.002);thx.save();thx.globalAlpha=al;thx.strokeStyle='#FFD700';thx.lineWidth=1.8;thx.shadowColor='#FFD700';thx.shadowBlur=18;thx.setLineDash([10,8]);thx.lineDashOffset=dO;thx.beginPath();thx.arc(cx,cy,R,0,Math.PI*2);thx.stroke();thx.restore();var ang=(ts*.0012)%(Math.PI*2),dx=cx+Math.cos(ang)*R,dy=cy+Math.sin(ang)*R;thx.save();thx.globalAlpha=1;thx.shadowColor='#FFD700';thx.shadowBlur=28;thx.fillStyle='#FFD700';thx.beginPath();thx.arc(dx,dy,5,0,Math.PI*2);thx.fill();thx.restore();var ang2=ang+Math.PI;thx.save();thx.globalAlpha=.6;thx.shadowColor='#FFD700';thx.shadowBlur=16;thx.fillStyle='#FFD700';thx.beginPath();thx.arc(cx+Math.cos(ang2)*R,cy+Math.sin(ang2)*R,3,0,Math.PI*2);thx.fill();thx.restore();thR=requestAnimationFrame(drw);}thR=requestAnimationFrame(drw);}
+      var clk=false;
+      circle.addEventListener('click',function(){fire();if(!clk){clk=true;setTimeout(startThread,4000);}});
+    }
+  })();
+  </script>
+</body>
+</html>
