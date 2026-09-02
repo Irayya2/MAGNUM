@@ -230,6 +230,8 @@ export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) =
     }
     
     // ── 4. Camera — RIDER PERSPECTIVE ──
+    //    Camera tracks movement direction (tangent), not boat facing,
+    //    so it never jumps through the hull when reversing.
     if (!shipRef.current) return;
 
     let minIslandDist = Infinity;
@@ -241,28 +243,23 @@ export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) =
     pMultiplier.current += (scaleFactor - pMultiplier.current) * 0.05;
     const combinedF = fMultiplier.current * pMultiplier.current;
 
-    // Current boat world quaternion
-    _boatQuat.copy(shipRef.current.quaternion);
-
-    // Local-space camera offset (behind = -Z local, above = +Y local)
     const backDist = (isMobile ? 45 : CAMERA_BACK) * combinedF;
     const heightV  = (isMobile ? 16 : CAMERA_HEIGHT) * combinedF;
-    _localOffset.set(0, heightV, -backDist);
-    _localOffset.applyQuaternion(_boatQuat);
 
+    // Camera sits behind direction of movement
+    const movSign = isReversed ? 1 : -1;
     _targetCam.set(
-      position.x + _localOffset.x,
-      Math.max(CAMERA_MIN_Y, position.y + _localOffset.y),
-      position.z + _localOffset.z
+      position.x + tangent.x * backDist * movSign,
+      Math.max(CAMERA_MIN_Y, position.y + heightV),
+      position.z + tangent.z * backDist * movSign
     );
 
-    // Look-ahead: point in front of the bow
-    _boatFwd.copy(BOAT_FORWARD_AXIS).applyQuaternion(_boatQuat);
-    const lookDist = isReversed ? -LOOK_AHEAD : LOOK_AHEAD;
+    // Look-ahead in movement direction
+    const lookSign = isReversed ? -1 : 1;
     _lookTarget.set(
-      position.x + _boatFwd.x * lookDist,
+      position.x + tangent.x * LOOK_AHEAD * lookSign,
       3,
-      position.z + _boatFwd.z * lookDist
+      position.z + tangent.z * LOOK_AHEAD * lookSign
     );
 
     // Docked override

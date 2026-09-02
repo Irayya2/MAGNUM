@@ -270,9 +270,9 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
     }
 
     // ── 4. Camera — RIDER PERSPECTIVE ──
-    //    Camera sits behind and above the boat in LOCAL space,
-    //    then the offset is rotated by the boat's world quaternion.
-    //    This means the camera always follows the boat's heading.
+    //    Camera sits behind the DIRECTION OF MOVEMENT, not the boat's facing.
+    //    Using the path tangent (movement direction) means the camera never
+    //    jumps through the hull when the boat reverses.
 
     if (!shipRef.current) return;
 
@@ -289,30 +289,24 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
     pMultiplier.current += (scaleFactor - pMultiplier.current) * 0.05;
     const combinedF = fMultiplier.current * pMultiplier.current;
 
-    // Get the boat's current world quaternion
-    _boatQuat.copy(shipRef.current.quaternion);
-
-    // Local-space camera offset: zero X (centered), above and BEHIND the bow
-    // "behind" = negative Z in boat-local space (bow is +Z)
     const backDist = (isMobile ? 45 : CAMERA_BACK) * combinedF;
     const heightV  = (isMobile ? 16 : CAMERA_HEIGHT) * combinedF;
-    _localOffset.set(0, heightV, -backDist);
-    _localOffset.applyQuaternion(_boatQuat); // rotate offset into world space
 
-    // Target camera world position
+    // Movement direction: tangent when forward, -tangent when reversed.
+    // Camera sits BEHIND this direction (opposite to movement → behind the ship).
+    const movSign = isReversed ? 1 : -1; // -1 = behind forward movement
     _targetCam.set(
-      position.x + _localOffset.x,
-      Math.max(CAMERA_MIN_Y, position.y + _localOffset.y),
-      position.z + _localOffset.z
+      position.x + tangent.x * backDist * movSign,
+      Math.max(CAMERA_MIN_Y, position.y + heightV),
+      position.z + tangent.z * backDist * movSign
     );
 
-    // Look-ahead: a point in front of the bow in world space
-    _boatFwd.copy(BOAT_FORWARD_AXIS).applyQuaternion(_boatQuat);
-    const lookDist = isReversed ? -LOOK_AHEAD : LOOK_AHEAD;
+    // Look-ahead: point ahead IN the movement direction
+    const lookSign = isReversed ? -1 : 1; // forward = +tangent, reverse = -tangent
     _lookTarget.set(
-      position.x + _boatFwd.x * lookDist,
+      position.x + tangent.x * LOOK_AHEAD * lookSign,
       3,
-      position.z + _boatFwd.z * lookDist
+      position.z + tangent.z * LOOK_AHEAD * lookSign
     );
 
     // Docked override — smoothly pan camera to show the island
