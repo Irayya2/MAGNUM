@@ -48,8 +48,12 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
 
   // Set initial ship orientation from path tangent
   useEffect(() => {
+    // Bow faces +Z — align group rotation with path start tangent
     const tangent = shipPath.getTangentAt(0);
-    shipScene.rotation.y = Math.atan2(tangent.x, tangent.z) - Math.PI / 2;
+    shipScene.rotation.y = 0;
+    if (shipRef.current) {
+      shipRef.current.rotation.y = Math.atan2(tangent.x, tangent.z);
+    }
   }, [shipPath, shipScene]);
 
   // Reset progress when day changes
@@ -167,12 +171,15 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
         position.z
       );
 
-      const targetYaw = Math.atan2(tangent.x, tangent.z) - Math.PI / 2;
-      let yawDiff = (isReversed ? targetYaw + Math.PI : targetYaw) - shipRef.current.rotation.y;
+      // Rotation — bow (+Z) faces direction of travel
+      const targetYaw = Math.atan2(tangent.x, tangent.z); // aligns local +Z with path tangent
+      const facingYaw = isReversed ? targetYaw + Math.PI : targetYaw;
+      let yawDiff = facingYaw - shipRef.current.rotation.y;
       if (yawDiff >  Math.PI) yawDiff -= 2 * Math.PI;
       if (yawDiff < -Math.PI) yawDiff += 2 * Math.PI;
-      shipRef.current.rotation.y += yawDiff * (isChangingDir ? 0.2 : 0.15);
-      shipRef.current.rotation.z  = 0.03 * Math.sin(0.8 * time);
+      shipRef.current.rotation.y += yawDiff * (isChangingDir ? 0.35 : 0.25);
+      shipRef.current.rotation.x = 0; // keep bow level
+      shipRef.current.rotation.z  = 0.02 * Math.sin(0.8 * time); // subtle roll only
     }
 
     // ── Docking detection ──
