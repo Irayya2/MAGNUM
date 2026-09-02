@@ -11,8 +11,8 @@ import { islandPositions, getShipCurve } from './TimelinePath';
  * ─────────────────────────────────────────────────────────────────────────── */
 const BOAT_FORWARD_AXIS = new THREE.Vector3(0, 0, 1);
 
-/* Ship.glb bow is along local +X — correct with -PI/2 rotation on the primitive */
-const GLB_BOW_CORRECTION = -Math.PI / 2;
+/* Ship.glb bow is aligned with +Z. No correction offset needed. */
+const GLB_BOW_CORRECTION = 0;
 
 /* ─── Camera tuning constants ─────────────────────────────────────────────── */
 const CAMERA_HEIGHT     = 38;
