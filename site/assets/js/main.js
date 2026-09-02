@@ -31,23 +31,45 @@
   step();
 })();
 
-/* ── Navbar hamburger ────────────────────────────────────── */
+/* ── Navbar Scroll Reveal & Hamburger ────────────────────── */
 (function () {
+  const navbar = document.getElementById('navbar');
   const hamburger = document.getElementById('nav-hamburger');
   const mobileMenu = document.getElementById('mobile-menu');
-  if (!hamburger || !mobileMenu) return;
+  if (!navbar) return;
 
-  hamburger.addEventListener('click', () => {
-    const isOpen = mobileMenu.classList.toggle('open');
-    hamburger.setAttribute('aria-expanded', isOpen);
-  });
+  const isHeroPage = !!document.getElementById('hero');
 
-  // Close on outside click
-  document.addEventListener('click', (e) => {
-    if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
-      mobileMenu.classList.remove('open');
+  function checkScroll() {
+    if (!isHeroPage || window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
     }
-  });
+  }
+
+  window.addEventListener('scroll', checkScroll, { passive: true });
+  checkScroll();
+
+  if (hamburger && mobileMenu) {
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', isOpen);
+      if (isOpen) {
+        navbar.classList.add('menu-open');
+      } else {
+        navbar.classList.remove('menu-open');
+      }
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.classList.remove('open');
+        navbar.classList.remove('menu-open');
+      }
+    });
+  }
 })();
 
 /* ── FAQ Accordion ───────────────────────────────────────── */
@@ -56,7 +78,7 @@
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
       const panel = btn.nextElementSibling;
-      const icon  = btn.querySelector('.faq-icon');
+      const icon = btn.querySelector('.faq-icon');
       const isOpen = panel.classList.contains('open');
 
       // Close all
@@ -92,24 +114,57 @@
 /* ── Tracks selector (Home page) ────────────────────────── */
 (function () {
   const trackBtns = document.querySelectorAll('.track-btn');
+  const trackTitle = document.getElementById('track-title');
   const trackDesc = document.getElementById('track-description');
-  if (!trackBtns.length || !trackDesc) return;
+  if (!trackBtns.length || (!trackDesc && !trackTitle)) return;
 
-  const descriptions = {
-    fintech:      'Pioneering the future of finance by enhancing security, ensuring transparency, and fostering trust through cutting-edge decentralized technologies.',
-    healthcare:   'Revolutionizing patient care and medical systems through technology — from AI diagnostics to accessible health platforms for all.',
-    logistics:    'Reimagining supply chains and transportation with smart, data-driven solutions to make the world more efficiently connected.',
-    innovation:   'Freedom to innovate! Build solutions for any domain that could make a meaningful impact on people and communities.',
-    sustainable:  'Engineering for a greener future — creating solutions that balance technological progress with environmental sustainability.',
+  const committeeData = {
+    core: {
+      title: 'CORE COMMITTEE',
+      desc: 'Supporting committee of MAGNUM 2026-27.'
+    },
+    printing: {
+      title: 'PRINTING AND DESIGNING COMMITTEE',
+      desc: 'Supporting committee of MAGNUM 2026-27.'
+    },
+    stage: {
+      title: 'STAGE COMMITTEE',
+      desc: 'Supporting committee of MAGNUM 2026-27.'
+    },
+    decoration: {
+      title: 'DECORATION COMMITTEE',
+      desc: 'Supporting committee of MAGNUM 2026-27.'
+    },
+    website: {
+      title: 'WEBSITE COMMITTEE',
+      desc: 'Supporting committee of MAGNUM 2026-27.'
+    },
+    technical: {
+      title: 'TECHNICAL COMMITTEE',
+      desc: 'Supporting committee of MAGNUM 2026-27.'
+    },
+    discipline: {
+      title: 'DISCIPLINE COMMITTEE',
+      desc: 'Supporting committee of MAGNUM 2026-27.'
+    },
+    catering: {
+      title: 'CATERING COMMITTEE',
+      desc: 'Supporting committee of MAGNUM 2026-27.'
+    }
   };
 
   trackBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      trackBtns.forEach(b => b.classList.remove('active'));
+      trackBtns.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
       const key = btn.dataset.track;
-      if (trackDesc && descriptions[key]) {
-        trackDesc.textContent = descriptions[key];
+      if (committeeData[key]) {
+        if (trackTitle) trackTitle.textContent = committeeData[key].title;
+        if (trackDesc) trackDesc.textContent = committeeData[key].desc;
       }
     });
   });

@@ -5,12 +5,12 @@ const toggleStyles = {
     display: 'inline-flex',
     alignItems: 'center',
     gap: 4,
-    background: 'rgba(2,6,23,0.80)',
-    border: '1px solid rgba(56,189,248,0.22)',
+    background: 'rgba(2,6,23,0.88)',
+    border: '1px solid rgba(250,204,21,0.3)',
     borderRadius: 999,
     padding: 4,
     backdropFilter: 'blur(16px)',
-    boxShadow: '0 4px 28px rgba(0,0,0,0.5), 0 0 0 1px rgba(56,189,248,0.06)',
+    boxShadow: '0 4px 28px rgba(0,0,0,0.5), 0 0 12px rgba(250,204,21,0.15)',
   },
   btn: {
     display: 'flex',
@@ -29,9 +29,9 @@ const toggleStyles = {
     whiteSpace: 'nowrap',
   },
   btnActive: {
-    background: 'linear-gradient(135deg, #38bdf8 0%, #818cf8 100%)',
+    background: 'linear-gradient(135deg, #fef08a 0%, #eab308 100%)',
     color: '#020617',
-    boxShadow: '0 2px 14px rgba(56,189,248,0.4)',
+    boxShadow: '0 2px 14px rgba(250,204,21,0.4)',
   },
   btnInactive: {
     background: 'transparent',

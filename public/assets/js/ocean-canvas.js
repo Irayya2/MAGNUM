@@ -192,17 +192,20 @@
     uniform vec2 uMediaResUnderwater;
     uniform vec2 uMouse;
 
-    // Helper for cover UVs
+    // Helper for cover UVs — anchors horizontal crop to ship subject (x ~ 0.24) on narrow screen aspect ratios
     vec2 getCoverUv(vec2 canvasRes, vec2 mediaRes, vec2 uv) {
       float sRatio = canvasRes.x / canvasRes.y;
       float iRatio = mediaRes.x / mediaRes.y;
       vec2 scale = vec2(1.0);
       if (sRatio > iRatio) {
         scale = vec2(1.0, iRatio / sRatio);
+        return (uv - vec2(0.5)) * scale + vec2(0.5);
       } else {
         scale = vec2(sRatio / iRatio, 1.0);
+        float factor = clamp(sRatio / iRatio, 0.0, 1.0);
+        float anchorX = mix(0.24, 0.5, factor);
+        return (uv - vec2(anchorX, 0.5)) * scale + vec2(anchorX, 0.5);
       }
-      return (uv - vec2(0.5)) * scale + vec2(0.5);
     }
 
     // Simple pseudo-random noise
@@ -459,7 +462,23 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const activeImg = isNight ? imgNight : imgMorning;
       if (activeImg.complete) {
-        ctx.drawImage(activeImg, 0, 0, canvas.width, canvas.height);
+        const cRatio = canvas.width / canvas.height;
+        const iRatio = activeImg.width / activeImg.height;
+        let nw, nh, nx, ny;
+        if (cRatio > iRatio) {
+          nw = canvas.width;
+          nh = canvas.width / iRatio;
+          nx = 0;
+          ny = (canvas.height - nh) / 2;
+        } else {
+          nh = canvas.height;
+          nw = canvas.height * iRatio;
+          const factor = Math.min(1.0, Math.max(0.0, cRatio / iRatio));
+          const anchorX = 0.24 + (0.5 - 0.24) * factor;
+          nx = (canvas.width - nw) * (anchorX / 0.5);
+          ny = 0;
+        }
+        ctx.drawImage(activeImg, nx, ny, nw, nh);
       } else {
         ctx.fillStyle = isNight ? '#040d1a' : '#1a1005';
         ctx.fillRect(0, 0, canvas.width, canvas.height);

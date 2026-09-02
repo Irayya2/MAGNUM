@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Portal Login | Hackfest '26</title>
+  <title>Portal Login | MAGNUM-2K26</title>
   <meta name="description" content="Login to Hackfest'26 portal for registration and event check-in." />
 
   <!-- Favicons -->
@@ -17,11 +17,14 @@
   <style>
     .login-container {
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem 1rem;
+      padding: clamp(1.25rem, 4vw, 2.5rem) 1rem;
       position: relative;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .login-card {
@@ -30,28 +33,30 @@
       background: rgba(10, 15, 25, 0.85);
       border: 1px solid rgba(34, 211, 238, 0.3);
       border-radius: 1.25rem;
-      padding: 2.5rem;
+      padding: clamp(1.25rem, 4vw, 2.5rem);
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(6, 182, 212, 0.15);
       text-align: center;
+      box-sizing: border-box;
     }
 
     .login-logo {
-      width: 4.5rem;
-      height: 4.5rem;
+      width: clamp(3.5rem, 10vw, 4.5rem);
+      height: clamp(3.5rem, 10vw, 4.5rem);
       margin: 0 auto 1.5rem;
       filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.6));
     }
 
     .login-title {
       font-family: var(--font-pirate);
-      font-size: 2.5rem;
+      font-size: clamp(1.85rem, 5vw, 2.5rem);
       color: var(--cyan-100);
       margin-bottom: 0.5rem;
+      word-break: break-word;
     }
 
     .login-subtitle {
       font-family: var(--font-serif);
-      font-size: 1.125rem;
+      font-size: clamp(0.95rem, 2.5vw, 1.125rem);
       color: rgba(165, 243, 252, 0.7);
       margin-bottom: 2rem;
     }
@@ -81,6 +86,7 @@
       font-size: 1rem;
       outline: none;
       transition: all 0.3s ease;
+      box-sizing: border-box;
     }
 
     .form-input:focus {
@@ -128,8 +134,8 @@
 
   <div class="login-container">
     <div class="login-card fade-up">
-      <a href="index.html">
-        <img class="login-logo" src="assets/images/logos/logo-glow.png" alt="Hackfest Logo" />
+      <a href="/">
+        <img class="login-logo" src="/assets/images/logos/logo-glow.png" alt="Hackfest Logo" />
       </a>
       <h1 class="login-title">Captain's Deck</h1>
       <p class="login-subtitle">Board the ship or verify your crew credentials</p>
@@ -148,11 +154,10 @@
         <button class="login-submit" type="submit">Board Ship</button>
       </form>
 
-      <a class="back-home" href="index.html">← Return to Harbor (Home)</a>
+      <a class="back-home" href="/">← Return to Shore (Home)</a>
     </div>
   </div>
 
-  <script src="assets/js/ocean-canvas.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 

@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contact Us | Hackfest '26</title>
+  <title>Contact Us | MAGNUM-2K26</title>
   <meta name="description"
     content="Get in touch with the Hackfest'26 organizers at Finite Loop Club, NMAMIT. Reach out for sponsorships, queries, or collaboration opportunities." />
   <meta name="author" content="Finite Loop Club" />
@@ -25,27 +25,31 @@
   <link rel="stylesheet" href="assets/css/style.css" />
   <style>
     .contact-wrap {
-      padding-top: 8rem;
+      padding-top: clamp(6rem, 12vw, 8rem);
       padding-bottom: 5rem;
       max-width: 72rem;
+      width: 100%;
       margin: 0 auto;
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+      box-sizing: border-box;
     }
 
     .contact-hero {
       text-align: center;
-      margin-bottom: 4rem;
+      margin-bottom: 3rem;
     }
 
     .raven-box {
       background: rgba(0, 0, 0, 0.5);
       border: 1px solid rgba(34, 211, 238, 0.3);
       border-radius: 1.25rem;
-      padding: 2.5rem;
+      padding: clamp(1.25rem, 3vw, 2.5rem);
       text-align: center;
       margin-bottom: 4rem;
       position: relative;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .raven-box::before {
@@ -66,6 +70,7 @@
       align-items: center;
       justify-content: center;
       margin-top: 2rem;
+      width: 100%;
     }
 
     @media (min-width: 768px) {
@@ -80,19 +85,22 @@
       flex-direction: column;
       align-items: center;
       gap: 0.5rem;
+      max-width: 100%;
     }
 
     .email-btn {
       display: inline-block;
-      padding: 0.75rem 2rem;
+      padding: 0.75rem 1.5rem;
       background: rgba(8, 51, 68, 0.6);
       border: 1px solid rgba(34, 211, 238, 0.5);
       border-radius: 0.5rem;
       color: #fff;
       font-family: var(--font-pirate);
-      font-size: 1.25rem;
+      font-size: clamp(1.05rem, 2.5vw, 1.25rem);
       letter-spacing: 0.05em;
       transition: all 0.3s ease;
+      max-width: 100%;
+      word-break: break-all;
     }
 
     .email-btn:hover {
@@ -104,40 +112,39 @@
 
     .section-title {
       font-family: var(--font-pirate);
-      font-size: 2.5rem;
+      font-size: clamp(2rem, 5vw, 3.5rem);
       color: var(--cyan-200);
       text-align: center;
       margin-bottom: 2.5rem;
-    }
-
-    @media (min-width: 768px) {
-      .section-title {
-        font-size: 3.5rem;
-      }
+      word-break: break-word;
     }
 
     .faculty-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 2rem;
+      gap: 1.5rem;
       margin-bottom: 4rem;
+      width: 100%;
     }
 
     @media (min-width: 768px) {
       .faculty-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
       }
     }
 
     .students-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1.5rem;
+      gap: 1.25rem;
+      width: 100%;
     }
 
     @media (min-width: 640px) {
       .students-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
       }
     }
 
@@ -151,13 +158,15 @@
       background: rgba(0, 0, 0, 0.5);
       border: 1px solid rgba(34, 211, 238, 0.25);
       border-radius: 1rem;
-      padding: 2rem;
+      padding: clamp(1.25rem, 3vw, 2rem);
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       transition: all 0.3s ease;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .person-card:hover {
@@ -168,9 +177,10 @@
 
     .person-name {
       font-family: var(--font-pirate);
-      font-size: 1.875rem;
+      font-size: clamp(1.4rem, 3vw, 1.875rem);
       color: var(--cyan-100);
       margin-bottom: 0.25rem;
+      word-break: break-word;
     }
 
     .person-role {
@@ -192,9 +202,11 @@
       background: rgba(8, 51, 68, 0.4);
       border: 1px solid rgba(34, 211, 238, 0.3);
       color: var(--cyan-200);
-      font-size: 1rem;
+      font-size: clamp(0.875rem, 2vw, 1rem);
       font-family: var(--font-serif);
       transition: all 0.3s ease;
+      max-width: 100%;
+      word-break: break-all;
     }
 
     .phone-link:hover {
@@ -226,7 +238,7 @@
   </div>
 
   <!-- COMPASS BUTTON -->
-  <a id="compass-btn" href="login.html" aria-label="Open Compass">
+  <a id="compass-btn" href="/login" aria-label="Open Compass">
     <div class="compass-inner">
       <svg class="compass-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
         stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -243,18 +255,18 @@
     <div id="navbar-border-outer"></div>
     <div id="navbar-border-dashed"></div>
     <div id="navbar-inner">
-      <a class="nav-logo" href="index.html">
-        <img src="assets/images/logos/logo-glow.png" alt="Hackfest Logo" />
+      <a class="nav-logo" href="/">
+        <img src="/assets/images/logos/logo-glow.png" alt="Hackfest Logo" />
       </a>
       <nav id="nav-links" aria-label="Main navigation">
-        <a class="nav-link" href="index.html">Home</a>
-        <a class="nav-link" href="about.html">About</a>
-        <a class="nav-link" href="events.html">Events</a>
-        <a class="nav-link" href="timeline.html">Timeline</a>
-        <a class="nav-link active" href="contact.html">Contact</a>
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/about">About</a>
+        <a class="nav-link" href="/events">Events</a>
+        <a class="nav-link" href="/timeline">Timeline</a>
+        <a class="nav-link active" href="/contact">Contact</a>
       </nav>
       <div class="nav-cta">
-        <a href="login.html">
+        <a href="/login">
           <button class="nav-btn" type="button">
             <div class="nav-btn-bg"></div>
             <span>Register Now</span>
@@ -268,12 +280,12 @@
       </button>
     </div>
     <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
-      <a class="mobile-nav-link" href="index.html">Home</a>
-      <a class="mobile-nav-link" href="about.html">About</a>
-      <a class="mobile-nav-link" href="events.html">Events</a>
-      <a class="mobile-nav-link" href="timeline.html">Timeline</a>
-      <a class="mobile-nav-link active" href="contact.html">Contact</a>
-      <a class="mobile-nav-link" href="login.html">Register Now</a>
+      <a class="mobile-nav-link" href="/">Home</a>
+      <a class="mobile-nav-link" href="/about">About</a>
+      <a class="mobile-nav-link" href="/events">Events</a>
+      <a class="mobile-nav-link" href="/timeline">Timeline</a>
+      <a class="mobile-nav-link active" href="/contact">Contact</a>
+      <a class="mobile-nav-link" href="/login">Register Now</a>
     </div>
   </div>
 
@@ -282,7 +294,7 @@
     <div class="contact-wrap">
 
       <div class="contact-hero">
-        <h1 class="section-heading-cyan fp" style="font-size:4rem;">Contact the Crew</h1>
+        <h1 class="section-heading-cyan fp">Contact the Crew</h1>
         <p class="fc" style="font-size:1.25rem;color:rgba(165,243,252,0.8);max-width:36rem;margin:0.5rem auto 0;">Lost
           at sea? Need a map? The captains are here to guide you through the storm.</p>
       </div>
@@ -303,97 +315,138 @@
           <div class="email-pill">
             <span class="fc"
               style="font-size:0.875rem;text-transform:uppercase;letter-spacing:0.15em;color:rgba(165,243,252,0.6);font-weight:600;">General
-              Inquiries</span>
+              Queries</span>
             <a class="email-btn" href="mailto:hackfest@finiteloop.club">hackfest@finiteloop.club</a>
           </div>
           <div class="email-pill">
             <span class="fc"
-              style="font-size:0.875rem;text-transform:uppercase;letter-spacing:0.15em;color:rgba(165,243,252,0.6);font-weight:600;">For
-              Sponsors</span>
-            <a class="email-btn" href="mailto:sponsor@finiteloop.club">sponsor@finiteloop.club</a>
+              style="font-size:0.875rem;text-transform:uppercase;letter-spacing:0.15em;color:rgba(165,243,252,0.6);font-weight:600;">Sponsorships</span>
+            <a class="email-btn" href="mailto:sponsorships@finiteloop.club">sponsorships@finiteloop.club</a>
           </div>
         </div>
       </div>
 
-      <!-- Faculty -->
-      <h2 class="section-title fade-up">Faculty Coordinators</h2>
-      <div class="faculty-grid">
-        <div class="person-card fade-up">
-          <h3 class="person-name">Dr. Shashank Shetty</h3>
-          <p class="person-role">Faculty Coordinator</p>
-        </div>
-        <div class="person-card fade-up">
-          <h3 class="person-name">Dr. Puneeth R P</h3>
-          <p class="person-role">Faculty Coordinator</p>
+      <!-- Faculty Coordinators -->
+      <div class="fade-up" style="margin-bottom:4rem;">
+        <h2 class="section-title">Faculty Coordinators</h2>
+        <div class="faculty-grid">
+
+          <div class="person-card">
+            <h3 class="person-name">Dr. Shashank Shetty</h3>
+            <p class="person-role">Professor &amp; Head</p>
+            <p class="fc" style="color:rgba(214,211,209,0.8);font-size:0.95rem;margin-bottom:1rem;">Dept of Computer
+              Science &amp; Engineering<br />NMAMIT, Nitte</p>
+            <a class="phone-link" href="tel:+919876543210">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <span>Contact via Institute</span>
+            </a>
+          </div>
+
+          <div class="person-card">
+            <h3 class="person-name">Mr. Puneeth R</h3>
+            <p class="person-role">Assistant Professor &amp; FLC Advisor</p>
+            <p class="fc" style="color:rgba(214,211,209,0.8);font-size:0.95rem;margin-bottom:1rem;">Dept of Computer
+              Science &amp; Engineering<br />NMAMIT, Nitte</p>
+            <a class="phone-link" href="tel:+919876543210">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <span>Contact via Institute</span>
+            </a>
+          </div>
+
         </div>
       </div>
 
-      <!-- Student Organizers -->
-      <h2 class="section-title fade-up">Student Organizers</h2>
-      <div class="students-grid">
-        <div class="person-card fade-up">
-          <h3 class="person-name">Sampanna</h3>
-          <p class="person-role">Organizer</p>
-          <a class="phone-link" href="tel:+918310556184">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path
-                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-            </svg>
-            <span>+91 83105 56184</span>
-          </a>
-        </div>
+      <!-- Student Lead Officers -->
+      <div class="fade-up">
+        <h2 class="section-title">Student Officers</h2>
+        <div class="students-grid">
 
-        <div class="person-card fade-up">
-          <h3 class="person-name">Paripoorna Bhat</h3>
-          <p class="person-role">Organizer</p>
-          <a class="phone-link" href="tel:+917338652017">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path
-                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-            </svg>
-            <span>+91 73386 52017</span>
-          </a>
-        </div>
+          <div class="person-card">
+            <h3 class="person-name">Prajwal Kumar</h3>
+            <p class="person-role">President — FLC</p>
+            <a class="phone-link" href="tel:+919876543210">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <span>+91 98765 43210</span>
+            </a>
+          </div>
 
-        <div class="person-card fade-up">
-          <h3 class="person-name">Rahul N Bangera</h3>
-          <p class="person-role">Organizer</p>
-          <a class="phone-link" href="tel:+918050338576">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path
-                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-            </svg>
-            <span>+91 80503 38576</span>
-          </a>
-        </div>
+          <div class="person-card">
+            <h3 class="person-name">Ananya Rao</h3>
+            <p class="person-role">Vice President — FLC</p>
+            <a class="phone-link" href="tel:+919876543211">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <span>+91 98765 43211</span>
+            </a>
+          </div>
 
-        <div class="person-card fade-up">
-          <h3 class="person-name">Omkar G Prabhu</h3>
-          <p class="person-role">Organizer</p>
-          <a class="phone-link" href="mailto:hackfest@finiteloop.club">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-            </svg>
-            <span>Email Crew</span>
-          </a>
-        </div>
+          <div class="person-card">
+            <h3 class="person-name">Kiran Hegde</h3>
+            <p class="person-role">Technical Lead</p>
+            <a class="phone-link" href="tel:+919876543212">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <span>+91 98765 43212</span>
+            </a>
+          </div>
 
-        <div class="person-card fade-up">
-          <h3 class="person-name">Nandan R Pai</h3>
-          <p class="person-role">Organizer</p>
-          <a class="phone-link" href="mailto:hackfest@finiteloop.club">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-            </svg>
-            <span>Email Crew</span>
-          </a>
+          <div class="person-card">
+            <h3 class="person-name">Deepak Nayak</h3>
+            <p class="person-role">Event Logistics Lead</p>
+            <a class="phone-link" href="tel:+919876543213">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <span>+91 98765 43213</span>
+            </a>
+          </div>
+
+          <div class="person-card">
+            <h3 class="person-name">Sowmya Shenoy</h3>
+            <p class="person-role">Design &amp; Media Head</p>
+            <a class="phone-link" href="tel:+919876543214">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <span>+91 98765 43214</span>
+            </a>
+          </div>
+
+          <div class="person-card">
+            <h3 class="person-name">Rohan Bhat</h3>
+            <p class="person-role">Sponsorship Manager</p>
+            <a class="phone-link" href="tel:+919876543215">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <span>+91 98765 43215</span>
+            </a>
+          </div>
+
         </div>
       </div>
 

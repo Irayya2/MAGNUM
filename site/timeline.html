@@ -4,64 +4,51 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Timeline | Hackfest '26</title>
+  <title>Timeline | MAGNUM-2K26</title>
   <meta name="description"
-    content="Explore the complete schedule and timeline of Hackfest'26. Key dates, milestones, registration deadlines and more." />
+    content="Explore the complete interactive 3D timeline and schedule of Hackfest'26. Key dates, milestones, registration deadlines and more." />
   <meta name="author" content="Finite Loop Club" />
 
   <!-- OG -->
   <meta property="og:title" content="Timeline | Hackfest '26" />
-  <meta property="og:description" content="Explore the complete schedule and timeline of Hackfest'26." />
+  <meta property="og:description" content="Explore the complete schedule and interactive 3D timeline of Hackfest'26." />
   <meta property="og:url" content="https://hackfest.dev/timeline" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="assets/images/logos/hflogowithbg.webp" />
+  <meta property="og:image" content="/assets/images/logos/hflogowithbg.webp" />
 
   <!-- Favicons -->
-  <link rel="icon" href="favicon.ico" sizes="any" />
-  <link rel="icon" href="favicon-96x96.png" type="image/png" sizes="96x96" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="assets/css/style.css" />
-  <link rel="stylesheet" href="assets/css/home.css" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
   <style>
-    .timeline-page-wrap {
-      padding-top: 8rem;
-      padding-bottom: 5rem;
-      max-width: 64rem;
-      margin: 0 auto;
-      padding-left: 1rem;
-      padding-right: 1rem;
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background: #020617;
     }
 
-    .timeline-page-header {
-      text-align: center;
-      margin-bottom: 4rem;
+    #root {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      z-index: 0;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- LOADER -->
-  <div id="loader">
-    <div
-      style="position:absolute;inset:0;background:radial-gradient(circle at center,#1c1917,#0a0a0a 60%,#000);opacity:0.8;">
-    </div>
-    <div id="loader-inner">
-      <img id="loader-logo" src="assets/images/logos/hf-logo-banner.png" alt="Hackfest Logo" width="600" height="200" />
-    </div>
-    <div id="loader-bottom-right">
-      <div id="loader-progress-wrap">
-        <span id="loader-progress" class="fc">0%</span><br />
-        <span id="loader-label">Loading Assets</span>
-      </div>
-      <img id="loader-steering" src="assets/images/backgrounds/steering.png" alt="Loading…" />
-    </div>
-  </div>
-
-  <!-- COMPASS BUTTON -->
-  <a id="compass-btn" href="login.html" aria-label="Open Compass">
+  <!-- ── COMPASS BUTTON ──────────────────────────────────── -->
+  <a id="compass-btn" href="/login" aria-label="Open Compass">
     <div class="compass-inner">
       <svg class="compass-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
         stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -72,24 +59,24 @@
     </div>
   </a>
 
-  <!-- NAVBAR -->
+  <!-- ── NAVBAR ──────────────────────────────────────────── -->
   <div id="navbar">
     <div id="navbar-bg"></div>
     <div id="navbar-border-outer"></div>
     <div id="navbar-border-dashed"></div>
     <div id="navbar-inner">
-      <a class="nav-logo" href="index.html">
-        <img src="assets/images/logos/logo-glow.png" alt="Hackfest Logo" />
+      <a class="nav-logo" href="/">
+        <img src="/assets/images/logos/logo-glow.png" alt="Hackfest Logo" />
       </a>
       <nav id="nav-links" aria-label="Main navigation">
-        <a class="nav-link" href="index.html">Home</a>
-        <a class="nav-link" href="about.html">About</a>
-        <a class="nav-link" href="events.html">Events</a>
-        <a class="nav-link active" href="timeline.html">Timeline</a>
-        <a class="nav-link" href="contact.html">Contact</a>
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/about">About</a>
+        <a class="nav-link" href="/events">Events</a>
+        <a class="nav-link active" href="/timeline">Timeline</a>
+        <a class="nav-link" href="/contact">Contact</a>
       </nav>
       <div class="nav-cta">
-        <a href="login.html">
+        <a href="/login">
           <button class="nav-btn" type="button">
             <div class="nav-btn-bg"></div>
             <span>Register Now</span>
@@ -103,223 +90,21 @@
       </button>
     </div>
     <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
-      <a class="mobile-nav-link" href="index.html">Home</a>
-      <a class="mobile-nav-link" href="about.html">About</a>
-      <a class="mobile-nav-link" href="events.html">Events</a>
-      <a class="mobile-nav-link active" href="timeline.html">Timeline</a>
-      <a class="mobile-nav-link" href="contact.html">Contact</a>
-      <a class="mobile-nav-link" href="login.html">Register Now</a>
+      <a class="mobile-nav-link" href="/">Home</a>
+      <a class="mobile-nav-link" href="/about">About</a>
+      <a class="mobile-nav-link" href="/events">Events</a>
+      <a class="mobile-nav-link active" href="/timeline">Timeline</a>
+      <a class="mobile-nav-link" href="/contact">Contact</a>
+      <a class="mobile-nav-link" href="/login">Register Now</a>
     </div>
   </div>
 
-  <!-- MAIN -->
-  <main class="page-main">
-    <div class="timeline-page-wrap">
-      <div class="timeline-page-header">
-        <h1 class="section-heading-cyan fp" style="font-size:4rem;">Voyage Timeline</h1>
-        <p class="fc" style="font-size:1.25rem;color:rgba(165,243,252,0.7);margin-top:0.5rem;">Key milestones from port
-          opening to the discovery of treasure</p>
-      </div>
+  <!-- ── 3D TIMELINE ROOT ─────────────────────────────────── -->
+  <div id="root"></div>
 
-      <div class="timeline-wrap">
-        <div class="timeline-line"></div>
-
-        <!-- Milestone 1 -->
-        <div class="tl-item tl-right fade-up">
-          <div class="tl-dot" style="--tl-color:#facc15;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 10.189V14" />
-              <path d="M12 2v3" />
-              <path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6" />
-              <path d="M19.38 20A11.6 11.6 0 0 0 21 14l-8.188-3.639a2 2 0 0 0-1.624 0L3 14a11.6 11.6 0 0 0 2.81 7.76" />
-              <path
-                d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1s1.2 1 2.5 1c2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
-            </svg>
-          </div>
-          <div class="tl-card glass-card" style="--tl-color:#facc15;">
-            <div class="tl-date">
-              <span class="tl-day fp" style="color:#facc15;">23</span>
-              <div><span class="tl-month fp" style="color:#facc15;">FEB</span><br /><span class="tl-year fc">2026</span>
-              </div>
-            </div>
-            <hr class="tl-divider" style="background:rgba(250,204,21,0.15);" />
-            <div class="tl-body">
-              <h3 class="tl-event-title fp">The Voyage Begins</h3>
-              <p class="tl-event-desc">Registration Opens – Hoist the sails and assemble your crew!</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Milestone 2 -->
-        <div class="tl-item tl-left fade-up">
-          <div class="tl-dot" style="--tl-color:#f87171;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M19 17V5a2 2 0 0 0-2-2H4" />
-              <path
-                d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
-            </svg>
-          </div>
-          <div class="tl-card glass-card" style="--tl-color:#f87171;">
-            <div class="tl-date">
-              <span class="tl-day fp" style="color:#f87171;">20</span>
-              <div><span class="tl-month fp" style="color:#f87171;">MAR</span><br /><span class="tl-year fc">2026</span>
-              </div>
-            </div>
-            <hr class="tl-divider" style="background:rgba(248,113,113,0.15);" />
-            <div class="tl-body">
-              <h3 class="tl-event-title fp">Port Closed</h3>
-              <p class="tl-event-desc">Registration Ends – The docks are sealed, no more crews.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Milestone 3 -->
-        <div class="tl-item tl-right fade-up">
-          <div class="tl-dot" style="--tl-color:#22d3ee;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path
-                d="m10.065 12.493-6.18 1.318a.934.934 0 0 1-1.108-.702l-.537-2.15a1.07 1.07 0 0 1 .691-1.265l13.504-4.44" />
-              <path d="m13.56 11.747 4.332-.924" />
-              <path d="m16 21-3.105-6.21" />
-              <path
-                d="M16.485 5.94a2 2 0 0 1 1.455-2.425l1.09-.272a1 1 0 0 1 1.212.727l1.515 6.06a1 1 0 0 1-.727 1.213l-1.09.272a2 2 0 0 1-2.425-1.455z" />
-              <path d="m6.158 8.633 1.114 4.456" />
-              <path d="m8 21 3.105-6.21" />
-              <circle cx="12" cy="13" r="2" />
-            </svg>
-          </div>
-          <div class="tl-card glass-card" style="--tl-color:#22d3ee;">
-            <div class="tl-date">
-              <span class="tl-day fp" style="color:#22d3ee;">30</span>
-              <div><span class="tl-month fp" style="color:#22d3ee;">MAR</span><br /><span class="tl-year fc">2026</span>
-              </div>
-            </div>
-            <hr class="tl-divider" style="background:rgba(34,211,238,0.15);" />
-            <div class="tl-body">
-              <h3 class="tl-event-title fp">The Captain's Call</h3>
-              <p class="tl-event-desc">Shortlist Announced – Only the worthiest ships proceed.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Milestone 4 -->
-        <div class="tl-item tl-left fade-up">
-          <div class="tl-dot" style="--tl-color:#60a5fa;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 6v16" />
-              <path d="m19 13 2-1a9 9 0 0 1-18 0l2 1" />
-              <path d="M9 11h6" />
-              <circle cx="12" cy="4" r="2" />
-            </svg>
-          </div>
-          <div class="tl-card glass-card tl-highlight" style="--tl-color:#60a5fa;">
-            <div class="tl-date">
-              <span class="tl-day fp tl-day-sm" style="color:#60a5fa;">17–19</span>
-              <div>
-                <span class="tl-month fp" style="color:#60a5fa;">APR</span><br />
-                <span class="tl-year fc">2026</span><br />
-                <span class="tl-badge fp"
-                  style="color:#60a5fa;border-color:rgba(96,165,250,0.3);background:rgba(96,165,250,0.08);">36
-                  HOURS</span>
-              </div>
-            </div>
-            <hr class="tl-divider" style="background:rgba(96,165,250,0.15);" />
-            <div class="tl-body">
-              <h3 class="tl-event-title fp">The Deep Dive</h3>
-              <p class="tl-event-desc">36 Hours of Hackathon – Code through the stormy seas!</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Milestone 5 -->
-        <div class="tl-item tl-right fade-up">
-          <div class="tl-dot" style="--tl-color:#eab308;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978" />
-              <path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978" />
-              <path d="M18 9h1.5a1 1 0 0 0 0-5H18" />
-              <path d="M4 22h16" />
-              <path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z" />
-              <path d="M6 9H4.5a1 1 0 0 1 0-5H6" />
-            </svg>
-          </div>
-          <div class="tl-card glass-card" style="--tl-color:#eab308;">
-            <div class="tl-date">
-              <span class="tl-day fp" style="color:#eab308;">19</span>
-              <div><span class="tl-month fp" style="color:#eab308;">APR</span><br /><span class="tl-year fc">2026</span>
-              </div>
-            </div>
-            <hr class="tl-divider" style="background:rgba(234,179,8,0.15);" />
-            <div class="tl-body">
-              <h3 class="tl-event-title fp">Treasure Found</h3>
-              <p class="tl-event-desc">Results Announced – The chest is cracked open, legends are crowned!</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </main>
-
-  <!-- FOOTER -->
-  <footer id="site-footer">
-    <div class="footer-coral">
-      <div class="footer-coral-img"></div>
-    </div>
-    <div class="footer-main">
-      <div class="footer-glow"></div>
-      <div class="footer-content">
-        <div class="footer-logos">
-          <div class="footer-logo-row">
-            <a class="footer-logo-link" href="index.html"><img src="assets/images/logos/logo-footer.jpeg" alt="Hackfest"
-                width="95" height="50" /></a>
-          </div>
-          <div class="footer-social">
-            <p>Connect with us:</p>
-            <ul class="footer-social-links" role="list">
-              <li><a class="footer-social-link" href="https://www.instagram.com/hackfest.dev" target="_blank"
-                  rel="noopener"><svg class="footer-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-                  </svg></a></li>
-              <li><a class="footer-social-link" href="mailto:hackfest@finiteloop.club"><svg class="footer-social-icon"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
-                    <rect x="2" y="4" width="20" height="16" rx="2" />
-                  </svg></a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="footer-map-col">
-          <div style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;">
-            <div class="footer-map-wrap">
-              <iframe title="NMAMIT Location Map"
-                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15538.662520521424!2d74.93399100000002!3d13.18347!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbb56415ad85e5b%3A0x10b77ac6f6afc7fa!2sNitte%20Mahalinga%20Adyantaya%20Memorial%20Institute%20of%20Technology%20-%20NMAMIT!5e0!3m2!1sen!2sin!4v1771872967031!5m2!1sen!2sin"
-                width="250" height="180" style="border:0;" loading="lazy" allowfullscreen></iframe>
-            </div>
-            <div class="footer-address">
-              <p>NMAM Institute of Technology, Nitte</p>
-              <p>Karkala, Udupi District, Karnataka</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="footer-copy">
-        <p>2026 © Hackfest | All rights reserved</p>
-      </div>
-    </div>
-  </footer>
-
-  <script src="assets/js/ocean-canvas.js"></script>
-  <script src="assets/js/main.js"></script>
+  <!-- ── SCRIPTS ──────────────────────────────────────────── -->
+  <script type="module" src="/src/main.jsx"></script>
+  <script src="/assets/js/main.js"></script>
 </body>
 
 </html>
