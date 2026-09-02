@@ -13,8 +13,8 @@ import { getDayShipCurve, getDayIslandPositions, harborBoatPositions } from './D
  * ─────────────────────────────────────────────────────────────────────────── */
 const BOAT_FORWARD_AXIS = new THREE.Vector3(0, 0, 1); // canonical forward for group
 
-/* Ship.glb bow is aligned with +Z. No correction needed so 0° = destination (+Z), 180° = port (-Z). */
-const GLB_BOW_CORRECTION = 0;
+/* GLB visual 90° correction offset so the boat mesh displays in the correct forward angle */
+const GLB_BOW_CORRECTION = -Math.PI / 2;
 
 /* ─── Camera tuning constants ─────────────────────────────────────────────── */
 const CAMERA_HEIGHT     = 38;   // world units above the boat pivot
