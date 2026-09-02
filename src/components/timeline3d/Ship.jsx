@@ -165,9 +165,9 @@ export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) =
     
     // ── 2. Ship orientation — quaternion slerp ──
     if (shipRef.current) {
-      // Yaw to align local +Z bow with path tangent
+      // Always face destination — bow points forward even when reversing
       const rawYaw    = Math.atan2(tangent.x, tangent.z);
-      const facingYaw = isReversed ? rawYaw + Math.PI : rawYaw;
+      const facingYaw = rawYaw;
 
       _targetQuat.setFromAxisAngle(_upAxis, facingYaw);
       const rotSpeed = isChangingDir ? ROT_SPEED * 1.4 : ROT_SPEED;

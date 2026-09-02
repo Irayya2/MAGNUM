@@ -198,9 +198,10 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
 
     // ── 2. Ship orientation — quaternion slerp toward path tangent ──
     if (shipRef.current) {
-      // Yaw that aligns local +Z bow with the path tangent direction
+      // Always align bow toward the destination (path-forward direction).
+      // When reversing, the ship slides backward — bow stays pointing forward.
       const rawYaw    = Math.atan2(tangent.x, tangent.z);
-      const facingYaw = isReversed ? rawYaw + Math.PI : rawYaw;
+      const facingYaw = rawYaw; // never flip 180° on reverse
 
       _targetQuat.setFromAxisAngle(_upAxis, facingYaw);
 
