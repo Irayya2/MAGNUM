@@ -12,10 +12,10 @@ import { islandPositions, getShipCurve } from './TimelinePath';
 const BOAT_FORWARD_AXIS = new THREE.Vector3(0, 0, 1);
 
 /* ─── Camera tuning constants ─────────────────────────────────────────────── */
-const CAMERA_HEIGHT     = 22;
-const CAMERA_BACK       = 60;
-const LOOK_AHEAD        = 50;
-const CAMERA_MIN_Y      = 10;
+const CAMERA_HEIGHT     = 38;
+const CAMERA_BACK       = 120;
+const LOOK_AHEAD        = 60;
+const CAMERA_MIN_Y      = 12;
 const ROT_SPEED         = 2.4;
 const CAM_LERP          = 0.08;
 

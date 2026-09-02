@@ -14,10 +14,10 @@ import { getDayShipCurve, getDayIslandPositions, harborBoatPositions } from './D
 const BOAT_FORWARD_AXIS = new THREE.Vector3(0, 0, 1); // GLB bow = local +Z
 
 /* ─── Camera tuning constants ─────────────────────────────────────────────── */
-const CAMERA_HEIGHT     = 22;   // world units above the boat pivot
-const CAMERA_BACK       = 60;   // world units behind the bow (local -Z)
-const LOOK_AHEAD        = 50;   // world units in front of bow for look-at target
-const CAMERA_MIN_Y      = 10;   // never clip below this world height
+const CAMERA_HEIGHT     = 38;   // world units above the boat pivot
+const CAMERA_BACK       = 120;  // world units behind the bow (local -Z)
+const LOOK_AHEAD        = 60;   // world units in front of bow for look-at target
+const CAMERA_MIN_Y      = 12;   // never clip below this world height
 const ROT_SPEED         = 2.4;  // max radians/sec for quaternion.rotateTowards
 const CAM_LERP          = 0.08; // camera position lerp factor (per frame)
 
