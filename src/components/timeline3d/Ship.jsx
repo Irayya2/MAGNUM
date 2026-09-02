@@ -70,7 +70,8 @@ export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) =
     const tangent   = shipPath.getTangentAt(0);
     const facingYaw = Math.atan2(tangent.x, tangent.z);
     shipRef.current.rotation.set(0, facingYaw, 0);
-    shipScene.rotation.set(0, 0, 0);
+    // Note: do NOT reset shipScene.rotation — the <primitive> rotation prop
+    // applies GLB_BOW_CORRECTION and must not be overridden after render.
   }, [shipPath, shipScene]);
 
   // Input listeners

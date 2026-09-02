@@ -85,8 +85,8 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
     const tangent   = shipPath.getTangentAt(0);
     const facingYaw = Math.atan2(tangent.x, tangent.z); // align group +Z bow with tangent
     shipRef.current.rotation.set(0, facingYaw, 0);
-    // GLB internal mesh rotation stays at the correction offset only
-    shipScene.rotation.set(0, 0, 0);
+    // Note: do NOT reset shipScene.rotation here — the <primitive> rotation prop
+    // applies GLB_BOW_CORRECTION and must not be overridden after render.
   }, [shipPath, shipScene]);
 
   // ─── Reset when day changes ──────────────────────────────────────────────
