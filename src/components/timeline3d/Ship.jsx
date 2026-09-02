@@ -165,12 +165,12 @@ export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) =
     
     // ── 2. Ship orientation — quaternion slerp ──
     if (shipRef.current) {
-      // Always face destination — bow points forward even when reversing
+      // Align bow with direction of travel (facing forward when moving forward, facing port when reversing)
       const rawYaw    = Math.atan2(tangent.x, tangent.z);
-      const facingYaw = rawYaw;
+      const facingYaw = isReversed ? rawYaw + Math.PI : rawYaw;
 
       _targetQuat.setFromAxisAngle(_upAxis, facingYaw);
-      const rotSpeed = isChangingDir ? ROT_SPEED * 1.4 : ROT_SPEED;
+      const rotSpeed = isChangingDir ? ROT_SPEED * 1.6 : ROT_SPEED;
       shipRef.current.quaternion.rotateTowards(_targetQuat, rotSpeed * delta);
 
       // Positional bobbing
@@ -248,11 +248,23 @@ export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) =
 
     // Camera sits behind direction of movement
     const movSign = isReversed ? 1 : -1;
-    _targetCam.set(
-      position.x + tangent.x * backDist * movSign,
-      Math.max(CAMERA_MIN_Y, position.y + heightV),
-      position.z + tangent.z * backDist * movSign
-    );
+    
+    let camX = position.x + tangent.x * backDist * movSign;
+    let camY = Math.max(CAMERA_MIN_Y, position.y + heightV);
+    let camZ = position.z + tangent.z * backDist * movSign;
+
+    // During direction change, swing camera out along a side-arc (perpendicular to path)
+    // so the user visually sees the boat's 180° rotation from a side-by-side angle.
+    if (dirChangeTimer.current < 1) {
+      const arcFactor = Math.sin(dirChangeTimer.current * Math.PI);
+      const sideX = -tangent.z;
+      const sideZ =  tangent.x;
+      camX += sideX * backDist * 0.9 * arcFactor;
+      camZ += sideZ * backDist * 0.9 * arcFactor;
+      camY += 14 * arcFactor;
+    }
+
+    _targetCam.set(camX, camY, camZ);
 
     // Look-ahead in movement direction
     const lookSign = isReversed ? -1 : 1;

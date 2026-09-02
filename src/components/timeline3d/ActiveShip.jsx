@@ -198,15 +198,14 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
 
     // ── 2. Ship orientation — quaternion slerp toward path tangent ──
     if (shipRef.current) {
-      // Always align bow toward the destination (path-forward direction).
-      // When reversing, the ship slides backward — bow stays pointing forward.
+      // Align bow with direction of travel (facing forward when moving forward, facing port when reversing)
       const rawYaw    = Math.atan2(tangent.x, tangent.z);
-      const facingYaw = rawYaw; // never flip 180° on reverse
+      const facingYaw = isReversed ? rawYaw + Math.PI : rawYaw;
 
       _targetQuat.setFromAxisAngle(_upAxis, facingYaw);
 
-      // Smooth slerp — faster when changing direction, smoother otherwise
-      const rotSpeed = isChangingDir ? ROT_SPEED * 1.4 : ROT_SPEED;
+      // Smooth slerp rotation for turn
+      const rotSpeed = isChangingDir ? ROT_SPEED * 1.6 : ROT_SPEED;
       shipRef.current.quaternion.rotateTowards(_targetQuat, rotSpeed * delta);
 
       // Positional bobbing
@@ -296,11 +295,23 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
     // Movement direction: tangent when forward, -tangent when reversed.
     // Camera sits BEHIND this direction (opposite to movement → behind the ship).
     const movSign = isReversed ? 1 : -1; // -1 = behind forward movement
-    _targetCam.set(
-      position.x + tangent.x * backDist * movSign,
-      Math.max(CAMERA_MIN_Y, position.y + heightV),
-      position.z + tangent.z * backDist * movSign
-    );
+    
+    let camX = position.x + tangent.x * backDist * movSign;
+    let camY = Math.max(CAMERA_MIN_Y, position.y + heightV);
+    let camZ = position.z + tangent.z * backDist * movSign;
+
+    // During direction change, swing camera out along a side-arc (perpendicular to path)
+    // so the user visually sees the boat's 180° rotation from a side-by-side angle.
+    if (dirChangeTimer.current < 1) {
+      const arcFactor = Math.sin(dirChangeTimer.current * Math.PI); // 0 -> 1 -> 0 peak mid-turn
+      const sideX = -tangent.z; // perpendicular vector
+      const sideZ =  tangent.x;
+      camX += sideX * backDist * 0.9 * arcFactor;
+      camZ += sideZ * backDist * 0.9 * arcFactor;
+      camY += 14 * arcFactor; // slightly elevate camera during turn
+    }
+
+    _targetCam.set(camX, camY, camZ);
 
     // Look-ahead: point ahead IN the movement direction
     const lookSign = isReversed ? -1 : 1; // forward = +tangent, reverse = -tangent
