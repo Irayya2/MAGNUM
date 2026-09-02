@@ -11,6 +11,9 @@ import { islandPositions, getShipCurve } from './TimelinePath';
  * ─────────────────────────────────────────────────────────────────────────── */
 const BOAT_FORWARD_AXIS = new THREE.Vector3(0, 0, 1);
 
+/* Ship.glb bow is along local +X — correct with -PI/2 rotation on the primitive */
+const GLB_BOW_CORRECTION = -Math.PI / 2;
+
 /* ─── Camera tuning constants ─────────────────────────────────────────────── */
 const CAMERA_HEIGHT     = 38;
 const CAMERA_BACK       = 120;
@@ -293,7 +296,7 @@ export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) =
 
   return (
     <group ref={shipRef} position={[0, 150, 0]}>
-      <primitive object={shipScene} scale={[20, 20, 20]} rotation={[0, 0, 0]} />
+      <primitive object={shipScene} scale={[20, 20, 20]} rotation={[0, GLB_BOW_CORRECTION, 0]} />
     </group>
   );
 });

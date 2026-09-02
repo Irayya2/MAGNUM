@@ -19,9 +19,9 @@ function DockedBoat({ boatPosition, dayIndex, hide }) {
   if (hide) return null;
 
   return (
-    // Boats face toward +Z (open ocean)
+    // Group faces +Z (open ocean). GLB bow is along +X so we correct -PI/2 on primitive.
     <group ref={groupRef} position={boatPosition} rotation={[0, 0, 0]}>
-      <primitive object={scene.clone()} scale={[20, 20, 20]} />
+      <primitive object={scene.clone()} scale={[20, 20, 20]} rotation={[0, -Math.PI / 2, 0]} />
     </group>
   );
 }

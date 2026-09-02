@@ -11,7 +11,12 @@ import { getDayShipCurve, getDayIslandPositions, harborBoatPositions } from './D
  *   Harbor docked boats confirm this: rotation={[0,0,0]} + comment "+Z ocean" *
  *   All rotation math uses this axis as the canonical forward direction.       *
  * ─────────────────────────────────────────────────────────────────────────── */
-const BOAT_FORWARD_AXIS = new THREE.Vector3(0, 0, 1); // GLB bow = local +Z
+const BOAT_FORWARD_AXIS = new THREE.Vector3(0, 0, 1); // canonical forward for group
+
+/* The Ship.glb mesh is authored with its bow along LOCAL +X.
+ * We correct this with a fixed -PI/2 Y rotation on the <primitive>
+ * so the visual bow aligns with the group's +Z (canonical forward). */
+const GLB_BOW_CORRECTION = -Math.PI / 2;
 
 /* ─── Camera tuning constants ─────────────────────────────────────────────── */
 const CAMERA_HEIGHT     = 38;   // world units above the boat pivot
@@ -78,9 +83,10 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
   useEffect(() => {
     if (!shipRef.current) return;
     const tangent   = shipPath.getTangentAt(0);
-    const facingYaw = Math.atan2(tangent.x, tangent.z); // align +Z bow with tangent
+    const facingYaw = Math.atan2(tangent.x, tangent.z); // align group +Z bow with tangent
     shipRef.current.rotation.set(0, facingYaw, 0);
-    shipScene.rotation.set(0, 0, 0); // GLB internal rotation stays neutral
+    // GLB internal mesh rotation stays at the correction offset only
+    shipScene.rotation.set(0, 0, 0);
   }, [shipPath, shipScene]);
 
   // ─── Reset when day changes ──────────────────────────────────────────────
@@ -378,7 +384,8 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
   return (
     <>
       <group ref={shipRef} position={[startPos[0], startPos[1] + 3, startPos[2]]}>
-        <primitive object={shipScene} scale={[20, 20, 20]} />
+        {/* GLB_BOW_CORRECTION rotates the mesh so its +X bow aligns with group +Z */}
+        <primitive object={shipScene} scale={[20, 20, 20]} rotation={[0, GLB_BOW_CORRECTION, 0]} />
       </group>
       {DEBUG_ARROWS && <DebugArrows />}
     </>
