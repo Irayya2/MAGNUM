@@ -165,9 +165,10 @@ export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) =
     
     // ── 2. Ship orientation — quaternion slerp ──
     if (shipRef.current) {
-      // Align bow with direction of travel (facing forward when moving forward, facing port when reversing)
+      // Forward (isReversed=false): Bow faces forward along path (Image 1)
+      // Backward (isReversed=true): Bow turns to side-profile facing harbor (Image 2)
       const rawYaw    = Math.atan2(tangent.x, tangent.z);
-      const facingYaw = isReversed ? rawYaw + Math.PI : rawYaw;
+      const facingYaw = isReversed ? rawYaw + Math.PI / 2 : rawYaw;
 
       _targetQuat.setFromAxisAngle(_upAxis, facingYaw);
       const rotSpeed = isChangingDir ? ROT_SPEED * 1.6 : ROT_SPEED;
@@ -246,33 +247,39 @@ export const Ship = forwardRef(({ onProgress, onDock, isMobile = false }, ref) =
     const backDist = (isMobile ? 45 : CAMERA_BACK) * combinedF;
     const heightV  = (isMobile ? 16 : CAMERA_HEIGHT) * combinedF;
 
-    // Camera sits behind direction of movement
-    const movSign = isReversed ? 1 : -1;
-    
-    let camX = position.x + tangent.x * backDist * movSign;
-    let camY = Math.max(CAMERA_MIN_Y, position.y + heightV);
-    let camZ = position.z + tangent.z * backDist * movSign;
+    const sideX = -tangent.z;
+    const sideZ =  tangent.x;
 
-    // During direction change, swing camera out along a side-arc (perpendicular to path)
-    // so the user visually sees the boat's 180° rotation from a side-by-side angle.
+    let camX, camY, camZ;
+    let lookX, lookY, lookZ;
+
+    if (!isReversed) {
+      // FORWARD MODE (Image 1): Stern in front of camera, looking forward
+      camX  = position.x - tangent.x * backDist;
+      camY  = Math.max(CAMERA_MIN_Y, position.y + heightV);
+      camZ  = position.z - tangent.z * backDist;
+      lookX = position.x + tangent.x * LOOK_AHEAD;
+      lookY = 3;
+      lookZ = position.z + tangent.z * LOOK_AHEAD;
+    } else {
+      // BACKWARD MODE (Image 2): Side-profile view of ship facing harbor
+      camX  = position.x + sideX * (backDist * 0.85) - tangent.x * (backDist * 0.2);
+      camY  = Math.max(CAMERA_MIN_Y, position.y + heightV * 0.75);
+      camZ  = position.z + sideZ * (backDist * 0.85) - tangent.z * (backDist * 0.2);
+      lookX = position.x;
+      lookY = 4;
+      lookZ = position.z;
+    }
+
     if (dirChangeTimer.current < 1) {
       const arcFactor = Math.sin(dirChangeTimer.current * Math.PI);
-      const sideX = -tangent.z;
-      const sideZ =  tangent.x;
-      camX += sideX * backDist * 0.9 * arcFactor;
-      camZ += sideZ * backDist * 0.9 * arcFactor;
-      camY += 14 * arcFactor;
+      camX += sideX * backDist * 0.4 * arcFactor;
+      camZ += sideZ * backDist * 0.4 * arcFactor;
+      camY += 10 * arcFactor;
     }
 
     _targetCam.set(camX, camY, camZ);
-
-    // Look-ahead in movement direction
-    const lookSign = isReversed ? -1 : 1;
-    _lookTarget.set(
-      position.x + tangent.x * LOOK_AHEAD * lookSign,
-      3,
-      position.z + tangent.z * LOOK_AHEAD * lookSign
-    );
+    _lookTarget.set(lookX, lookY, lookZ);
 
     // Docked override
     const isDockedValid = dockedIndex !== null && dockedIndex < islandPositions.length;
