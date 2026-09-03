@@ -20,7 +20,7 @@
   box-sizing: border-box;
 }
 
-/* MAGNUM logo container — pushed down further (~18vh from header) */
+/* MAGNUM main logo container — Upper section */
 .hero-center {
   position: relative;
   z-index: 10;
@@ -28,13 +28,14 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-top: clamp(7.5rem, 16vh + 4vw, 14rem);
+  margin-top: clamp(2rem, 5vh, 4rem);
   width: 100%;
   max-width: 72rem;
   padding: 0 1rem;
   box-sizing: border-box;
 }
 
+/* Institutional logos container — Middle section */
 .hero-logos {
   position: relative;
   z-index: 20;
@@ -43,7 +44,8 @@
   align-items: center;
   width: 100%;
   pointer-events: none;
-  margin-bottom: 0.5rem;
+  margin-top: clamp(1.5rem, 4vh, 3rem);
+  margin-bottom: 2rem;
 }
 
 /* 3-column grid: [left logo] [center college name PNG] [right logo]
@@ -62,13 +64,21 @@
 
 .hero-kls-logo,
 .hero-bca-logo {
-  width: clamp(2.75rem, 7vw, 5rem);
+  width: clamp(3rem, 8vw, 5.5rem);
   height: auto;
   aspect-ratio: 1 / 1;
   object-fit: contain;
   filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 15px rgba(255, 255, 255, 0.5));
   border-radius: 4px;
   max-width: 100%;
+  pointer-events: auto;
+  transition: transform 0.3s ease;
+  transform: translateY(-2.5rem);
+}
+
+.hero-kls-logo:hover,
+.hero-bca-logo:hover {
+  transform: translateY(-2.5rem) scale(1.06);
 }
 
 /* left logo anchors to the left edge of its 1fr cell */
@@ -81,11 +91,98 @@
   justify-self: end;
 }
 
-/* College-name PNG image: Perfectly centered, maintains aspect ratio,
-   adapts to Light Mode (solid black) and Night Mode (solid white) */
+/* College Text Block */
+.hero-college-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-self: center;
+  gap: 0.15rem;
+  pointer-events: auto;
+  transform: translateY(-3rem);
+}
+
+.college-line {
+  margin: 0;
+  line-height: 1.3;
+  font-family: var(--font-sans);
+  color: #000000;
+  font-weight: 700;
+  text-shadow: none;
+  transition: color 0.4s ease;
+}
+
+/* 1 — Small */
+.college-society {
+  font-size: clamp(0.7rem, 1.3vw, 0.9rem);
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* 2 — Bigger */
+.college-name {
+  font-size: clamp(1.1rem, 2.2vw, 1.75rem);
+  font-weight: 800;
+  color: #000000;
+  letter-spacing: 0.03em;
+}
+
+/* 3 — Biggest / Widest */
+.college-dept {
+  font-size: clamp(1.3rem, 2.8vw, 2rem);
+  font-weight: 800;
+  color: #000000;
+  letter-spacing: 0.02em;
+}
+
+/* 4 — Small again */
+.college-location {
+  font-size: clamp(0.7rem, 1.2vw, 0.85rem);
+  font-weight: 700;
+  color: #000000;
+}
+
+/* 5 — Small + italic */
+.college-naac {
+  font-size: clamp(0.65rem, 1vw, 0.8rem);
+  font-weight: 500;
+  font-style: italic;
+  color: #000000;
+}
+
+/* 6 — Small */
+.college-initiative {
+  font-size: clamp(0.65rem, 1.1vw, 0.85rem);
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: 0.03em;
+  margin-top: 0.15rem;
+}
+
+body.night-mode .college-line,
+html.dark .college-line,
+body.night-mode .college-society,
+html.dark .college-society,
+body.night-mode .college-name,
+html.dark .college-name,
+body.night-mode .college-dept,
+html.dark .college-dept,
+body.night-mode .college-location,
+html.dark .college-location,
+body.night-mode .college-naac,
+html.dark .college-naac,
+body.night-mode .college-initiative,
+html.dark .college-initiative {
+  color: #ffffff;
+}
+
+/* College-name PNG image fallback */
 .hero-nmamit {
-  width: clamp(14rem, 42vw, 36rem);
-  max-width: 60vw;
+  width: clamp(16rem, 48vw, 40rem);
+  max-width: 70vw;
   height: auto;
   justify-self: center;
   object-fit: contain;
@@ -112,8 +209,8 @@ html.dark .hero-nmamit {
   }
 
   .hero-nmamit {
-    width: clamp(9rem, 38vw, 18rem);
-    max-width: 52vw;
+    width: clamp(10rem, 44vw, 20rem);
+    max-width: 58vw;
   }
 }
 
@@ -130,8 +227,8 @@ html.dark .hero-nmamit {
   }
 
   .hero-nmamit {
-    width: clamp(8rem, 48vw, 14rem);
-    max-width: 58vw;
+    width: clamp(9rem, 52vw, 15rem);
+    max-width: 62vw;
   }
 }
 
@@ -148,8 +245,8 @@ html.dark .hero-nmamit {
   }
 
   .hero-nmamit {
-    width: clamp(7rem, 52vw, 11rem);
-    max-width: 60vw;
+    width: clamp(8rem, 56vw, 12rem);
+    max-width: 64vw;
   }
 }
 

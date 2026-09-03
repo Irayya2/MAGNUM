@@ -144,9 +144,12 @@ function VoyageProgress({ dockedIndex }) {
 }
 
 /* ─── Main 3D Scene Component ─── */
-export function Scene3D({ view, setView }) {
-  const [selectedDestination, setSelectedDestination] = useState(null);
-  const [dockedIndex, setDockedIndex]                 = useState(null);
+export function Scene3D({ view, setView, selectedDestination: propSelectedDestination, setSelectedDestination: propSetSelectedDestination }) {
+  const [internalSelectedDestination, setInternalSelectedDestination] = useState(null);
+  const selectedDestination = propSelectedDestination !== undefined ? propSelectedDestination : internalSelectedDestination;
+  const setSelectedDestination = propSetSelectedDestination || setInternalSelectedDestination;
+
+  const [dockedIndex, setDockedIndex] = useState(null);
   const isMobile = window.innerWidth < 768;
 
   const islandPositions = getEventIslandPositions();

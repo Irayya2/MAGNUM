@@ -1,22 +1,33 @@
 import React from 'react';
 import { MAGNUM_EVENTS } from '../../data/timelineEvents';
 
-export function DaySelector({ selectedDestination, onSelect }) {
+export function DaySelector({ selectedDestination, onSelect, inline = false }) {
+  const containerStyle = inline ? {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 420,
+    margin: '0 auto',
+    boxSizing: 'border-box',
+    pointerEvents: 'auto',
+  } : {
+    position: 'absolute',
+    top: 85,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: 30,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: 'calc(100vw - 32px)',
+    maxWidth: 420,
+    boxSizing: 'border-box',
+    pointerEvents: 'auto',
+  };
+
   return (
-    <div style={{
-      position: 'absolute',
-      top: 85,
-      left: '50%',
-      transform: 'translateX(-50%)',
-      zIndex: 30,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: 'calc(100vw - 32px)',
-      maxWidth: 420,
-      boxSizing: 'border-box',
-      pointerEvents: 'auto',
-    }}>
+    <div style={containerStyle}>
       <label htmlFor="event-select-dropdown" style={{
         fontSize: 11,
         fontWeight: 800,
