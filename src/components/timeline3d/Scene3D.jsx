@@ -31,94 +31,86 @@ function HarborCamera() {
   return null;
 }
 
-/* ─── Event Info Card Modal overlay when docked at an event or final island ─── */
-function EventInfoCard({ destinationIndex }) {
+/* ─── Per-island schedules ────────────────────────────────────────────────── */
+const ISLAND_SCHEDULES = [
+  // Island 0 — Inauguration
+  [{ time: '10:00–11:00', label: 'Inauguration', icon: '🎉' }],
+  // Islands 1–9 — Day 1 rounds
+  ...Array(9).fill([
+    { time: '11:00–1:00', label: 'Round 1',     icon: '⚡' },
+    { time: '1:00–2:00',  label: 'Lunch Break', icon: '🍽️' },
+    { time: '2:00–5:00',  label: 'Round 2',     icon: '🔥' },
+  ]),
+];
+
+const FINAL_DAY_SCHEDULE = [
+  { time: '10:00–1:00', label: 'Round 3 Final', icon: '🏅' },
+  { time: '1:00–2:00',  label: 'Lunch Break',   icon: '🍽️' },
+  { time: '2:00–5:00',  label: 'Valedictory',   icon: '🏆' },
+];
+
+function IslandScheduleCard({ destinationIndex }) {
   if (destinationIndex === null || destinationIndex === undefined) return null;
   const dest = allDestinations[destinationIndex];
   if (!dest) return null;
 
-  const accent = '#facc15';
-  const glow = '#ca8a04';
+  const isFinal = dest.isFinal;
+  const slots   = isFinal ? FINAL_DAY_SCHEDULE : (ISLAND_SCHEDULES[destinationIndex] || ISLAND_SCHEDULES[1]);
+  const dateLabel = isFinal ? '9 Sept · Auditorium' : '8–9 September 2026';
 
   return (
     <div style={{
-      position: 'absolute', bottom: 80, left: '50%',
-      transform: 'translateX(-50%)',
-      background: 'rgba(10, 20, 38, 0.94)',
-      backdropFilter: 'blur(20px)',
-      border: '1.5px solid rgba(250, 204, 21, 0.45)',
-      borderRadius: 18, padding: '16px 20px',
-      textAlign: 'center', zIndex: 25,
+      position: 'absolute',
+      right: 16,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      background: 'rgba(255,255,255,0.97)',
+      border: '1.5px solid rgba(250,204,21,0.7)',
+      borderRadius: 8,
+      padding: '6px 9px',
+      zIndex: 200,
       fontFamily: "'Inter','Segoe UI',sans-serif",
-      boxShadow: '0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(250, 204, 21, 0.2)',
-      animation: 'tl-fade-in 0.35s ease',
-      width: 'calc(100vw - 32px)', maxWidth: 420,
-      boxSizing: 'border-box',
+      boxShadow: '0 4px 18px rgba(0,0,0,0.3)',
+      animation: 'tl-fade-in 0.3s ease',
+      minWidth: 110,
+      maxWidth: 140,
+      pointerEvents: 'none',
     }}>
-      {/* Badge */}
+      {/* Header */}
       <div style={{
-        fontSize: 10, color: accent, fontWeight: 800,
-        letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 6,
-        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6
+        fontSize: 7, fontWeight: 900, color: '#92400e',
+        letterSpacing: '0.08em', textTransform: 'uppercase',
+        textAlign: 'center', paddingBottom: 3,
+        borderBottom: '1px solid rgba(0,0,0,0.08)', marginBottom: 4,
+        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
       }}>
-        <span>⚓ {dest.isFinal ? 'COMMON FINAL DESTINATION' : 'EVENT VOYAGE'}</span>
+        {isFinal ? '🏆' : '⚓'} {dest.shortName || dest.title}
+      </div>
+      <div style={{
+        fontSize: 6, color: '#b45309', fontWeight: 700,
+        textAlign: 'center', marginBottom: 4,
+      }}>
+        {dateLabel}
       </div>
 
-      {/* Main Title */}
-      <div style={{
-        fontSize: 'clamp(1.15rem, 3.5vw, 1.45rem)', fontWeight: 900,
-        color: '#fef08a', marginBottom: 6, wordBreak: 'break-word',
-        letterSpacing: '0.03em'
-      }}>
-        {dest.title}
-      </div>
-
-      {/* If Final Island: Auditorium Winner Announcement */}
-      {dest.isFinal ? (
-        <div style={{ marginTop: 8 }}>
-          <div style={{ fontSize: 18, fontWeight: 900, color: '#fde047', textShadow: '0 0 15px rgba(253,224,71,0.5)' }}>
-            📍 AUDITORIUM
-          </div>
-          <div style={{ fontSize: 15, fontWeight: 800, color: '#fef08a', marginTop: 2 }}>
-            🏆 WINNER ANNOUNCEMENT
-          </div>
-          <p style={{ fontSize: 12, color: '#cbd5e1', marginTop: 6, fontStyle: 'italic' }}>
-            "{dest.subtitle}"
-          </p>
-        </div>
-      ) : (
-        /* Event Rounds (3 Rounds for every event) */
-        <div style={{ marginTop: 10 }}>
-          <div style={{
-            display: 'flex', flexDirection: 'column', gap: 6,
-            textAlign: 'left', background: 'rgba(4, 12, 24, 0.75)',
-            borderRadius: 12, padding: '10px 14px',
-            border: '1px solid rgba(250,204,21,0.2)'
-          }}>
-            {/* Round 1 */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 4 }}>
-              <span style={{ fontSize: 11, fontWeight: 800, color: accent }}>ROUND 1</span>
-              <span style={{ fontSize: 11, color: '#cbd5e1', fontWeight: 600 }}>8 SEPTEMBER</span>
+      {/* Schedule rows */}
+      {slots.map((slot, i) => (
+        <div key={i} style={{
+          display: 'flex', alignItems: 'center', gap: 4,
+          padding: '2px 0',
+          borderBottom: i < slots.length - 1 ? '1px solid rgba(0,0,0,0.05)' : 'none',
+        }}>
+          <span style={{ fontSize: 8 }}>{slot.icon}</span>
+          <div>
+            <div style={{ fontSize: 6.5, fontWeight: 800, color: '#b45309', lineHeight: 1.1 }}>
+              {slot.time}
             </div>
-
-            {/* Round 2 */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 4 }}>
-              <span style={{ fontSize: 11, fontWeight: 800, color: accent }}>ROUND 2</span>
-              <span style={{ fontSize: 11, color: '#cbd5e1', fontWeight: 600 }}>8 SEPTEMBER</span>
-            </div>
-
-            {/* Round 3 - Final Round */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 11, fontWeight: 800, color: '#fde047' }}>ROUND 3 — FINAL ROUND</span>
-              <span style={{ fontSize: 11, color: '#fef08a', fontWeight: 700 }}>9 SEPTEMBER</span>
-            </div>
-
-            <div style={{ fontSize: 11, color: '#cbd5e1', marginTop: 2, textAlign: 'center', fontWeight: 600 }}>
-              ⏰ 9:00 AM – 1:30 PM
+            <div style={{ fontSize: 7.5, fontWeight: 600, color: '#1e293b', lineHeight: 1.1 }}>
+              {slot.label}
             </div>
           </div>
         </div>
-      )}
+      ))}
     </div>
   );
 }
@@ -201,8 +193,9 @@ export function Scene3D({ view, setView, selectedDestination: propSelectedDestin
               {islandPositions.map((pos, i) => {
                 const isLast = i === islandPositions.length - 1;
                 const dest = allDestinations[i];
-                if (isLast) return <FinalIsland key={i} position={pos} event={dest} />;
-                return <Island key={i} position={pos} event={dest} />;
+                const isDocked = dockedIndex === i;
+                if (isLast) return <FinalIsland key={i} position={pos} event={dest} isDocked={isDocked} />;
+                return <Island key={i} position={pos} event={dest} isDocked={isDocked} islandIndex={i} />;
               })}
 
               <ActiveShip
@@ -226,9 +219,7 @@ export function Scene3D({ view, setView, selectedDestination: propSelectedDestin
         <VoyageProgress dockedIndex={dockedIndex} />
       )}
 
-      {selectedDestination !== null && (
-        <EventInfoCard destinationIndex={dockedIndex} />
-      )}
+
 
       {selectedDestination !== null && (
         <div style={{

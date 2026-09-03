@@ -59,14 +59,14 @@ export function getDayIslandPositions(day = 1) {
 }
 
 export const ISLAND_SAFETY_RADII = {
-  regular: 55,
-  final:   95,
+  regular: 75,
+  final:   105,
 };
 
-const BOAT_NAVIGATION_CLEARANCE = 75;
-const ISLAND_SIDE_OFFSET        = 70;
-const APPROACH_CLEARANCE        = 80;
-const LEAVE_CLEARANCE           = 80;
+const BOAT_NAVIGATION_CLEARANCE = 90;
+const ISLAND_SIDE_OFFSET        = 95;
+const APPROACH_CLEARANCE        = 95;
+const LEAVE_CLEARANCE           = 95;
 
 function pointToSegmentDistXZ(px, pz, ax, az, bx, bz) {
   const dx = bx - ax;

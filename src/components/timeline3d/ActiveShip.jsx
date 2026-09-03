@@ -53,9 +53,9 @@ const CAM_LERP     = 0.07; // slightly faster camera catch-up
 /* ─────────────────────────────────────────────────────────────────────────── *
  * NAVIGATION CONSTANTS                                                          *
  * ─────────────────────────────────────────────────────────────────────────── */
-const DOCKING_RADIUS      = 75;  // world units from island center to trigger docking
-const DOCKING_LEAVE_DIST  = 100; // world units to travel before clearing docked state
-const FINAL_LEAVE_DIST    = 200; // leave distance for the final island
+const DOCKING_RADIUS      = 115; // world units from island center to trigger docking
+const DOCKING_LEAVE_DIST  = 145; // world units to travel before clearing docked state
+const FINAL_LEAVE_DIST    = 175; // leave distance for the final island
 
 /* ─────────────────────────────────────────────────────────────────────────── *
  * DEBUG MODE                                                                    *
@@ -227,9 +227,8 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
 
   // ─── Reset when day changes ────────────────────────────────────────────────
   useEffect(() => {
-    const initialProgress = (typeof day === 'number' && day >= 0)
-      ? Math.min(1, Math.max(0, (day + 0.85) / (L + 0.5)))
-      : 0;
+    // Always start at 0 so the boat departs from its harbor port position
+    const initialProgress = 0;
 
     hCurrent.current        = initialProgress * maxDistance;
     uCurrent.current        = initialProgress;
@@ -274,6 +273,7 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
         ) return;
         prevDockedIndex.current = dockedIndex;
         setDockedIndex(null);
+        onDock?.(null);
         dockingTimer.current = 0;
       }
 
@@ -308,6 +308,7 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
         ) return;
         prevDockedIndex.current = dockedIndex;
         setDockedIndex(null);
+        onDock?.(null);
         dockingTimer.current = 0;
       }
 
@@ -397,8 +398,6 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
         // Regular island: dock when within DOCKING_RADIUS of island center
         if (dist < DOCKING_RADIUS) {
           setDockedIndex(i);
-          uCurrent.current = lCurrent.current;
-          hCurrent.current = lCurrent.current * maxDistance;
           dockingTimer.current = 0;
           onDock?.(i);
           break;
