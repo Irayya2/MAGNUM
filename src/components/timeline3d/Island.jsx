@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useGLTF, Html } from '@react-three/drei';
 
-/* ─── Per-island schedule definitions ─────────────────────────────────────── */
-const INAUGURATION_SCHEDULE = [
-  { time: '10:00 – 11:00', label: 'Inauguration', icon: '🎉' },
-];
-
-const EVENT_SCHEDULE = [
-  { time: '11:00 – 1:00', label: 'Round 1',    icon: '⚡' },
-  { time: '1:00 – 2:00',  label: 'Lunch Break', icon: '🍽️' },
-  { time: '2:00 – 5:00',  label: 'Round 2',    icon: '🔥' },
-];
-
 /* ─── Smooth cinematic arrival animation ───────────────────────────────────── */
 const CARD_STYLE = `
   @keyframes islandCardIn {
@@ -24,18 +13,23 @@ const CARD_STYLE = `
     50%       { transform: translateY(-4px); }
   }
   .island-card-animated {
-    animation: islandCardIn 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-               islandCardFloat 3.5s ease-in-out 0.95s infinite;
+    animation: islandCardIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+               islandCardFloat 3.5s ease-in-out 0.85s infinite;
   }
 `;
 
-/* ─── Schedule card rendered inside Html ──────────────────────────────────── */
-function ScheduleCard({ title, slots }) {
+/* ─── Single Stage Schedule Card rendered inside Html ────────────────────────── */
+function SingleStageCard({ stage, event }) {
+  if (!stage) return null;
+
+  const GOLD_ACCENT = "#facc15";
+  const GOLD_LIGHT  = "#fef08a";
+
   return (
     <Html
-      position={[0, 20, 0]}
+      position={[0, 24, 0]}
       center
-      distanceFactor={350}
+      distanceFactor={320}
       occlude={false}
       zIndexRange={[200, 300]}
       style={{ pointerEvents: 'none' }}
@@ -43,79 +37,132 @@ function ScheduleCard({ title, slots }) {
       <style>{CARD_STYLE}</style>
 
       <div className="island-card-animated" style={{
-        background: 'rgba(255,255,255,0.97)',
-        borderRadius: 9,
-        padding: '6px 10px',
-        minWidth: 100,
-        maxWidth: 130,
-        boxShadow: '0 6px 24px rgba(0,0,0,0.35), 0 0 0 1.5px rgba(250,204,21,0.6)',
+        background: 'linear-gradient(150deg, rgba(10, 20, 38, 0.96) 0%, rgba(2, 6, 23, 0.98) 100%)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1.5px solid rgba(250, 204, 21, 0.55)',
+        borderRadius: 18,
+        padding: '14px 18px',
+        minWidth: 190,
+        maxWidth: 240,
+        boxShadow: '0 12px 36px rgba(0, 0, 0, 0.7), 0 0 22px rgba(250, 204, 21, 0.25)',
         fontFamily: "'Inter','Segoe UI',sans-serif",
+        textAlign: 'center',
         transformOrigin: 'bottom center',
+        color: '#f8fafc',
       }}>
-        {/* Title row */}
+        {/* Top ambient radial glow */}
         <div style={{
-          fontSize: 6.5, fontWeight: 900, color: '#92400e',
-          letterSpacing: '0.09em', textTransform: 'uppercase',
-          textAlign: 'center', paddingBottom: 3,
-          borderBottom: '1px solid rgba(0,0,0,0.08)', marginBottom: 4,
-          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+          position: 'absolute',
+          top: -30,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 180,
+          height: 80,
+          background: 'radial-gradient(ellipse, rgba(250, 204, 21, 0.2) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }} />
+
+        {/* 1. Category / Stage Badge */}
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 5,
+          padding: '3px 10px',
+          borderRadius: 999,
+          background: 'rgba(250, 204, 21, 0.12)',
+          border: '1px solid rgba(250, 204, 21, 0.4)',
+          color: GOLD_ACCENT,
+          fontSize: 9,
+          fontWeight: 800,
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase',
+          marginBottom: 6,
         }}>
-          ⚓ {title}
+          <span>{stage.icon}</span>
+          <span>{stage.badge}</span>
         </div>
 
-        {/* Schedule rows */}
-        {slots.map((slot, i) => (
-          <div key={i} style={{
-            display: 'flex', alignItems: 'center', gap: 4,
-            padding: '2.5px 0',
-            borderBottom: i < slots.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-          }}>
-            <span style={{ fontSize: 8.5, flexShrink: 0 }}>{slot.icon}</span>
-            <div>
-              <div style={{ fontSize: 6.5, fontWeight: 800, color: '#b45309', lineHeight: 1.15 }}>
-                {slot.time}
-              </div>
-              <div style={{ fontSize: 7.5, fontWeight: 600, color: '#1e293b', lineHeight: 1.15 }}>
-                {slot.label}
-              </div>
-            </div>
-          </div>
-        ))}
+        {/* 2. Date Banner */}
+        <div style={{
+          fontSize: 10,
+          fontWeight: 800,
+          color: GOLD_LIGHT,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          marginBottom: 6,
+        }}>
+          📅 {stage.date}
+        </div>
+
+        {/* 3. Time Slot (ONE TIMING ONLY) */}
+        <div style={{
+          display: 'inline-block',
+          padding: '4px 12px',
+          borderRadius: 999,
+          background: 'rgba(250, 204, 21, 0.15)',
+          border: '1px solid rgba(250, 204, 21, 0.45)',
+          color: GOLD_ACCENT,
+          fontSize: 11,
+          fontWeight: 800,
+          letterSpacing: '0.04em',
+          marginBottom: 8,
+        }}>
+          🕒 {stage.time}
+        </div>
+
+        {/* 4. Activity Title (ONE PRIMARY ACTIVITY ONLY) */}
+        <div style={{
+          fontSize: 13,
+          fontWeight: 900,
+          color: '#ffffff',
+          letterSpacing: '0.04em',
+          margin: '2px 0 6px 0',
+          textShadow: '0 0 12px rgba(250, 204, 21, 0.3)',
+          lineHeight: 1.25,
+        }}>
+          {stage.title}
+        </div>
+
+        {/* 5. Description */}
+        <div style={{
+          fontSize: 9.5,
+          color: '#cbd5e1',
+          lineHeight: 1.45,
+        }}>
+          {stage.desc}
+        </div>
       </div>
 
-      {/* Connector pin down to island */}
+      {/* Connector Pin */}
       <div style={{
-        width: 2, height: 4,
-        background: 'linear-gradient(to bottom, rgba(250,204,21,1), rgba(250,204,21,0))',
+        width: 2,
+        height: 12,
+        background: 'linear-gradient(to bottom, rgba(250, 204, 21, 0.9), rgba(250, 204, 21, 0))',
         margin: '0 auto',
       }} />
     </Html>
   );
 }
 
-/* ─── Island component ────────────────────────────────────────────────────── */
-export function Island({ position, event, isDocked, islandIndex }) {
+/* ─── Island Component ────────────────────────────────────────────────────── */
+export function Island({ position, stage, event, isDocked, islandIndex }) {
   const { scene } = useGLTF('/models/island.glb');
   const [showCard, setShowCard] = useState(false);
 
   useEffect(() => {
     if (isDocked) {
-      // Delay card display until ship reaches port and camera settles into place
-      const timer = setTimeout(() => setShowCard(true), 600);
+      const timer = setTimeout(() => setShowCard(true), 400);
       return () => clearTimeout(timer);
     } else {
       setShowCard(false);
     }
   }, [isDocked]);
 
-  const isFirst = islandIndex === 0;
-  const slots   = isFirst ? INAUGURATION_SCHEDULE : EVENT_SCHEDULE;
-  const label   = event?.shortName || event?.title || 'Event';
-
   return (
     <group position={position}>
       <primitive object={scene.clone()} scale={[40, 40, 40]} />
-      {showCard && <ScheduleCard title={label} slots={slots} />}
+      {showCard && <SingleStageCard stage={stage} event={event} />}
     </group>
   );
 }

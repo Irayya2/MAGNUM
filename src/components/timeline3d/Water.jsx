@@ -34,7 +34,7 @@ export function Water() {
       ),
       sunDirection: sunDirection,
       sunColor: 0xfff5e0,
-      waterColor: 0x006994, // 27028 in decimal
+      waterColor: 0x006994,
       distortionScale: 4,
       fog: true,
       alpha: 0.95
@@ -55,7 +55,7 @@ export function Water() {
       sun.z = 0.8 * Math.sin(0.02 * time);
       sun.normalize();
       
-      // Infinite ocean effect
+      // Infinite ocean position follow camera
       ref.current.position.x = state.camera.position.x;
       ref.current.position.z = state.camera.position.z;
     }

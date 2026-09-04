@@ -164,8 +164,9 @@ function BoatForwardArrow({ shipRef }) {
 /* ─────────────────────────────────────────────────────────────────────────── *
  * ACTIVE SHIP — the sailing ship for a selected day                            *
  * ─────────────────────────────────────────────────────────────────────────── */
-export function ActiveShip({ day, onDock, isMobile = false }) {
+export function ActiveShip({ day, onDock, onProgress, isMobile = false }) {
   const shipRef    = useRef(null);
+  const lastProgressRef = useRef(-1);
   const { camera } = useThree();
   const { scene: rawScene } = useGLTF('/models/Ship.glb');
 
@@ -243,13 +244,8 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
 
   // ─── Input listeners ──────────────────────────────────────────────────────
   useEffect(() => {
-    const handleWheel = (e) => {
-      if (e.preventDefault) e.preventDefault();
-
-      const isSmall = Math.abs(e.deltaY) < 50;
-      const delta   = e.deltaY * (isSmall ? 0.005 : 0.15);
-      if (Math.abs(delta) < 0.5) return;
-
+    const applyMovementDelta = (delta) => {
+      if (!delta) return;
       scrollAccumulator.current += Math.abs(delta);
       const movingBackward = delta < 0;
 
@@ -281,48 +277,39 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
       uCurrent.current = Math.min(1, Math.max(0, hCurrent.current / maxDistance));
     };
 
+    const handleWheel = (e) => {
+      if (e.preventDefault) e.preventDefault();
+
+      const isSmall = Math.abs(e.deltaY) < 50;
+      const delta   = e.deltaY * (isSmall ? 0.005 : 0.15);
+      if (Math.abs(delta) < 0.5) return;
+      applyMovementDelta(delta);
+    };
+
     const handleKeyDown = (e) => {
       if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
       e.preventDefault();
       // ArrowUp = forward (positive Z), ArrowDown = backward
       const delta = e.key === 'ArrowUp' ? 10 : -10;
-      scrollAccumulator.current += Math.abs(delta);
-
-      const movingBackward = delta < 0;
-      if (
-        movingBackward !== isReversed &&
-        dirChangeTimer.current >= 1 &&
-        scrollAccumulator.current >= 50
-      ) {
-        setIsReversed(movingBackward);
-        setIsChangingDir(true);
-        dirChangeTimer.current    = 0;
-        scrollAccumulator.current = 0;
-        return;
-      }
-
-      if (dockedIndex !== null) {
-        if (
-          (dockedIndex === L - 1 && delta > 0) ||
-          (dockingTimer.current += Math.abs(delta)) < 40
-        ) return;
-        prevDockedIndex.current = dockedIndex;
-        setDockedIndex(null);
-        onDock?.(null);
-        dockingTimer.current = 0;
-      }
-
-      hCurrent.current = Math.max(0, hCurrent.current + delta);
-      uCurrent.current = Math.min(1, Math.max(0, hCurrent.current / maxDistance));
+      applyMovementDelta(delta);
     };
 
-    window.addEventListener('wheel',   handleWheel,   { passive: false });
-    window.addEventListener('keydown', handleKeyDown, { passive: false });
+    const handleBoatMoveEvent = (e) => {
+      const delta = e.detail?.delta;
+      if (typeof delta === 'number') {
+        applyMovementDelta(delta);
+      }
+    };
+
+    window.addEventListener('wheel',     handleWheel,   { passive: false });
+    window.addEventListener('keydown',   handleKeyDown, { passive: false });
+    window.addEventListener('boat:move', handleBoatMoveEvent);
     return () => {
-      window.removeEventListener('wheel',   handleWheel);
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('wheel',     handleWheel);
+      window.removeEventListener('keydown',   handleKeyDown);
+      window.removeEventListener('boat:move', handleBoatMoveEvent);
     };
-  }, [L, maxDistance, dockedIndex, isReversed]);
+  }, [L, maxDistance, dockedIndex, isReversed, onDock]);
 
   // ─── Frame loop ────────────────────────────────────────────────────────────
   useFrame((state, delta) => {
@@ -339,6 +326,11 @@ export function ActiveShip({ day, onDock, isMobile = false }) {
     }
 
     const progress = Math.max(0, Math.min(1, lCurrent.current));
+
+    if (onProgress && Math.abs(progress - lastProgressRef.current) > 0.001) {
+      lastProgressRef.current = progress;
+      onProgress(progress);
+    }
 
     // ── 2. Sample path position and tangent ──
     const position = shipPath.getPointAt(progress);

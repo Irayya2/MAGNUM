@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Timeline2D } from './Timeline2D';
 import { Scene3D }    from './Scene3D';
 
@@ -7,6 +7,17 @@ export function TimelineScene() {
   // Default to 3D view, with CODING EVENT (0) as the initial selected destination or harbor state
   const [view, setView] = useState('3d');
   const [selectedDestination, setSelectedDestination] = useState(0);
+
+  // Sync view with the HTML navbar toggle buttons via custom events
+  useEffect(() => {
+    const handleSetView = (e) => setView(e.detail);
+    window.addEventListener('timeline:setView', handleSetView);
+    return () => window.removeEventListener('timeline:setView', handleSetView);
+  }, []);
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('timeline:viewChanged', { detail: view }));
+  }, [view]);
 
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>

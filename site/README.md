@@ -10,11 +10,11 @@ A clean, modular, and responsive vanilla HTML/CSS/JavaScript recreation of the *
 E:\Website\simp3\Hackfest\
 │
 ├── site/                           # ✨ Clean, Reorganized Project Root
-│   ├── index.html                  # Home page (Hero, Sponsor, Brochure, Tracks, Timeline, Prize, FAQ)
+│   ├── index.html                  # Home page (Hero, Sponsor, Brochure, Tracks, Timeline, Prize)
 │   ├── about.html                  # About page with Bento Grid metrics and info
 │   ├── events.html                 # Side Quests & Events (CTF, Treasure Hunt, Tech Banter)
 │   ├── timeline.html               # Voyage Milestones Timeline
-│   ├── contact.html                # Contact the Crew (Faculty Coordinators & Student Organizers)
+│   ├── contact.html                # Contact the Crew (Faculty Coordinators & Committee Members)
 │   ├── login.html                  # Registration / Captain's Deck Portal Login
 │   ├── favicon.ico                 # Site Favicon
 │   ├── favicon-96x96.png           # 96x96 Favicon
@@ -26,7 +26,7 @@ E:\Website\simp3\Hackfest\
 │       │   └── home.css            # Home-page specific layout and timeline styling
 │       │
 │       ├── js/
-│       │   └── main.js             # Shared interactions (Loader, Mobile Menu, FAQ Accordion, Scroll InView, Tracks)
+│       │   └── main.js             # Shared interactions (Loader, Mobile Menu, Scroll InView, Tracks)
 │       │
 │       └── images/
 │           ├── logos/              # All organized logos (HF Banner, Glow Icon, Footer Logo, NMAMIT, NITTE, FLC)
@@ -46,6 +46,5 @@ E:\Website\simp3\Hackfest\
 - **Interactive Elements**:
   - Full-screen nautical asset loader overlay.
   - Floating compass menu button.
-  - Interactive FAQ accordions.
   - Interactive tracks explorer with dynamic description switching.
   - Scroll-triggered smooth animations.

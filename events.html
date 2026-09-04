@@ -29,7 +29,7 @@
       opacity:0; pointer-events:none; z-index:0; user-select:none;
     }
     
-    .circle-wrapper { position:relative;display:inline-flex;align-items:center;justify-content:center; max-width:92vw; max-height:80vh; }
+    .circle-wrapper { position:relative;display:inline-flex;flex-direction:column;align-items:center;justify-content:center; max-width:92vw; max-height:80vh; }
     
     .event-circle { 
       width:360px; height:360px; border-radius:50%; overflow:hidden; 
@@ -38,35 +38,27 @@
     }
     .event-circle img { width:100%;height:100%;object-fit:cover;display:block;pointer-events:none; }
     
+    .event-title-badge {
+      margin-top: 18px;
+      padding: 8px 24px;
+      background: rgba(10, 20, 38, 0.9);
+      border: 1.5px solid rgba(250, 204, 21, 0.6);
+      border-radius: 999px;
+      color: #facc15;
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 15px rgba(250, 204, 21, 0.2);
+      white-space: nowrap;
+      pointer-events: auto;
+    }
+    
     /* Hover only scales up if it is not shrunken */
     .event-slide[style*="translateZ(0px)"] .event-circle:hover:not([style*="scale"]) { transform:scale(1.04); }
     
     .thunder-canvas { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:10; max-width:100vw; }
-    
-    @keyframes mentor-appear-blink {
-      0% { opacity: 0; }
-      15% { opacity: 1; }
-      30% { opacity: 0; }
-      45% { opacity: 1; }
-      60% { opacity: 0.3; }
-      100% { opacity: 1; }
-    }
-    
-    .mentor-bubble { 
-      position:absolute; top:50%; left:50%; 
-      transform:translate(-50%, -50%);
-      display:flex; flex-direction:column; align-items:center; gap:8px; 
-      opacity:0; pointer-events:none; z-index:20; 
-      transition: opacity 0.3s ease; 
-    }
-    .mentor-bubble.visible { 
-      opacity:1; pointer-events:auto; 
-      animation: mentor-appear-blink 1.2s ease-out forwards;
-    }
-    
-    .mentor-img-wrap { position:relative;width:90px;height:90px; }
-    .mentor-img { width:90px;height:90px;border-radius:50%;object-fit:cover;position:relative;z-index:1;display:block; }
-    .mentor-name { font-family:var(--font-pirate,serif);font-size:0.8rem;letter-spacing:0.04em;text-align:center;white-space:nowrap; padding:2px 8px; }
     
     /* Steering Wheel */
     .steering-wheel-container { position:fixed;bottom:-80px;left:50%;transform:translateX(-50%);width:220px;height:220px;z-index:100;opacity:0.6;cursor:grab; border-radius: 50%; touch-action: none; transition: opacity 0.3s, transform 0.4s; }
@@ -77,15 +69,12 @@
     
     @media(max-width:600px){ 
       .event-circle{width:240px;height:240px} 
-      .mentor-img-wrap,.mentor-img{width:70px;height:70px;} 
-      .mentor-name{font-size:0.65rem;} 
+      .event-title-badge{font-size:0.85rem;padding:6px 16px;margin-top:12px;}
       .steering-wheel-container{width:150px;height:150px;bottom:-55px;}
     }
 
     @media(max-width:360px){
       .event-circle{width:200px;height:200px}
-      .mentor-img-wrap,.mentor-img{width:60px;height:60px;}
-      .mentor-name{font-size:0.6rem;}
       .steering-wheel-container{width:120px;height:120px;bottom:-40px;}
     }
 
@@ -147,16 +136,16 @@
   <main class="page-main" style="padding:0;overflow:hidden;">
     <div class="events-carousel-outer">
       <div class="events-track" id="events-track">
-        <div class="event-slide" id="slide-0"><div class="circle-wrapper" id="cw-0"><canvas class="thunder-canvas" id="tc-0"></canvas><div class="event-circle" id="ec-0"><img src="assets/images/Events/Promt Engg/logo.jpg" alt="Promt Engg" /></div><div class="mentor-bubble" id="mb-0"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Promt Engg/mentor/Shruti Kulkarni.png" alt="Shruti Kulkarni" /></div><span class="mentor-name">Shruti Kulkarni</span></div></div></div>
-        <div class="event-slide" id="slide-1"><div class="circle-wrapper" id="cw-1"><canvas class="thunder-canvas" id="tc-1"></canvas><div class="event-circle" id="ec-1"><img src="assets/images/Events/Event 2/logo.jpg" alt="Event 2" /></div><div class="mentor-bubble" id="mb-1"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 2/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-2"><div class="circle-wrapper" id="cw-2"><canvas class="thunder-canvas" id="tc-2"></canvas><div class="event-circle" id="ec-2"><img src="assets/images/Events/Event 3/logo.jpg" alt="Event 3" /></div><div class="mentor-bubble" id="mb-2"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 3/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-3"><div class="circle-wrapper" id="cw-3"><canvas class="thunder-canvas" id="tc-3"></canvas><div class="event-circle" id="ec-3"><img src="assets/images/Events/Event 4/logo.jpg" alt="Event 4" /></div><div class="mentor-bubble" id="mb-3"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 4/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-4"><div class="circle-wrapper" id="cw-4"><canvas class="thunder-canvas" id="tc-4"></canvas><div class="event-circle" id="ec-4"><img src="assets/images/Events/Event 5/logo.jpg" alt="Event 5" /></div><div class="mentor-bubble" id="mb-4"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 5/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-5"><div class="circle-wrapper" id="cw-5"><canvas class="thunder-canvas" id="tc-5"></canvas><div class="event-circle" id="ec-5"><img src="assets/images/Events/Event 6/logo.jpg" alt="Event 6" /></div><div class="mentor-bubble" id="mb-5"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 6/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-6"><div class="circle-wrapper" id="cw-6"><canvas class="thunder-canvas" id="tc-6"></canvas><div class="event-circle" id="ec-6"><img src="assets/images/Events/Event 7/logo.jpg" alt="Event 7" /></div><div class="mentor-bubble" id="mb-6"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 7/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-7"><div class="circle-wrapper" id="cw-7"><canvas class="thunder-canvas" id="tc-7"></canvas><div class="event-circle" id="ec-7"><img src="assets/images/Events/Event 8/logo.jpg" alt="Event 8" /></div><div class="mentor-bubble" id="mb-7"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 8/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-8"><div class="circle-wrapper" id="cw-8"><canvas class="thunder-canvas" id="tc-8"></canvas><div class="event-circle" id="ec-8"><img src="assets/images/Events/Event 9/logo.jpg" alt="Event 9" /></div><div class="mentor-bubble" id="mb-8"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 9/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-9"><div class="circle-wrapper" id="cw-9"><canvas class="thunder-canvas" id="tc-9"></canvas><div class="event-circle" id="ec-9"><img src="assets/images/Events/Event 10/logo.jpg" alt="Event 10" /></div><div class="mentor-bubble" id="mb-9"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 10/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
+        <div class="event-slide" id="slide-0"><div class="circle-wrapper" id="cw-0"><canvas class="thunder-canvas" id="tc-0"></canvas><div class="event-circle" id="ec-0"><img src="assets/images/Events/CodeVoyage.png" alt="CodeVoyage" /></div><div class="event-title-badge">CodeVoyage</div></div></div>
+        <div class="event-slide" id="slide-1"><div class="circle-wrapper" id="cw-1"><canvas class="thunder-canvas" id="tc-1"></canvas><div class="event-circle" id="ec-1"><img src="assets/images/Events/communication.jpg" alt="Communication Event" /></div><div class="event-title-badge">Communication Event</div></div></div>
+        <div class="event-slide" id="slide-2"><div class="circle-wrapper" id="cw-2"><canvas class="thunder-canvas" id="tc-2"></canvas><div class="event-circle" id="ec-2"><img src="assets/images/Events/content creation.png" alt="Content Creation Event" /></div><div class="event-title-badge">Content Creation Event</div></div></div>
+        <div class="event-slide" id="slide-3"><div class="circle-wrapper" id="cw-3"><canvas class="thunder-canvas" id="tc-3"></canvas><div class="event-circle" id="ec-3"><img src="assets/images/Events/Black Pearl (Cyber Security).jpeg" alt="Black Pearl (Cyber Security)" /></div><div class="event-title-badge">Black Pearl (Cyber Security)</div></div></div>
+        <div class="event-slide" id="slide-4"><div class="circle-wrapper" id="cw-4"><canvas class="thunder-canvas" id="tc-4"></canvas><div class="event-circle" id="ec-4"><img src="assets/images/Events/Data Chronicles.jpg" alt="Data Chronicles" /></div><div class="event-title-badge">Data Chronicles</div></div></div>
+        <div class="event-slide" id="slide-5"><div class="circle-wrapper" id="cw-5"><canvas class="thunder-canvas" id="tc-5"></canvas><div class="event-circle" id="ec-5"><img src="assets/images/Events/Captain's Canvas (Designing).png" alt="Captain's Canvas (Designing)" /></div><div class="event-title-badge">Captain's Canvas (Designing)</div></div></div>
+        <div class="event-slide" id="slide-6"><div class="circle-wrapper" id="cw-6"><canvas class="thunder-canvas" id="tc-6"></canvas><div class="event-circle" id="ec-6"><img src="assets/images/Events/Pirates of Arena (Gaming).png" alt="Pirates of Arena (Gaming)" /></div><div class="event-title-badge">Pirates of Arena (Gaming)</div></div></div>
+        <div class="event-slide" id="slide-7"><div class="circle-wrapper" id="cw-7"><canvas class="thunder-canvas" id="tc-7"></canvas><div class="event-circle" id="ec-7"><img src="assets/images/Events/Voyage Of Wisdom.png" alt="Voyage Of Wisdom" /></div><div class="event-title-badge">Voyage Of Wisdom</div></div></div>
+        <div class="event-slide" id="slide-8"><div class="circle-wrapper" id="cw-8"><canvas class="thunder-canvas" id="tc-8"></canvas><div class="event-circle" id="ec-8"><img src="assets/images/Events/Prompt Mariners.jpg" alt="Prompt Mariners" /></div><div class="event-title-badge">Prompt Mariners</div></div></div>
+        <div class="event-slide" id="slide-9"><div class="circle-wrapper" id="cw-9"><canvas class="thunder-canvas" id="tc-9"></canvas><div class="event-circle" id="ec-9"><img src="assets/images/Events/RHYTHM RAIDERS.png" alt="Rhythm Raiders" /></div><div class="event-title-badge">Rhythm Raiders</div></div></div>
       </div>
     </div>
   </main>
@@ -170,24 +159,42 @@
     <div class="footer-main">
       <div class="footer-glow"></div>
       <div class="footer-content">
-        <div class="footer-logos">
-          <div class="footer-logo-row"><a class="footer-logo-link" href="index.html"><img src="assets/images/logos/logo-footer.jpeg" alt="Hackfest" width="95" height="50" /></a></div>
-          <div class="footer-social">
-            <p>Connect with us:</p>
-            <ul class="footer-social-links" role="list">
-              <li><a class="footer-social-link" href="https://www.instagram.com/hackfest.dev" target="_blank" rel="noopener"><svg class="footer-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a></li>
-              <li><a class="footer-social-link" href="mailto:hackfest@finiteloop.club"><svg class="footer-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></a></li>
-            </ul>
+        <!-- Logo & College Name -->
+        <div class="footer-col footer-college-col">
+          <div class="footer-logo-row">
+            <a class="footer-logo-link" href="index.html"><img src="assets/images/logos/logo-footer.png" alt="MAGNUM" width="95" height="50" /></a>
+          </div>
+          <div class="footer-college-info">
+            <h3 class="footer-college-name">College Name</h3>
+            <p class="footer-college-sub">City, State, Country</p>
           </div>
         </div>
-        <div class="footer-map-col">
-          <div style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;">
-            <div class="footer-map-wrap"><iframe title="NMAMIT Location Map" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15538.662520521424!2d74.93399100000002!3d13.18347!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbb56415ad85e5b%3A0x10b77ac6f6afc7fa!2sNitte%20Mahalinga%20Adyantaya%20Memorial%20Institute%20of%20Technology%20-%20NMAMIT!5e0!3m2!1sen!2sin!4v1771872967031!5m2!1sen!2sin" width="250" height="180" style="border:0;" loading="lazy" allowfullscreen></iframe></div>
-            <div class="footer-address"><p>NMAM Institute of Technology, Nitte</p><p>Karkala, Udupi District, Karnataka</p></div>
+        <!-- Developers Details Section -->
+        <div class="footer-col footer-developers-col">
+          <h4 class="footer-developers-title">Developer Details</h4>
+          <div class="footer-developers-list">
+            <a class="developer-card" href="https://linkedin.com" target="_blank" rel="noopener" aria-label="Developer 1 LinkedIn">
+              <svg class="developer-linkedin-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.72a1.47 1.47 0 1 0 0 2.94 1.47 1.47 0 0 0 0-2.94Z"/>
+              </svg>
+              <div class="developer-info">
+                <span class="developer-name">Developer 1</span>
+                <span class="developer-role">LinkedIn Profile</span>
+              </div>
+            </a>
+            <a class="developer-card" href="https://linkedin.com" target="_blank" rel="noopener" aria-label="Developer 2 LinkedIn">
+              <svg class="developer-linkedin-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.72a1.47 1.47 0 1 0 0 2.94 1.47 1.47 0 0 0 0-2.94Z"/>
+              </svg>
+              <div class="developer-info">
+                <span class="developer-name">Developer 2</span>
+                <span class="developer-role">LinkedIn Profile</span>
+              </div>
+            </a>
           </div>
         </div>
       </div>
-      <div class="footer-copy"><p>2026 (c) Hackfest | All rights reserved</p></div>
+      <div class="footer-copy"><p>2026 © MAGNUM | All rights reserved</p></div>
     </div>
   </footer>
 
@@ -198,7 +205,6 @@
     var track=document.getElementById('events-track'),TOTAL=10,current=0;
     var slides = [];
     var slideResets = [];
-    var isFocusMode = false;
     
     // Steering wheel variables
     var wheelContainer = document.getElementById('steering-wheel-container');
@@ -217,7 +223,6 @@
     function goTo(idx){
       var changed = (current !== idx);
       if(changed) {
-        isFocusMode = false;
         slideResets.forEach(function(r){ r(); });
       }
       current=idx;
@@ -255,13 +260,7 @@
           
           opacity = 1 - (absDist * 0.2); 
           transform = 'translateX(' + xOffset + 'px) translateZ(' + zOffset + 'px) rotateY(' + rotY + 'deg) scale(' + (1 - absDist * 0.1) + ')';
-          
-          if(isFocusMode) {
-            opacity = 0;
-            pointerEvents = 'none';
-          } else {
-            pointerEvents = 'auto';
-          }
+          pointerEvents = 'auto';
         }
         
         slide.style.zIndex = zIndex;
@@ -276,11 +275,7 @@
         wheelImg.style.transform = 'rotate(' + wheelRot + 'deg)';
       }
       
-      if(isFocusMode) {
-        wheelContainer.classList.add('hidden');
-      } else {
-        wheelContainer.classList.remove('hidden');
-      }
+      wheelContainer.classList.remove('hidden');
     }
     
     document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')goTo(current+1);if(e.key==='ArrowLeft')goTo(current-1);});
@@ -297,7 +292,6 @@
     }
     
     function onWheelDragStart(e) {
-      if(isFocusMode) return;
       e.preventDefault();
       isWheelDragging = true;
       wheelImg.style.transition = 'none';
@@ -398,41 +392,20 @@
     for(var ei=0;ei<TOTAL;ei++)init(ei);
     
     function init(idx){
-      var circle=document.getElementById('ec-'+idx),tC=document.getElementById('tc-'+idx),mb=document.getElementById('mb-'+idx);
+      var circle=document.getElementById('ec-'+idx),tC=document.getElementById('tc-'+idx);
       if(!circle||!tC)return;
       var ctx=tC.getContext('2d');
       var clr = eventColors[idx];
-      var nameEl = mb ? mb.querySelector('.mentor-name') : null;
-      if(nameEl) {
-        nameEl.style.color = clr;
-        nameEl.style.textShadow = '0 0 8px ' + clr;
-      }
       
       function rsz(){var r=circle.getBoundingClientRect(),s=Math.round(Math.max(r.width,r.height)*2.2);tC.width=s;tC.height=s;tC.style.width=s+'px';tC.style.height=s+'px';}
       rsz();window.addEventListener('resize',rsz);
       
-      var clk=false;
       var lightRaf = null;
-      var orbitRaf = null;
-      var t1, t2, t3;
       var normalizedCurrent;
       
       slideResets.push(function(){
-        if(!clk) return;
-        clk = false;
         if(lightRaf) cancelAnimationFrame(lightRaf);
-        if(orbitRaf) cancelAnimationFrame(orbitRaf);
         lightRaf = null;
-        orbitRaf = null;
-        clearTimeout(t1);
-        clearTimeout(t2);
-        clearTimeout(t3);
-        
-        circle.style.transform = ''; 
-        if(mb) {
-          mb.classList.remove('visible');
-          mb.style.transform = 'translate(-50%, -50%)';
-        }
         ctx.clearRect(0, 0, tC.width, tC.height); 
       });
       
@@ -461,47 +434,7 @@
           goTo(current + dist);
           return;
         }
-        
-        if(clk) return;
-        clk=true;
-        
-        isFocusMode = true;
-        syncUI();
-        
-        var initR = circle.offsetWidth / 2;
-        var orbitR = (initR * 0.4) + 95;
-        var startAngle = -Math.PI/4;
-        
         fire();
-        
-        t1 = setTimeout(function(){
-          circle.style.transform = 'scale(0.4)'; 
-        }, 1800);
-        
-        t2 = setTimeout(function(){
-          if(mb) {
-            var ox = Math.cos(startAngle) * orbitR;
-            var oy = Math.sin(startAngle) * orbitR;
-            mb.style.transform = 'translate(calc(-50% + ' + ox + 'px), calc(-50% + ' + oy + 'px))';
-            mb.classList.add('visible');
-          }
-        }, 2200);
-        
-        t3 = setTimeout(function(){
-          var startTs = null;
-          function orbit(ts){
-            if(!startTs) startTs = ts;
-            var elapsed = ts - startTs;
-            var baseAngle = startAngle - (elapsed * 0.00008);
-            if(mb) {
-              var ox = Math.cos(baseAngle) * orbitR;
-              var oy = Math.sin(baseAngle) * orbitR;
-              mb.style.transform = 'translate(calc(-50% + ' + ox + 'px), calc(-50% + ' + oy + 'px))';
-            }
-            orbitRaf = requestAnimationFrame(orbit);
-          }
-          orbitRaf = requestAnimationFrame(orbit);
-        }, 3400);
       });
     }
   })();

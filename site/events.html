@@ -43,31 +43,6 @@
     
     .thunder-canvas { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:10; max-width:100vw; }
     
-    @keyframes mentor-appear-blink {
-      0% { opacity: 0; }
-      15% { opacity: 1; }
-      30% { opacity: 0; }
-      45% { opacity: 1; }
-      60% { opacity: 0.3; }
-      100% { opacity: 1; }
-    }
-    
-    .mentor-bubble { 
-      position:absolute; top:50%; left:50%; 
-      transform:translate(-50%, -50%);
-      display:flex; flex-direction:column; align-items:center; gap:8px; 
-      opacity:0; pointer-events:none; z-index:20; 
-      transition: opacity 0.3s ease; 
-    }
-    .mentor-bubble.visible { 
-      opacity:1; pointer-events:auto; 
-      animation: mentor-appear-blink 1.2s ease-out forwards;
-    }
-    
-    .mentor-img-wrap { position:relative;width:90px;height:90px; }
-    .mentor-img { width:90px;height:90px;border-radius:50%;object-fit:cover;position:relative;z-index:1;display:block; }
-    .mentor-name { font-family:var(--font-pirate,serif);font-size:0.8rem;letter-spacing:0.04em;text-align:center;white-space:nowrap; padding:2px 8px; }
-    
     /* Steering Wheel */
     .steering-wheel-container { position:fixed;bottom:-80px;left:50%;transform:translateX(-50%);width:220px;height:220px;z-index:100;opacity:0.6;cursor:grab; border-radius: 50%; touch-action: none; transition: opacity 0.3s, transform 0.4s; }
     .steering-wheel-container:hover { opacity: 1; }
@@ -77,15 +52,11 @@
     
     @media(max-width:600px){ 
       .event-circle{width:240px;height:240px} 
-      .mentor-img-wrap,.mentor-img{width:70px;height:70px;} 
-      .mentor-name{font-size:0.65rem;} 
       .steering-wheel-container{width:150px;height:150px;bottom:-55px;}
     }
 
     @media(max-width:360px){
       .event-circle{width:200px;height:200px}
-      .mentor-img-wrap,.mentor-img{width:60px;height:60px;}
-      .mentor-name{font-size:0.6rem;}
       .steering-wheel-container{width:120px;height:120px;bottom:-40px;}
     }
 
@@ -147,16 +118,16 @@
   <main class="page-main" style="padding:0;overflow:hidden;">
     <div class="events-carousel-outer">
       <div class="events-track" id="events-track">
-        <div class="event-slide" id="slide-0"><div class="circle-wrapper" id="cw-0"><canvas class="thunder-canvas" id="tc-0"></canvas><div class="event-circle" id="ec-0"><img src="assets/images/Events/Promt Engg/logo.jpg" alt="Promt Engg" /></div><div class="mentor-bubble" id="mb-0"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Promt Engg/mentor/Shruti Kulkarni.png" alt="Shruti Kulkarni" /></div><span class="mentor-name">Shruti Kulkarni</span></div></div></div>
-        <div class="event-slide" id="slide-1"><div class="circle-wrapper" id="cw-1"><canvas class="thunder-canvas" id="tc-1"></canvas><div class="event-circle" id="ec-1"><img src="assets/images/Events/Event 2/logo.jpg" alt="Event 2" /></div><div class="mentor-bubble" id="mb-1"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 2/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-2"><div class="circle-wrapper" id="cw-2"><canvas class="thunder-canvas" id="tc-2"></canvas><div class="event-circle" id="ec-2"><img src="assets/images/Events/Event 3/logo.jpg" alt="Event 3" /></div><div class="mentor-bubble" id="mb-2"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 3/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-3"><div class="circle-wrapper" id="cw-3"><canvas class="thunder-canvas" id="tc-3"></canvas><div class="event-circle" id="ec-3"><img src="assets/images/Events/Event 4/logo.jpg" alt="Event 4" /></div><div class="mentor-bubble" id="mb-3"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 4/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-4"><div class="circle-wrapper" id="cw-4"><canvas class="thunder-canvas" id="tc-4"></canvas><div class="event-circle" id="ec-4"><img src="assets/images/Events/Event 5/logo.jpg" alt="Event 5" /></div><div class="mentor-bubble" id="mb-4"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 5/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-5"><div class="circle-wrapper" id="cw-5"><canvas class="thunder-canvas" id="tc-5"></canvas><div class="event-circle" id="ec-5"><img src="assets/images/Events/Event 6/logo.jpg" alt="Event 6" /></div><div class="mentor-bubble" id="mb-5"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 6/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-6"><div class="circle-wrapper" id="cw-6"><canvas class="thunder-canvas" id="tc-6"></canvas><div class="event-circle" id="ec-6"><img src="assets/images/Events/Event 7/logo.jpg" alt="Event 7" /></div><div class="mentor-bubble" id="mb-6"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 7/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-7"><div class="circle-wrapper" id="cw-7"><canvas class="thunder-canvas" id="tc-7"></canvas><div class="event-circle" id="ec-7"><img src="assets/images/Events/Event 8/logo.jpg" alt="Event 8" /></div><div class="mentor-bubble" id="mb-7"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 8/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-8"><div class="circle-wrapper" id="cw-8"><canvas class="thunder-canvas" id="tc-8"></canvas><div class="event-circle" id="ec-8"><img src="assets/images/Events/Event 9/logo.jpg" alt="Event 9" /></div><div class="mentor-bubble" id="mb-8"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 9/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
-        <div class="event-slide" id="slide-9"><div class="circle-wrapper" id="cw-9"><canvas class="thunder-canvas" id="tc-9"></canvas><div class="event-circle" id="ec-9"><img src="assets/images/Events/Event 10/logo.jpg" alt="Event 10" /></div><div class="mentor-bubble" id="mb-9"><div class="mentor-img-wrap"><img class="mentor-img" src="assets/images/Events/Event 10/mentor/Mentor.png" alt="Mentor" /></div><span class="mentor-name">Mentor</span></div></div></div>
+        <div class="event-slide" id="slide-0"><div class="circle-wrapper" id="cw-0"><canvas class="thunder-canvas" id="tc-0"></canvas><div class="event-circle" id="ec-0"><img src="assets/images/Events/CodeVoyage.png" alt="CodeVoyage" /></div></div></div>
+        <div class="event-slide" id="slide-1"><div class="circle-wrapper" id="cw-1"><canvas class="thunder-canvas" id="tc-1"></canvas><div class="event-circle" id="ec-1"><img src="assets/images/Events/communication.jpg" alt="Communication Event" /></div></div></div>
+        <div class="event-slide" id="slide-2"><div class="circle-wrapper" id="cw-2"><canvas class="thunder-canvas" id="tc-2"></canvas><div class="event-circle" id="ec-2"><img src="assets/images/Events/content creation.png" alt="Content Creation Event" /></div></div></div>
+        <div class="event-slide" id="slide-3"><div class="circle-wrapper" id="cw-3"><canvas class="thunder-canvas" id="tc-3"></canvas><div class="event-circle" id="ec-3"><img src="assets/images/Events/Black Pearl (Cyber Security).jpeg" alt="Black Pearl (Cyber Security)" /></div></div></div>
+        <div class="event-slide" id="slide-4"><div class="circle-wrapper" id="cw-4"><canvas class="thunder-canvas" id="tc-4"></canvas><div class="event-circle" id="ec-4"><img src="assets/images/Events/Data Chronicles.jpg" alt="Data Chronicles" /></div></div></div>
+        <div class="event-slide" id="slide-5"><div class="circle-wrapper" id="cw-5"><canvas class="thunder-canvas" id="tc-5"></canvas><div class="event-circle" id="ec-5"><img src="assets/images/Events/Captain's Canvas (Designing).png" alt="Captain's Canvas (Designing)" /></div></div></div>
+        <div class="event-slide" id="slide-6"><div class="circle-wrapper" id="cw-6"><canvas class="thunder-canvas" id="tc-6"></canvas><div class="event-circle" id="ec-6"><img src="assets/images/Events/Pirates of Arena (Gaming).png" alt="Pirates of Arena (Gaming)" /></div></div></div>
+        <div class="event-slide" id="slide-7"><div class="circle-wrapper" id="cw-7"><canvas class="thunder-canvas" id="tc-7"></canvas><div class="event-circle" id="ec-7"><img src="assets/images/Events/Voyage Of Wisdom.png" alt="Voyage Of Wisdom" /></div></div></div>
+        <div class="event-slide" id="slide-8"><div class="circle-wrapper" id="cw-8"><canvas class="thunder-canvas" id="tc-8"></canvas><div class="event-circle" id="ec-8"><img src="assets/images/Events/Prompt Mariners.jpg" alt="Prompt Mariners" /></div></div></div>
+        <div class="event-slide" id="slide-9"><div class="circle-wrapper" id="cw-9"><canvas class="thunder-canvas" id="tc-9"></canvas><div class="event-circle" id="ec-9"><img src="assets/images/Events/RHYTHM RAIDERS.png" alt="Rhythm Raiders" /></div></div></div>
       </div>
     </div>
   </main>

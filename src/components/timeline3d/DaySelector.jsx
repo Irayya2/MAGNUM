@@ -5,23 +5,23 @@ export function DaySelector({ selectedDestination, onSelect, inline = false }) {
   const containerStyle = inline ? {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     width: '100%',
-    maxWidth: 420,
+    maxWidth: 220,
     margin: '0 auto',
     boxSizing: 'border-box',
     pointerEvents: 'auto',
   } : {
     position: 'absolute',
     top: 85,
-    left: '50%',
-    transform: 'translateX(-50%)',
+    right: 20,
+    left: 'auto',
+    transform: 'none',
     zIndex: 30,
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
-    width: 'calc(100vw - 32px)',
-    maxWidth: 420,
+    alignItems: 'flex-end',
+    width: 220,
     boxSizing: 'border-box',
     pointerEvents: 'auto',
   };
@@ -29,13 +29,13 @@ export function DaySelector({ selectedDestination, onSelect, inline = false }) {
   return (
     <div style={containerStyle}>
       <label htmlFor="event-select-dropdown" style={{
-        fontSize: 11,
+        fontSize: 9,
         fontWeight: 800,
         color: '#facc15',
-        letterSpacing: '0.14em',
+        letterSpacing: '0.12em',
         textTransform: 'uppercase',
-        marginBottom: 6,
-        textShadow: '0 0 12px rgba(250, 204, 21, 0.5)',
+        marginBottom: 4,
+        textShadow: '0 0 10px rgba(250, 204, 21, 0.5)',
         fontFamily: "'Inter','Segoe UI',sans-serif",
       }}>
         SELECT EVENT
@@ -55,21 +55,21 @@ export function DaySelector({ selectedDestination, onSelect, inline = false }) {
           }}
           style={{
             width: '100%',
-            padding: '12px 42px 12px 18px',
-            fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)',
-            fontWeight: 800,
+            padding: '7px 30px 7px 12px',
+            fontSize: '0.75rem',
+            fontWeight: 700,
             color: '#fef08a',
             background: 'rgba(10, 20, 38, 0.92)',
             backdropFilter: 'blur(20px)',
             border: '1.5px solid rgba(250, 204, 21, 0.5)',
-            borderRadius: 14,
+            borderRadius: 10,
             cursor: 'pointer',
             outline: 'none',
             appearance: 'none',
             WebkitAppearance: 'none',
             MozAppearance: 'none',
             fontFamily: "'Inter','Segoe UI',sans-serif",
-            boxShadow: '0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(250, 204, 21, 0.25)',
+            boxShadow: '0 6px 18px rgba(0,0,0,0.5), 0 0 12px rgba(250, 204, 21, 0.2)',
             transition: 'all 0.3s ease',
           }}
         >
@@ -78,12 +78,9 @@ export function DaySelector({ selectedDestination, onSelect, inline = false }) {
           </option>
           {MAGNUM_EVENTS.map((ev, idx) => (
             <option key={ev.id} value={idx} style={{ background: '#0a1426', color: '#fef08a' }}>
-              {ev.title}
+              {ev.icon ? `${ev.icon} ` : ''}{ev.title}
             </option>
           ))}
-          <option value={10} style={{ background: '#0a1426', color: '#fde047', fontWeight: 'bold' }}>
-            🏆 AUDITORIUM — WINNER ANNOUNCEMENT
-          </option>
         </select>
 
         {/* Custom Arrow Indicator */}

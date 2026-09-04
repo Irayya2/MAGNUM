@@ -72,27 +72,6 @@
   }
 })();
 
-/* ── FAQ Accordion ───────────────────────────────────────── */
-(function () {
-  const buttons = document.querySelectorAll('.faq-toggle');
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const panel = btn.nextElementSibling;
-      const icon = btn.querySelector('.faq-icon');
-      const isOpen = panel.classList.contains('open');
-
-      // Close all
-      document.querySelectorAll('.faq-panel').forEach(p => p.classList.remove('open'));
-      document.querySelectorAll('.faq-icon').forEach(i => i.classList.remove('rotated'));
-
-      // Toggle clicked
-      if (!isOpen) {
-        panel.classList.add('open');
-        icon && icon.classList.add('rotated');
-      }
-    });
-  });
-})();
 
 /* ── Scroll fade-in (IntersectionObserver) ───────────────── */
 (function () {
@@ -172,3 +151,186 @@
   // Default active
   if (trackBtns[0]) trackBtns[0].click();
 })();
+
+/* ── Home Page Voyage Logs Timeline Renderer ── */
+(function () {
+  function init() {
+    const dropdown = document.getElementById('home-event-select-dropdown');
+    const container = document.getElementById('home-voyage-timeline-container');
+    if (!dropdown || !container) return;
+
+    const eventsData = [
+      { id: 'coding', title: 'CODING EVENT', icon: '💻', category: 'EVENT • TECHNICAL', desc: 'Test your algorithmic supremacy and problem-solving velocity in high-intensity coding challenges.' },
+      { id: 'comm', title: 'COMMUNICATION EVENT', icon: '🎙️', category: 'EVENT • SOFT SKILLS', desc: 'Master the art of persuasive speaking, debate, and strategic articulation under pressure.' },
+      { id: 'content', title: 'CONTENT CREATION EVENT', icon: '📹', category: 'EVENT • CREATIVE MEDIA', desc: 'Craft compelling digital media, narrative reels, and visual stories that captivate the audience.' },
+      { id: 'cyber', title: 'CYBERSECURITY EVENT', icon: '🛡️', category: 'EVENT • TECHNICAL', desc: 'Penetrate defenses, uncover vulnerabilities, and conquer Capture The Flag (CTF) security grids.' },
+      { id: 'data', title: 'DATA ANALYTICS EVENT', icon: '📊', category: 'EVENT • TECHNICAL', desc: 'Extract actionable intelligence, build predictive models, and decode complex datasets.' },
+      { id: 'design', title: 'DESIGNING EVENT', icon: '🎨', category: 'EVENT • CREATIVE MEDIA', desc: 'Engineers of visual beauty — craft intuitive UI/UX, brand identity, and graphics.' },
+      { id: 'gaming', title: 'GAMING EVENT', icon: '🎮', category: 'EVENT • ESPORTS', desc: 'Clash in tactical multiplayer battles and prove team coordination in the high-octane gaming arena.' },
+      { id: 'quiz', title: 'QUIZ EVENT', icon: '❓', category: 'EVENT • INTELLECTUAL', desc: 'Buzzer rounds, rapid-fire trivia, and deep technology knowledge showdowns.' },
+      { id: 'prompt', title: 'PROMPT ENGINEERING EVENT', icon: '⚡', category: 'EVENT • TECHNICAL', desc: 'Harness generative AI models with precision prompts to synthesize solutions, code, and media.' },
+      { id: 'cultural', title: 'CULTURAL EVENT (GROUP)', icon: '🎭', category: 'EVENT • CULTURAL', desc: 'Celebrate artistry, choreography, and group cultural performances on the grand stage.' }
+    ];
+
+    function renderTimeline(eventIdx) {
+      const ev = eventsData[eventIdx] || eventsData[0];
+      const steps = [
+        {
+          badge: "OPENING CEREMONY",
+          date: "8 SEPTEMBER",
+          time: "9:00 AM – 10:00 AM",
+          roundName: "INAUGURATION",
+          title: "INAUGURATION",
+          desc: "Grand inauguration ceremony and official commencement of MAGNUM 2026.",
+          icon: "🏛️",
+          isBreak: false,
+          isFinal: false
+        },
+        {
+          badge: ev.category || 'EVENT COMPETITION',
+          date: "8 SEPTEMBER",
+          time: "10:00 AM – 1:00 PM",
+          roundName: "ROUND 1",
+          title: `${ev.title} — ROUND 1`,
+          desc: `${ev.desc || 'Event activities begin for Round 1 preliminary challenges and qualification tasks.'}`,
+          icon: ev.icon || "⚡",
+          isBreak: false,
+          isFinal: false
+        },
+        {
+          badge: "MIDDAY RECHARGE",
+          date: "8 SEPTEMBER",
+          time: "1:00 PM – 2:00 PM",
+          roundName: "LUNCH",
+          title: "LUNCH BREAK",
+          desc: "Recharge, interact with mentors and fellow participants, and prepare strategy for Round 2.",
+          icon: "🍽️",
+          isBreak: true,
+          isFinal: false
+        },
+        {
+          badge: ev.category || 'EVENT COMPETITION',
+          date: "8 SEPTEMBER",
+          time: "2:00 PM – 5:00 PM",
+          roundName: "ROUND 2",
+          title: `${ev.title} — ROUND 2`,
+          desc: "High-intensity second competition round. Teams push their skills to qualify for Day 2 finals.",
+          icon: ev.icon || "🔥",
+          isBreak: false,
+          isFinal: false
+        },
+        {
+          badge: "CHAMPIONSHIP FINALS",
+          date: "9 SEPTEMBER",
+          time: "9:00 AM – 1:00 PM",
+          roundName: "ROUND 3 — FINAL ROUND",
+          title: `${ev.title} — FINAL ROUND`,
+          desc: "Championship showdown — Top qualified finalist teams battle for top ranks, awards, and glory.",
+          icon: "⚔️",
+          isBreak: false,
+          isFinal: false
+        },
+        {
+          badge: "MIDDAY RECHARGE",
+          date: "9 SEPTEMBER",
+          time: "1:00 PM – 2:00 PM",
+          roundName: "LUNCH",
+          title: "LUNCH BREAK",
+          desc: "Midday break and networking session before the final valedictory ceremony.",
+          icon: "🍽️",
+          isBreak: true,
+          isFinal: false
+        },
+        {
+          badge: "GRAND CLOSING",
+          date: "9 SEPTEMBER",
+          time: "2:00 PM – 5:00 PM",
+          roundName: "VALEDICTORY / CLOSING CEREMONY",
+          title: "VALEDICTORY / CLOSING CEREMONY + PRIZE DISTRIBUTION",
+          desc: "All event participants gather for the final closing ceremony and prize distribution.",
+          icon: "🏆",
+          isBreak: false,
+          isFinal: true
+        }
+      ];
+
+      let html = '<div class="tl-center-line"></div>';
+
+      if (steps.length > 0 && steps[0].date) {
+        html += `
+          <div class="tl-date-divider" style="margin-top: 10px;">
+            <div class="tl-date-badge">📅 ${steps[0].date}</div>
+          </div>
+        `;
+      }
+
+      steps.forEach((st, idx) => {
+        const isRight = idx % 2 === 0;
+        const isDateBreak = idx > 0 && steps[idx - 1].date !== st.date;
+
+        if (isDateBreak) {
+          html += `
+            <div class="tl-date-divider">
+              <div class="tl-date-badge">📅 ${st.date}</div>
+            </div>
+          `;
+        }
+
+        html += `
+          <div class="tl-row ${isRight ? 'tl-row-right' : 'tl-row-left'}">
+            <div class="tl-spacer-slot"></div>
+            <div class="tl-node-slot">
+              <div class="tl-node-dot" title="${st.roundName}"></div>
+              <div class="${isRight ? 'tl-connector-right' : 'tl-connector-left'}"></div>
+            </div>
+            <div class="tl-card-slot">
+              <div class="tl-voyage-card">
+                <div class="tl-card-glow"></div>
+                <div class="tl-card-header">
+                  <div class="tl-badge-pill">
+                    <span>${st.icon}</span>
+                    <span>${st.badge}</span>
+                  </div>
+                  <div class="tl-date-text">📅 ${st.date}</div>
+                </div>
+                <h2 class="tl-card-event-title">${ev.title}</h2>
+                <div class="tl-card-time-banner ${st.isFinal ? 'is-final' : st.isBreak ? 'is-break' : ''}">
+                  <div class="tl-time-pill">🕒 ${st.time}</div>
+                  <h3 class="tl-round-title">${st.roundName}</h3>
+                  <p class="tl-round-desc">${st.desc}</p>
+                  ${st.venue ? `<div class="tl-venue-text">📍 VENUE: ${st.venue}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+
+      setTimeout(() => {
+        const dots = container.querySelectorAll('.tl-node-dot');
+        const centerLine = container.querySelector('.tl-center-line');
+        if (dots.length > 0 && centerLine) {
+          const lastDot = dots[dots.length - 1].getBoundingClientRect();
+          const cRect = container.getBoundingClientRect();
+          const bottomPx = cRect.bottom - (lastDot.top + lastDot.height / 2);
+          centerLine.style.bottom = `${Math.max(0, bottomPx)}px`;
+        }
+      }, 30);
+    }
+
+    dropdown.addEventListener('change', (e) => {
+      renderTimeline(parseInt(e.target.value, 10));
+    });
+
+    renderTimeline(0);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+

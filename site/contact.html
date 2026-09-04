@@ -119,6 +119,61 @@
       word-break: break-word;
     }
 
+    .mentors-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .mentors-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .mentors-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+      }
+    }
+
+    .mentor-avatar-wrap {
+      width: 130px;
+      height: 130px;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+      border: 2px solid rgba(34, 211, 238, 0.6);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #091a2a;
+    }
+
+    .person-card:hover .mentor-avatar-wrap {
+      transform: scale(1.08);
+      border-color: var(--cyan-300);
+      box-shadow: 0 0 30px rgba(34, 211, 238, 0.7);
+    }
+
+    .mentor-avatar {
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      object-position: center 15%;
+      display: block;
+      border-radius: 50%;
+    }
+
     .faculty-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -299,155 +354,96 @@
           at sea? Need a map? The captains are here to guide you through the storm.</p>
       </div>
 
-      <!-- Send a raven -->
-      <div class="raven-box fade-up">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-          style="color:var(--cyan-400);margin-bottom:1rem;">
-          <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
-          <rect x="2" y="4" width="20" height="16" rx="2" />
-        </svg>
-        <h2 class="fp" style="font-size:2.25rem;color:var(--cyan-100);margin-bottom:0.5rem;">Send a Raven</h2>
-        <p class="fc" style="font-size:1.125rem;color:rgba(165,243,252,0.7);max-width:32rem;margin:0 auto;">Have queries
-          about the voyage? Reach out to us directly. We are always listening to the waves.</p>
 
-        <div class="email-buttons">
-          <div class="email-pill">
-            <span class="fc"
-              style="font-size:0.875rem;text-transform:uppercase;letter-spacing:0.15em;color:rgba(165,243,252,0.6);font-weight:600;">General
-              Queries</span>
-            <a class="email-btn" href="mailto:hackfest@finiteloop.club">hackfest@finiteloop.club</a>
-          </div>
-          <div class="email-pill">
-            <span class="fc"
-              style="font-size:0.875rem;text-transform:uppercase;letter-spacing:0.15em;color:rgba(165,243,252,0.6);font-weight:600;">Sponsorships</span>
-            <a class="email-btn" href="mailto:sponsorships@finiteloop.club">sponsorships@finiteloop.club</a>
-          </div>
-        </div>
-      </div>
 
-      <!-- Faculty Coordinators -->
+      <!-- Faculty Mentors -->
       <div class="fade-up" style="margin-bottom:4rem;">
-        <h2 class="section-title">Faculty Coordinators</h2>
-        <div class="faculty-grid">
-
+        <h2 class="section-title">Faculty Mentors</h2>
+        <div class="mentors-grid">
           <div class="person-card">
-            <h3 class="person-name">Dr. Shashank Shetty</h3>
-            <p class="person-role">Professor &amp; Head</p>
-            <p class="fc" style="color:rgba(214,211,209,0.8);font-size:0.95rem;margin-bottom:1rem;">Dept of Computer
-              Science &amp; Engineering<br />NMAMIT, Nitte</p>
-            <a class="phone-link" href="tel:+919876543210">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <span>Contact via Institute</span>
-            </a>
+            <div class="mentor-avatar-wrap">
+              <img class="mentor-avatar" src="assets/require/mentors/Prof.Ashmita Deshpande.jpeg" alt="Prof. Asmita Deshpande" />
+            </div>
+            <h3 class="person-name">Prof. Asmita Deshpande</h3>
+            <p class="person-role">Faculty Mentor</p>
           </div>
-
           <div class="person-card">
-            <h3 class="person-name">Mr. Puneeth R</h3>
-            <p class="person-role">Assistant Professor &amp; FLC Advisor</p>
-            <p class="fc" style="color:rgba(214,211,209,0.8);font-size:0.95rem;margin-bottom:1rem;">Dept of Computer
-              Science &amp; Engineering<br />NMAMIT, Nitte</p>
-            <a class="phone-link" href="tel:+919876543210">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <span>Contact via Institute</span>
-            </a>
+            <div class="mentor-avatar-wrap">
+              <img class="mentor-avatar" src="assets/require/mentors/Prof. Vaishali Shanbhag.jpeg" alt="Prof. Vaishali Shanbhag" />
+            </div>
+            <h3 class="person-name">Prof. Vaishali Shanbhag</h3>
+            <p class="person-role">Faculty Mentor</p>
           </div>
-
+          <div class="person-card">
+            <div class="mentor-avatar-wrap">
+              <img class="mentor-avatar" src="assets/require/mentors/Prof. Supriya Balekundri.jpeg" alt="Prof. Supriya Balekundri" />
+            </div>
+            <h3 class="person-name">Prof. Supriya Balekundri</h3>
+            <p class="person-role">Faculty Mentor</p>
+          </div>
+          <div class="person-card">
+            <div class="mentor-avatar-wrap">
+              <img class="mentor-avatar" src="assets/require/mentors/Prof. Vaishali Kulkarni.jpeg" alt="Prof. Vaishali Kulkarni" />
+            </div>
+            <h3 class="person-name">Prof. Vaishali Kulkarni</h3>
+            <p class="person-role">Faculty Mentor</p>
+          </div>
+          <div class="person-card">
+            <div class="mentor-avatar-wrap">
+              <img class="mentor-avatar" src="assets/require/mentors/Prof. Vaibhav Ambekar.jpeg" alt="Prof. Vaibhav Ambekar" />
+            </div>
+            <h3 class="person-name">Prof. Vaibhav Ambekar</h3>
+            <p class="person-role">Faculty Mentor</p>
+          </div>
+          <div class="person-card">
+            <div class="mentor-avatar-wrap">
+              <img class="mentor-avatar" src="assets/require/mentors/Prof. Shruti Kanchugar.jpeg" alt="Prof. Shruti Kanchugar" />
+            </div>
+            <h3 class="person-name">Prof. Shruti Kanchugar</h3>
+            <p class="person-role">Faculty Mentor</p>
+          </div>
+          <div class="person-card">
+            <div class="mentor-avatar-wrap">
+              <img class="mentor-avatar" src="assets/require/mentors/Prof. Shruti Kulkarni.jpeg" alt="Prof. Shruti Kulkarni" />
+            </div>
+            <h3 class="person-name">Prof. Shruti Kulkarni</h3>
+            <p class="person-role">Faculty Mentor</p>
+          </div>
+          <div class="person-card">
+            <div class="mentor-avatar-wrap">
+              <img class="mentor-avatar" src="assets/require/mentors/Prof. Keerti Bhosale.jpeg" alt="Prof. Keerti Bhosale" />
+            </div>
+            <h3 class="person-name">Prof. Keerti Bhosale</h3>
+            <p class="person-role">Faculty Mentor</p>
+          </div>
+          <div class="person-card">
+            <div class="mentor-avatar-wrap">
+              <img class="mentor-avatar" src="assets/require/mentors/Prof. Rucha Bapat.jpeg" alt="Prof. Rucha Bapat" />
+            </div>
+            <h3 class="person-name">Prof. Rucha Bapat</h3>
+            <p class="person-role">Faculty Mentor</p>
+          </div>
+          <div class="person-card">
+            <div class="mentor-avatar-wrap">
+              <img class="mentor-avatar" src="assets/require/mentors/Prof. Siddesh Revankar.jpeg" alt="Prof. Siddesh Revankar" />
+            </div>
+            <h3 class="person-name">Prof. Siddesh Revankar</h3>
+            <p class="person-role">Faculty Mentor</p>
+          </div>
+          <div class="person-card">
+            <div class="mentor-avatar-wrap">
+              <img class="mentor-avatar" src="assets/require/mentors/WhatsApp Image 2026-09-02 at 1.53.21 PM.jpeg" alt="Faculty Mentor" />
+            </div>
+            <h3 class="person-name">Faculty Mentor</h3>
+            <p class="person-role">Faculty Mentor</p>
+          </div>
         </div>
       </div>
 
-      <!-- Student Lead Officers -->
-      <div class="fade-up">
-        <h2 class="section-title">Student Officers</h2>
-        <div class="students-grid">
-
-          <div class="person-card">
-            <h3 class="person-name">Prajwal Kumar</h3>
-            <p class="person-role">President — FLC</p>
-            <a class="phone-link" href="tel:+919876543210">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <span>+91 98765 43210</span>
-            </a>
-          </div>
-
-          <div class="person-card">
-            <h3 class="person-name">Ananya Rao</h3>
-            <p class="person-role">Vice President — FLC</p>
-            <a class="phone-link" href="tel:+919876543211">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <span>+91 98765 43211</span>
-            </a>
-          </div>
-
-          <div class="person-card">
-            <h3 class="person-name">Kiran Hegde</h3>
-            <p class="person-role">Technical Lead</p>
-            <a class="phone-link" href="tel:+919876543212">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <span>+91 98765 43212</span>
-            </a>
-          </div>
-
-          <div class="person-card">
-            <h3 class="person-name">Deepak Nayak</h3>
-            <p class="person-role">Event Logistics Lead</p>
-            <a class="phone-link" href="tel:+919876543213">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <span>+91 98765 43213</span>
-            </a>
-          </div>
-
-          <div class="person-card">
-            <h3 class="person-name">Sowmya Shenoy</h3>
-            <p class="person-role">Design &amp; Media Head</p>
-            <a class="phone-link" href="tel:+919876543214">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <span>+91 98765 43214</span>
-            </a>
-          </div>
-
-          <div class="person-card">
-            <h3 class="person-name">Rohan Bhat</h3>
-            <p class="person-role">Sponsorship Manager</p>
-            <a class="phone-link" href="tel:+919876543215">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              <span>+91 98765 43215</span>
-            </a>
-          </div>
-
-        </div>
+      <!-- Student Committee Members -->
+      <div class="fade-up visible" style="margin-top:4rem;margin-bottom:5rem;">
+        <h2 class="section-title">Student Committee Members</h2>
+        <div id="committee-members-grid" class="committee-members-container fade-up visible"></div>
       </div>
 
     </div>
@@ -461,52 +457,51 @@
     <div class="footer-main">
       <div class="footer-glow"></div>
       <div class="footer-content">
-        <div class="footer-logos">
+        <!-- Logo & College Name -->
+        <div class="footer-col footer-college-col">
           <div class="footer-logo-row">
-            <a class="footer-logo-link" href="index.html"><img src="assets/images/logos/logo-footer.jpeg" alt="Hackfest"
+            <a class="footer-logo-link" href="index.html"><img src="assets/images/logos/logo-footer.png" alt="MAGNUM"
                 width="95" height="50" /></a>
           </div>
-          <div class="footer-social">
-            <p>Connect with us:</p>
-            <ul class="footer-social-links" role="list">
-              <li><a class="footer-social-link" href="https://www.instagram.com/hackfest.dev" target="_blank"
-                  rel="noopener"><svg class="footer-social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-                  </svg></a></li>
-              <li><a class="footer-social-link" href="mailto:hackfest@finiteloop.club"><svg class="footer-social-icon"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
-                    <rect x="2" y="4" width="20" height="16" rx="2" />
-                  </svg></a></li>
-            </ul>
+          <div class="footer-college-info">
+            <h3 class="footer-college-name">College Name</h3>
+            <p class="footer-college-sub">City, State, Country</p>
           </div>
         </div>
-        <div class="footer-map-col">
-          <div style="display:flex;flex-direction:column;align-items:center;gap:1.5rem;">
-            <div class="footer-map-wrap">
-              <iframe title="NMAMIT Location Map"
-                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15538.662520521424!2d74.93399100000002!3d13.18347!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbb56415ad85e5b%3A0x10b77ac6f6afc7fa!2sNitte%20Mahalinga%20Adyantaya%20Memorial%20Institute%20of%20Technology%20-%20NMAMIT!5e0!3m2!1sen!2sin!4v1771872967031!5m2!1sen!2sin"
-                width="250" height="180" style="border:0;" loading="lazy" allowfullscreen></iframe>
-            </div>
-            <div class="footer-address">
-              <p>NMAM Institute of Technology, Nitte</p>
-              <p>Karkala, Udupi District, Karnataka</p>
-            </div>
+        <!-- Developers Details Section -->
+        <div class="footer-col footer-developers-col">
+          <h4 class="footer-developers-title">Developer Details</h4>
+          <div class="footer-developers-list">
+            <a class="developer-card" href="https://linkedin.com" target="_blank" rel="noopener" aria-label="Developer 1 LinkedIn">
+              <svg class="developer-linkedin-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.72a1.47 1.47 0 1 0 0 2.94 1.47 1.47 0 0 0 0-2.94Z"/>
+              </svg>
+              <div class="developer-info">
+                <span class="developer-name">Developer 1</span>
+                <span class="developer-role">LinkedIn Profile</span>
+              </div>
+            </a>
+            <a class="developer-card" href="https://linkedin.com" target="_blank" rel="noopener" aria-label="Developer 2 LinkedIn">
+              <svg class="developer-linkedin-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.72a1.47 1.47 0 1 0 0 2.94 1.47 1.47 0 0 0 0-2.94Z"/>
+              </svg>
+              <div class="developer-info">
+                <span class="developer-name">Developer 2</span>
+                <span class="developer-role">LinkedIn Profile</span>
+              </div>
+            </a>
           </div>
         </div>
       </div>
       <div class="footer-copy">
-        <p>2026 © Hackfest | All rights reserved</p>
+        <p>2026 © MAGNUM | All rights reserved</p>
       </div>
     </div>
   </footer>
 
   <script src="assets/js/ocean-canvas.js"></script>
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/committee-members.js"></script>
 </body>
 
 </html>

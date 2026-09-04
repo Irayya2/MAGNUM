@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React, { useState, useEffect, useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Water }       from './Water';
@@ -8,7 +8,9 @@ import { Island }      from './Island';
 import { FinalIsland } from './FinalIsland';
 import { DaySelector } from './DaySelector';
 import { ViewToggle }  from './ViewToggle';
-import { getEventIslandPositions, allDestinations } from './DayPath';
+import { BoatControls } from './BoatControls';
+import { getEventIslandPositions } from './DayPath';
+import { MAGNUM_EVENTS, getEventStageSchedule } from '../../data/timelineEvents';
 
 /* ─── Cinematic harbor camera (active when no destination is selected) ─── */
 function HarborCamera() {
@@ -31,93 +33,9 @@ function HarborCamera() {
   return null;
 }
 
-/* ─── Per-island schedules ────────────────────────────────────────────────── */
-const ISLAND_SCHEDULES = [
-  // Island 0 — Inauguration
-  [{ time: '10:00–11:00', label: 'Inauguration', icon: '🎉' }],
-  // Islands 1–9 — Day 1 rounds
-  ...Array(9).fill([
-    { time: '11:00–1:00', label: 'Round 1',     icon: '⚡' },
-    { time: '1:00–2:00',  label: 'Lunch Break', icon: '🍽️' },
-    { time: '2:00–5:00',  label: 'Round 2',     icon: '🔥' },
-  ]),
-];
-
-const FINAL_DAY_SCHEDULE = [
-  { time: '10:00–1:00', label: 'Round 3 Final', icon: '🏅' },
-  { time: '1:00–2:00',  label: 'Lunch Break',   icon: '🍽️' },
-  { time: '2:00–5:00',  label: 'Valedictory',   icon: '🏆' },
-];
-
-function IslandScheduleCard({ destinationIndex }) {
-  if (destinationIndex === null || destinationIndex === undefined) return null;
-  const dest = allDestinations[destinationIndex];
-  if (!dest) return null;
-
-  const isFinal = dest.isFinal;
-  const slots   = isFinal ? FINAL_DAY_SCHEDULE : (ISLAND_SCHEDULES[destinationIndex] || ISLAND_SCHEDULES[1]);
-  const dateLabel = isFinal ? '9 Sept · Auditorium' : '8–9 September 2026';
-
-  return (
-    <div style={{
-      position: 'absolute',
-      right: 16,
-      top: '50%',
-      transform: 'translateY(-50%)',
-      background: 'rgba(255,255,255,0.97)',
-      border: '1.5px solid rgba(250,204,21,0.7)',
-      borderRadius: 8,
-      padding: '6px 9px',
-      zIndex: 200,
-      fontFamily: "'Inter','Segoe UI',sans-serif",
-      boxShadow: '0 4px 18px rgba(0,0,0,0.3)',
-      animation: 'tl-fade-in 0.3s ease',
-      minWidth: 110,
-      maxWidth: 140,
-      pointerEvents: 'none',
-    }}>
-      {/* Header */}
-      <div style={{
-        fontSize: 7, fontWeight: 900, color: '#92400e',
-        letterSpacing: '0.08em', textTransform: 'uppercase',
-        textAlign: 'center', paddingBottom: 3,
-        borderBottom: '1px solid rgba(0,0,0,0.08)', marginBottom: 4,
-        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-      }}>
-        {isFinal ? '🏆' : '⚓'} {dest.shortName || dest.title}
-      </div>
-      <div style={{
-        fontSize: 6, color: '#b45309', fontWeight: 700,
-        textAlign: 'center', marginBottom: 4,
-      }}>
-        {dateLabel}
-      </div>
-
-      {/* Schedule rows */}
-      {slots.map((slot, i) => (
-        <div key={i} style={{
-          display: 'flex', alignItems: 'center', gap: 4,
-          padding: '2px 0',
-          borderBottom: i < slots.length - 1 ? '1px solid rgba(0,0,0,0.05)' : 'none',
-        }}>
-          <span style={{ fontSize: 8 }}>{slot.icon}</span>
-          <div>
-            <div style={{ fontSize: 6.5, fontWeight: 800, color: '#b45309', lineHeight: 1.1 }}>
-              {slot.time}
-            </div>
-            <div style={{ fontSize: 7.5, fontWeight: 600, color: '#1e293b', lineHeight: 1.1 }}>
-              {slot.label}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 /* ─── Top progress bar ─── */
 function VoyageProgress({ dockedIndex }) {
-  const total = allDestinations.length;
+  const total = 7;
   const progress = dockedIndex !== null ? ((dockedIndex + 1) / total) * 100 : 0;
 
   return (
@@ -135,6 +53,99 @@ function VoyageProgress({ dockedIndex }) {
   );
 }
 
+/* ─── Dynamic Atmosphere Controller (Fog & Lights inside Canvas) ─── */
+function AtmosphereController({ progress, isSailing }) {
+  const { scene } = useThree();
+  const ambientRef = useRef();
+  const sunRef = useRef();
+
+  const fogDay = useMemo(() => new THREE.Color(0x1a3a5c), []);
+  const fogNight = useMemo(() => new THREE.Color(0x080f1d), []);
+
+  const ambDayColor = useMemo(() => new THREE.Color(0xffffff), []);
+  const ambNightColor = useMemo(() => new THREE.Color(0x7888a0), []);
+
+  const sunDayColor = useMemo(() => new THREE.Color(0xfffaed), []);
+  const sunNightColor = useMemo(() => new THREE.Color(0x60a5fa), []);
+
+  const targetFog = useMemo(() => new THREE.Color(), []);
+  const targetAmbColor = useMemo(() => new THREE.Color(), []);
+  const targetSunColor = useMemo(() => new THREE.Color(), []);
+
+  useFrame(() => {
+    const p = isSailing ? Math.max(0, Math.min(1, progress)) : 0;
+
+    let ambInt, sunInt;
+    if (!isSailing) {
+      targetFog.copy(fogDay);
+      targetAmbColor.copy(ambDayColor);
+      targetSunColor.copy(sunDayColor);
+      ambInt = 1.8;
+      sunInt = 5;
+    } else {
+      targetFog.copy(fogDay).lerp(fogNight, p);
+      targetAmbColor.copy(ambDayColor).lerp(ambNightColor, p);
+      targetSunColor.copy(sunDayColor).lerp(sunNightColor, p);
+      ambInt = THREE.MathUtils.lerp(3.0, 1.2, p);
+      sunInt = THREE.MathUtils.lerp(8.0, 3.2, p);
+    }
+
+    if (scene.fog) {
+      scene.fog.color.lerp(targetFog, 0.05);
+    }
+    if (ambientRef.current) {
+      ambientRef.current.color.lerp(targetAmbColor, 0.05);
+      ambientRef.current.intensity = THREE.MathUtils.lerp(ambientRef.current.intensity, ambInt, 0.05);
+    }
+    if (sunRef.current) {
+      sunRef.current.color.lerp(targetSunColor, 0.05);
+      sunRef.current.intensity = THREE.MathUtils.lerp(sunRef.current.intensity, sunInt, 0.05);
+    }
+  });
+
+  return (
+    <>
+      <ambientLight ref={ambientRef} intensity={isSailing ? 3 : 1.8} />
+      <directionalLight ref={sunRef} position={[100, 100, 100]} intensity={8} castShadow />
+      <directionalLight position={[-100, 80, -50]} intensity={4} />
+      <directionalLight position={[0, 60, 100]} intensity={3} />
+    </>
+  );
+}
+
+/* ─── Color Interpolation Helper for Sky Gradient ─── */
+function lerpRGB(c1, c2, t) {
+  const r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
+  const g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
+  const b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
+  return `rgb(${r},${g},${b})`;
+}
+
+function getSkyGradient(progress, isSailing) {
+  if (!isSailing) {
+    return 'linear-gradient(to bottom, rgb(8,18,46) 0%, rgb(20,50,90) 60%, rgb(40,80,120) 100%)';
+  }
+
+  const p = Math.max(0, Math.min(1, progress));
+
+  // Clean transition directly from Day Sky to Dark Mode Evening Sky
+  // Day (p = 0.0)
+  const dayTop = [35, 95, 155];
+  const dayMid = [90, 170, 215];
+  const dayBot = [150, 210, 238];
+
+  // Dark Mode Evening (p = 1.0)
+  const nightTop = [2, 6, 23];
+  const nightMid = [15, 23, 42];
+  const nightBot = [30, 41, 59];
+
+  const top = lerpRGB(dayTop, nightTop, p);
+  const mid = lerpRGB(dayMid, nightMid, p);
+  const bot = lerpRGB(dayBot, nightBot, p);
+
+  return `linear-gradient(to bottom, ${top} 0%, ${mid} 55%, ${bot} 100%)`;
+}
+
 /* ─── Main 3D Scene Component ─── */
 export function Scene3D({ view, setView, selectedDestination: propSelectedDestination, setSelectedDestination: propSetSelectedDestination }) {
   const [internalSelectedDestination, setInternalSelectedDestination] = useState(null);
@@ -142,30 +153,36 @@ export function Scene3D({ view, setView, selectedDestination: propSelectedDestin
   const setSelectedDestination = propSetSelectedDestination || setInternalSelectedDestination;
 
   const [dockedIndex, setDockedIndex] = useState(null);
+  const [shipProgress, setShipProgress] = useState(0);
   const isMobile = window.innerWidth < 768;
 
   const islandPositions = getEventIslandPositions();
+  const selectedEvent = (selectedDestination !== null && MAGNUM_EVENTS[selectedDestination])
+    ? MAGNUM_EVENTS[selectedDestination]
+    : MAGNUM_EVENTS[0];
+  const stages = getEventStageSchedule(selectedEvent);
 
   const handleSelect = (index) => {
     setSelectedDestination(index);
     setDockedIndex(null);
+    setShipProgress(0);
   };
 
   const handleBackToHarbor = () => {
     setSelectedDestination(null);
     setDockedIndex(null);
+    setShipProgress(0);
   };
 
-  const sky = selectedDestination !== null
-    ? 'linear-gradient(to bottom, rgb(40,90,140) 0%, rgb(100,180,220) 100%)'
-    : 'linear-gradient(to bottom, rgb(8,18,46) 0%, rgb(20,50,90) 60%, rgb(40,80,120) 100%)';
+  const isSailing = selectedDestination !== null;
+  const sky = getSkyGradient(shipProgress, isSailing);
 
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
       {/* Sky background */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: sky, transition: 'background 2s ease',
+        background: sky, transition: 'background 0.3s ease-out',
       }} />
 
       {/* Canvas */}
@@ -177,25 +194,41 @@ export function Scene3D({ view, setView, selectedDestination: propSelectedDestin
           scene.fog = new THREE.Fog(0x1a3a5c, 700, 2200);
         }}
       >
-        <ambientLight intensity={selectedDestination !== null ? 3 : 1.8} />
-        <directionalLight position={[100, 100, 100]} intensity={8} castShadow />
-        <directionalLight position={[-100, 80, -50]} intensity={5} />
-        <directionalLight position={[0, 60, 100]} intensity={4} />
+        <AtmosphereController progress={shipProgress} isSailing={isSailing} />
 
         {selectedDestination === null && <HarborCamera />}
 
         <Suspense fallback={null}>
-          <Water />
+          <Water progress={shipProgress} isSailing={isSailing} />
           <Harbor selectedDay={selectedDestination} onSelect={handleSelect} />
 
           {selectedDestination !== null && (
             <>
               {islandPositions.map((pos, i) => {
                 const isLast = i === islandPositions.length - 1;
-                const dest = allDestinations[i];
+                const stage = stages[i];
                 const isDocked = dockedIndex === i;
-                if (isLast) return <FinalIsland key={i} position={pos} event={dest} isDocked={isDocked} />;
-                return <Island key={i} position={pos} event={dest} isDocked={isDocked} islandIndex={i} />;
+                if (isLast) {
+                  return (
+                    <FinalIsland
+                      key={i}
+                      position={pos}
+                      stage={stage}
+                      event={selectedEvent}
+                      isDocked={isDocked}
+                    />
+                  );
+                }
+                return (
+                  <Island
+                    key={i}
+                    position={pos}
+                    stage={stage}
+                    event={selectedEvent}
+                    isDocked={isDocked}
+                    islandIndex={i}
+                  />
+                );
               })}
 
               <ActiveShip
@@ -203,6 +236,7 @@ export function Scene3D({ view, setView, selectedDestination: propSelectedDestin
                 day={selectedDestination}
                 isMobile={isMobile}
                 onDock={setDockedIndex}
+                onProgress={setShipProgress}
               />
             </>
           )}
@@ -215,26 +249,14 @@ export function Scene3D({ view, setView, selectedDestination: propSelectedDestin
         onSelect={handleSelect}
       />
 
+      {/* Touch & Click Boat Movement Controls (Mobile Friendly) */}
+      <BoatControls
+        selectedDestination={selectedDestination}
+        onSelect={handleSelect}
+      />
+
       {selectedDestination !== null && (
         <VoyageProgress dockedIndex={dockedIndex} />
-      )}
-
-
-
-      {selectedDestination !== null && (
-        <div style={{
-          position: 'absolute', bottom: 26, left: '50%',
-          transform: 'translateX(-50%)', pointerEvents: 'none',
-          color: 'rgba(250,204,21,0.8)', fontSize: 11, fontWeight: 700,
-          letterSpacing: '0.09em', textTransform: 'uppercase',
-          fontFamily: "'Inter','Segoe UI',sans-serif",
-          display: 'flex', alignItems: 'center', gap: 8,
-          background: 'rgba(2,6,23,0.75)', padding: '6px 16px', borderRadius: 999,
-          border: '1px solid rgba(250,204,21,0.2)'
-        }}>
-          <span style={{ animation: 'tl-bounce 1.5s ease-in-out infinite' }}>↕</span>
-          Scroll to sail along the Event Voyage
-        </div>
       )}
 
       {selectedDestination !== null && (
@@ -255,15 +277,6 @@ export function Scene3D({ view, setView, selectedDestination: propSelectedDestin
         </button>
       )}
 
-      {/* View Toggle */}
-      <div style={{
-        position: 'absolute',
-        bottom: selectedDestination !== null ? 48 : 28,
-        left: '50%', transform: 'translateX(-50%)',
-        zIndex: 20, transition: 'bottom 0.3s',
-      }}>
-        <ViewToggle view={view} setView={setView} />
-      </div>
     </div>
   );
 }

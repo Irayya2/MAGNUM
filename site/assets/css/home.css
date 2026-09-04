@@ -35,6 +35,19 @@
   box-sizing: border-box;
 }
 
+/* Institutional logos container — Middle section */
+.hero-logos {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  pointer-events: none;
+  margin-top: clamp(1.5rem, 4vh, 3rem);
+  margin-bottom: 2rem;
+}
+
 /* 3-column grid: [left logo] [center college name PNG] [right logo]
    1fr on each side guarantees the center column is always
    viewport-centered regardless of logo sizes. */
@@ -183,70 +196,110 @@ html.dark .hero-nmamit {
   filter: brightness(0) invert(1) drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
 }
 
-/* Institutional logos container — Middle section */
-.hero-logos {
-  position: relative;
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  pointer-events: none;
-  margin-top: clamp(1.5rem, 4vh, 3rem);
-  margin-bottom: 2rem;
-}
-
-/* ── Header row responsive — Tablet (≤768px) ────────── */
+/* ── Header row responsive — Mobile & Tablet (≤768px) ────────── */
 @media (max-width: 768px) {
+  .hero-logos {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
   .hero-header-row {
-    gap: clamp(0.5rem, 2vw, 1rem);
-    padding: 0 clamp(0.75rem, 3vw, 1.5rem);
-  }
-
-  .hero-kls-logo,
-  .hero-bca-logo {
-    width: clamp(2.25rem, 7vw, 3.5rem);
-  }
-
-  .hero-nmamit {
-    width: clamp(10rem, 44vw, 20rem);
-    max-width: 58vw;
-  }
-}
-
-/* ── Header row responsive — Mobile (≤480px) ─────────── */
-@media (max-width: 480px) {
-  .hero-header-row {
-    gap: clamp(0.3rem, 1.5vw, 0.6rem);
-    padding: 0 clamp(0.5rem, 2.5vw, 1rem);
-  }
-
-  .hero-kls-logo,
-  .hero-bca-logo {
-    width: clamp(2rem, 9vw, 2.75rem);
-  }
-
-  .hero-nmamit {
-    width: clamp(9rem, 52vw, 15rem);
-    max-width: 62vw;
-  }
-}
-
-/* ── Header row responsive — Small mobile (≤360px) ──── */
-@media (max-width: 360px) {
-  .hero-header-row {
-    gap: 0.3rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: clamp(0.3rem, 2vw, 0.75rem);
     padding: 0 0.5rem;
+    width: 100%;
+    max-width: 100vw;
   }
 
   .hero-kls-logo,
   .hero-bca-logo {
-    width: clamp(1.75rem, 11vw, 2.25rem);
+    width: clamp(2rem, 8vw, 3.2rem);
+    min-width: 1.8rem;
+    height: auto;
+    object-fit: contain;
+    transform: none;
+    flex-shrink: 0;
   }
 
-  .hero-nmamit {
-    width: clamp(8rem, 56vw, 12rem);
-    max-width: 64vw;
+  .hero-kls-logo:hover,
+  .hero-bca-logo:hover {
+    transform: scale(1.06);
+  }
+
+  .hero-college-text {
+    transform: none;
+    min-width: 0;
+    width: 100%;
+    gap: 0.05rem;
+  }
+
+  .college-society {
+    font-size: clamp(0.5rem, 2.2vw, 0.75rem);
+  }
+
+  .college-name {
+    font-size: clamp(0.75rem, 3.4vw, 1.25rem);
+  }
+
+  .college-dept {
+    font-size: clamp(0.85rem, 3.8vw, 1.35rem);
+  }
+
+  .college-location {
+    font-size: clamp(0.5rem, 2.2vw, 0.75rem);
+  }
+
+  .college-naac {
+    font-size: clamp(0.48rem, 2vw, 0.7rem);
+  }
+
+  .college-initiative {
+    font-size: clamp(0.48rem, 2vw, 0.7rem);
+    margin-top: 0.1rem;
+  }
+
+  .hero-presents {
+    margin-top: 0.25rem;
+    transform: none;
+    font-size: clamp(0.6rem, 2.5vw, 0.8rem);
+  }
+
+  .hero-center {
+    margin-top: 1rem;
+  }
+
+  .hero-main-logo {
+    width: clamp(12rem, 78vw, 24rem);
+    max-width: 88vw;
+    margin-bottom: 1rem;
+  }
+}
+
+/* ── Landscape mode for low height devices like Nest Hub (≤650px height) ── */
+@media (max-height: 650px) {
+  #hero {
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .hero-logos {
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .hero-center {
+    margin-top: 0.5rem;
+  }
+
+  .hero-main-logo {
+    width: clamp(10rem, 35vw, 18rem);
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-scroll {
+    margin-top: 0.5rem;
   }
 }
 
@@ -262,6 +315,8 @@ html.dark .hero-nmamit {
   text-shadow: none;
   text-align: center;
   width: 100%;
+  margin-top: 0.4rem;
+  margin-bottom: 0;
   transition: color 0.4s ease;
 }
 
@@ -280,7 +335,7 @@ html.dark .hero-presents {
 }
 
 .hero-main-logo:hover {
-  transform: scale(1.04);
+  transform: scale(1.01);
 }
 
 /* Scroll tag */
@@ -1164,132 +1219,4 @@ html.dark .hero-presents {
 
 .prize-plus {
   color: rgba(251, 191, 36, 0.7);
-}
-
-/* ── FAQ ───────────────────────────────────────────────── */
-.faq-title {
-  font-size: clamp(2.25rem, 5vw, 4.5rem);
-  margin-bottom: 1rem;
-  word-break: break-word;
-}
-
-.faq-sub {
-  text-align: center;
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
-  color: rgba(165, 243, 252, 0.6);
-  letter-spacing: 0.05em;
-  margin-bottom: 3rem;
-}
-
-.faq-list {
-  max-width: 48rem;
-  width: 100%;
-  margin: 0 auto 3rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  box-sizing: border-box;
-}
-
-.faq-item {
-  border-color: rgba(34, 211, 238, 0.2);
-  width: 100%;
-}
-
-.faq-item:hover {
-  border-color: rgba(34, 211, 238, 0.4);
-}
-
-.faq-toggle {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.25rem;
-  text-align: left;
-  gap: 1rem;
-}
-
-@media (min-width: 768px) {
-  .faq-toggle {
-    padding: 1.5rem 2rem;
-  }
-}
-
-.faq-toggle span {
-  font-family: var(--font-pirate);
-  font-size: clamp(1.05rem, 2.5vw, 1.25rem);
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 0.025em;
-  flex: 1;
-  word-break: break-word;
-}
-
-.faq-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--cyan-400);
-  flex-shrink: 0;
-  transition: transform 0.3s ease;
-}
-
-.faq-icon.rotated {
-  transform: rotate(180deg);
-}
-
-.faq-panel {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease;
-}
-
-.faq-panel.open {
-  max-height: 1000px;
-}
-
-.faq-divider {
-  border: none;
-  height: 1px;
-  background: rgba(34, 211, 238, 0.15);
-  margin: 0 1.25rem;
-}
-
-.faq-panel p {
-  padding: 0.875rem 1.25rem 1.25rem;
-  font-size: clamp(0.875rem, 2vw, 1rem);
-  color: #9ca3af;
-  line-height: 1.6;
-}
-
-@media (min-width: 768px) {
-  .faq-divider {
-    margin: 0 2rem;
-  }
-
-  .faq-panel p {
-    padding: 1rem 2rem 1.5rem;
-  }
-}
-
-.faq-contact {
-  max-width: 48rem;
-  width: 100%;
-  margin: 0 auto;
-  padding: clamp(1.25rem, 3vw, 2rem);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  text-align: center;
-  border-color: rgba(34, 211, 238, 0.2);
-  box-sizing: border-box;
-}
-
-.faq-contact p {
-  font-family: var(--font-pirate);
-  font-size: clamp(1rem, 2.5vw, 1.125rem);
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 0.025em;
 }

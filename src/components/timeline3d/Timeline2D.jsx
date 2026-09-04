@@ -1,6 +1,5 @@
 import React from 'react';
 import { allDestinations } from './DayPath';
-import { ViewToggle } from './ViewToggle';
 import { DaySelector } from './DaySelector';
 import { Event2DCard } from './Event2DCard';
 
@@ -27,13 +26,6 @@ export function Timeline2D({ view, setView, selectedDestination, setSelectedDest
           The Voyage Through <span style={s.accent}>MAGNUM</span> Events
         </h1>
         <p style={s.sub}>Select an event to view its schedule and voyage information</p>
-
-        {/* View Toggle */}
-        {view && setView && (
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-            <ViewToggle view={view} setView={setView} />
-          </div>
-        )}
 
         {/* Event Dropdown - Single Source of Selection */}
         <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
@@ -119,7 +111,7 @@ const s = {
     margin: '0 0 20px',
   },
   body: {
-    maxWidth: 800,
+    maxWidth: 1050,
     margin: '0 auto',
     padding: '0 16px 60px',
     boxSizing: 'border-box',

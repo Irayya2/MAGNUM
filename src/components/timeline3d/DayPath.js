@@ -1,18 +1,9 @@
 import * as THREE from 'three';
 import { MAGNUM_EVENTS, FINAL_DESTINATION } from '../../data/timelineEvents';
 
-/* ─── 10 Events + 1 Final Common Island ───────────────────────────────────── */
-export const allDestinations = [
-  ...MAGNUM_EVENTS.map(e => ({ ...e, isFinal: false })),
-  {
-    ...FINAL_DESTINATION,
-    isFinal: true,
-    desc: "The grand finale of MAGNUM 2026-27. All event journeys converge at the Auditorium for the Winner Announcement.",
-    rounds: [
-      { name: "WINNER ANNOUNCEMENT", date: "9 SEPTEMBER", time: "1:30 PM Onwards", schedule: "Grand Auditorium Gathering" }
-    ]
-  }
-];
+/* ─── 10 MAGNUM Events ─────────────────────────────────────────────────── */
+export const allDestinations = MAGNUM_EVENTS.map(e => ({ ...e, isFinal: false }));
+
 
 /* ─── Harbor boat launching positions for 10 Event Ships ─────────────────── */
 export const harborBoatPositions = [
@@ -28,23 +19,21 @@ export const harborBoatPositions = [
   [360,  5, -70], // 9. Cultural Event (Group)
 ];
 
-/* ─── 11 Island Positions (10 Event Islands + 1 Final Common Island) ────── */
-export const EVENT_ISLANDS = [
-  [-120, 10, 200],   // 1. Coding Event
-  [130,  10, 420],   // 2. Communication Event
-  [-160, 10, 640],   // 3. Content Creation Event
-  [160,  10, 860],   // 4. Cybersecurity Event
-  [-170, 10, 1080],  // 5. Data Analytics Event
-  [170,  10, 1300],  // 6. Designing Event
-  [-150, 10, 1520],  // 7. Gaming Event
-  [150,  10, 1740],  // 8. Quiz Event
-  [-160, 10, 1960],  // 9. Prompt Engineering Event
-  [160,  10, 2180],  // 10. Cultural Event (Group)
-  [0,    25, 2480],  // 11. FINAL COMMON ISLAND (AUDITORIUM)
+/* ─── 7 Stage Island Positions (6 Stage Islands + 1 Final Common Destination) ────── */
+export const STAGE_ISLAND_POSITIONS = [
+  [-120, 10, 250],   // 1. Inauguration (8 Sept, 9:00 AM – 10:00 AM)
+  [140,  10, 580],   // 2. Round 1 (8 Sept, 10:00 AM – 1:00 PM)
+  [-160, 10, 910],   // 3. Lunch Break (8 Sept, 1:00 PM – 2:00 PM)
+  [160,  10, 1240],  // 4. Round 2 (8 Sept, 2:00 PM – 5:00 PM)
+  [-170, 10, 1570],  // 5. Round 3 Final (9 Sept, 9:00 AM – 1:00 PM)
+  [170,  10, 1900],  // 6. Lunch Break (9 Sept, 1:00 PM – 2:00 PM)
+  [0,    25, 2300],  // 7. FINAL COMMON DESTINATION (Valedictory / Closing Ceremony + Prize Distribution)
 ];
 
+export const EVENT_ISLANDS = STAGE_ISLAND_POSITIONS;
+
 export function getEventIslandPositions() {
-  return EVENT_ISLANDS;
+  return STAGE_ISLAND_POSITIONS;
 }
 
 // Backward compatibility alias
@@ -55,7 +44,7 @@ export const dayEvents = {
 };
 
 export function getDayIslandPositions(day = 1) {
-  return EVENT_ISLANDS;
+  return STAGE_ISLAND_POSITIONS;
 }
 
 export const ISLAND_SAFETY_RADII = {
