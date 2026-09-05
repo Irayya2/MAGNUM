@@ -741,6 +741,14 @@ button {
   gap: 0.15rem;
   align-items: center;
   text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+a.footer-college-info:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
 }
 
 .footer-college-line {
@@ -830,6 +838,20 @@ button {
   text-decoration: none;
   transition: all 0.3s ease;
   backdrop-filter: blur(4px);
+}
+
+.developer-avatar {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(251, 191, 36, 0.5);
+  flex-shrink: 0;
+  transition: border-color 0.3s ease;
+}
+
+.developer-card:hover .developer-avatar {
+  border-color: rgba(251, 191, 36, 0.9);
 }
 
 .developer-card:hover {

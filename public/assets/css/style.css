@@ -834,6 +834,20 @@ button {
   backdrop-filter: blur(4px);
 }
 
+.developer-avatar {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(251, 191, 36, 0.5);
+  flex-shrink: 0;
+  transition: border-color 0.3s ease;
+}
+
+.developer-card:hover .developer-avatar {
+  border-color: rgba(251, 191, 36, 0.9);
+}
+
 .developer-card:hover {
   background: rgba(251, 191, 36, 0.15);
   border-color: rgba(251, 191, 36, 0.7);

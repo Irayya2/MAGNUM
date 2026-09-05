@@ -51,7 +51,7 @@ export function FinalIsland({ position, stage, event, isDocked }) {
         <Html
           position={[0, 32, 0]}
           center
-          distanceFactor={380}
+          distanceFactor={200}
           occlude={false}
           zIndexRange={[200, 300]}
           style={{ pointerEvents: 'none' }}
@@ -63,11 +63,11 @@ export function FinalIsland({ position, stage, event, isDocked }) {
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             border: '2px solid rgba(250, 204, 21, 0.75)',
-            borderRadius: 20,
-            padding: '16px 20px',
-            minWidth: 210,
-            maxWidth: 260,
-            boxShadow: '0 16px 48px rgba(0, 0, 0, 0.8), 0 0 30px rgba(250, 204, 21, 0.35)',
+            borderRadius: 16,
+            padding: '12px 16px',
+            minWidth: 170,
+            maxWidth: 220,
+            boxShadow: '0 12px 32px rgba(0, 0, 0, 0.8), 0 0 20px rgba(250, 204, 21, 0.35)',
             fontFamily: "'Inter','Segoe UI',sans-serif",
             textAlign: 'center',
             transformOrigin: 'bottom center',

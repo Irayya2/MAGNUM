@@ -6,11 +6,23 @@ import { Harbor }      from './Harbor';
 import { ActiveShip }  from './ActiveShip';
 import { Island }      from './Island';
 import { FinalIsland } from './FinalIsland';
+import { Clouds }      from './Clouds';
 import { DaySelector } from './DaySelector';
 import { ViewToggle }  from './ViewToggle';
 import { BoatControls } from './BoatControls';
 import { getEventIslandPositions } from './DayPath';
 import { MAGNUM_EVENTS, getEventStageSchedule } from '../../data/timelineEvents';
+
+// Suppress THREE.Clock deprecation warning emitted by Three.js when R3F initializes internal Canvas clock
+if (typeof window !== 'undefined') {
+  const _origWarn = console.warn;
+  console.warn = (...args) => {
+    if (typeof args[0] === 'string' && args[0].includes('THREE.Clock: This module has been deprecated')) {
+      return;
+    }
+    _origWarn.apply(console, args);
+  };
+}
 
 /* ─── Cinematic harbor camera (active when no destination is selected) ─── */
 function HarborCamera() {
@@ -53,46 +65,72 @@ function VoyageProgress({ dockedIndex }) {
   );
 }
 
-/* ─── Dynamic Atmosphere Controller (Fog & Lights inside Canvas) ─── */
+/* ─── Dynamic Atmosphere Controller (Multi-stage Time-of-Day Climate) ─── */
 function AtmosphereController({ progress, isSailing }) {
   const { scene } = useThree();
   const ambientRef = useRef();
   const sunRef = useRef();
 
-  const fogDay = useMemo(() => new THREE.Color(0x1a3a5c), []);
-  const fogNight = useMemo(() => new THREE.Color(0x080f1d), []);
+  const fogMorning = useMemo(() => new THREE.Color(0x5294c7), []);
+  const fogMidday  = useMemo(() => new THREE.Color(0x38bdf8), []);
+  const fogSunset  = useMemo(() => new THREE.Color(0xc96e38), []);
+  const fogNight   = useMemo(() => new THREE.Color(0x0a1628), []);
 
-  const ambDayColor = useMemo(() => new THREE.Color(0xffffff), []);
-  const ambNightColor = useMemo(() => new THREE.Color(0x7888a0), []);
+  const ambMorning = useMemo(() => new THREE.Color(0xffffff), []);
+  const ambMidday  = useMemo(() => new THREE.Color(0xffffff), []);
+  const ambSunset  = useMemo(() => new THREE.Color(0xffd1a4), []);
+  const ambNight   = useMemo(() => new THREE.Color(0x7888a0), []);
 
-  const sunDayColor = useMemo(() => new THREE.Color(0xfffaed), []);
-  const sunNightColor = useMemo(() => new THREE.Color(0x60a5fa), []);
+  const sunMorning = useMemo(() => new THREE.Color(0xfff8e7), []);
+  const sunMidday  = useMemo(() => new THREE.Color(0xffffff), []);
+  const sunSunset  = useMemo(() => new THREE.Color(0xf97316), []);
+  const sunNight   = useMemo(() => new THREE.Color(0x60a5fa), []);
 
   const targetFog = useMemo(() => new THREE.Color(), []);
   const targetAmbColor = useMemo(() => new THREE.Color(), []);
   const targetSunColor = useMemo(() => new THREE.Color(), []);
 
-  useFrame(() => {
+  useFrame((state) => {
     const p = isSailing ? Math.max(0, Math.min(1, progress)) : 0;
 
     let ambInt, sunInt;
     if (!isSailing) {
-      targetFog.copy(fogDay);
-      targetAmbColor.copy(ambDayColor);
-      targetSunColor.copy(sunDayColor);
-      ambInt = 1.8;
-      sunInt = 5;
+      targetFog.copy(fogMorning);
+      targetAmbColor.copy(ambMorning);
+      targetSunColor.copy(sunMorning);
+      ambInt = 2.0;
+      sunInt = 5.0;
+    } else if (p < 0.3) {
+      const t = p / 0.3;
+      targetFog.copy(fogMorning).lerp(fogMidday, t);
+      targetAmbColor.copy(ambMorning).lerp(ambMidday, t);
+      targetSunColor.copy(sunMorning).lerp(sunMidday, t);
+      ambInt = THREE.MathUtils.lerp(2.0, 3.0, t);
+      sunInt = THREE.MathUtils.lerp(5.0, 8.0, t);
+    } else if (p < 0.7) {
+      const t = (p - 0.3) / 0.4;
+      targetFog.copy(fogMidday).lerp(fogSunset, t);
+      targetAmbColor.copy(ambMidday).lerp(ambSunset, t);
+      targetSunColor.copy(sunMidday).lerp(sunSunset, t);
+      ambInt = THREE.MathUtils.lerp(3.0, 2.2, t);
+      sunInt = THREE.MathUtils.lerp(8.0, 6.0, t);
     } else {
-      targetFog.copy(fogDay).lerp(fogNight, p);
-      targetAmbColor.copy(ambDayColor).lerp(ambNightColor, p);
-      targetSunColor.copy(sunDayColor).lerp(sunNightColor, p);
-      ambInt = THREE.MathUtils.lerp(3.0, 1.2, p);
-      sunInt = THREE.MathUtils.lerp(8.0, 3.2, p);
+      const t = (p - 0.7) / 0.3;
+      targetFog.copy(fogSunset).lerp(fogNight, t);
+      targetAmbColor.copy(ambSunset).lerp(ambNight, t);
+      targetSunColor.copy(sunSunset).lerp(sunNight, t);
+      ambInt = THREE.MathUtils.lerp(2.2, 1.2, t);
+      sunInt = THREE.MathUtils.lerp(6.0, 3.0, t);
     }
 
     if (scene.fog) {
       scene.fog.color.lerp(targetFog, 0.05);
     }
+    if (!scene.background || !(scene.background instanceof THREE.Color)) {
+      scene.background = new THREE.Color();
+    }
+    scene.background.lerp(targetFog, 0.05);
+
     if (ambientRef.current) {
       ambientRef.current.color.lerp(targetAmbColor, 0.05);
       ambientRef.current.intensity = THREE.MathUtils.lerp(ambientRef.current.intensity, ambInt, 0.05);
@@ -101,11 +139,14 @@ function AtmosphereController({ progress, isSailing }) {
       sunRef.current.color.lerp(targetSunColor, 0.05);
       sunRef.current.intensity = THREE.MathUtils.lerp(sunRef.current.intensity, sunInt, 0.05);
     }
+    
+    // Ensure WebGL clear color matches fog
+    state.gl.setClearColor(scene.fog.color, 1.0);
   });
 
   return (
     <>
-      <ambientLight ref={ambientRef} intensity={isSailing ? 3 : 1.8} />
+      <ambientLight ref={ambientRef} intensity={isSailing ? 3 : 2.0} />
       <directionalLight ref={sunRef} position={[100, 100, 100]} intensity={8} castShadow />
       <directionalLight position={[-100, 80, -50]} intensity={4} />
       <directionalLight position={[0, 60, 100]} intensity={3} />
@@ -123,25 +164,32 @@ function lerpRGB(c1, c2, t) {
 
 function getSkyGradient(progress, isSailing) {
   if (!isSailing) {
-    return 'linear-gradient(to bottom, rgb(8,18,46) 0%, rgb(20,50,90) 60%, rgb(40,80,120) 100%)';
+    return 'linear-gradient(to bottom, rgb(20,75,140) 0%, rgb(60,140,205) 50%, rgb(130,200,240) 100%)';
   }
 
   const p = Math.max(0, Math.min(1, progress));
 
-  // Clean transition directly from Day Sky to Dark Mode Evening Sky
-  // Day (p = 0.0)
-  const dayTop = [35, 95, 155];
-  const dayMid = [90, 170, 215];
-  const dayBot = [150, 210, 238];
+  let top, mid, bot;
 
-  // Dark Mode Evening (p = 1.0)
-  const nightTop = [2, 6, 23];
-  const nightMid = [15, 23, 42];
-  const nightBot = [30, 41, 59];
-
-  const top = lerpRGB(dayTop, nightTop, p);
-  const mid = lerpRGB(dayMid, nightMid, p);
-  const bot = lerpRGB(dayBot, nightBot, p);
+  if (p < 0.3) {
+    // Morning -> Midday
+    const t = p / 0.3;
+    top = lerpRGB([25, 80, 150], [14, 116, 144], t);
+    mid = lerpRGB([70, 155, 215], [56, 189, 248], t);
+    bot = lerpRGB([140, 210, 245], [186, 230, 253], t);
+  } else if (p < 0.7) {
+    // Midday -> Dramatic Golden Sunset
+    const t = (p - 0.3) / 0.4;
+    top = lerpRGB([14, 116, 144], [88, 28, 135], t);
+    mid = lerpRGB([56, 189, 248], [194, 65, 12], t);
+    bot = lerpRGB([186, 230, 253], [253, 186, 116], t);
+  } else {
+    // Sunset -> Midnight Sky
+    const t = (p - 0.7) / 0.3;
+    top = lerpRGB([88, 28, 135], [2, 6, 23], t);
+    mid = lerpRGB([194, 65, 12], [15, 23, 42], t);
+    bot = lerpRGB([253, 186, 116], [30, 41, 59], t);
+  }
 
   return `linear-gradient(to bottom, ${top} 0%, ${mid} 55%, ${bot} 100%)`;
 }
@@ -199,6 +247,7 @@ export function Scene3D({ view, setView, selectedDestination: propSelectedDestin
         {selectedDestination === null && <HarborCamera />}
 
         <Suspense fallback={null}>
+          <Clouds progress={shipProgress} isSailing={isSailing} />
           <Water progress={shipProgress} isSailing={isSailing} />
           <Harbor selectedDay={selectedDestination} onSelect={handleSelect} />
 

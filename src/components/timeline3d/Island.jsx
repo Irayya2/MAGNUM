@@ -29,7 +29,7 @@ function SingleStageCard({ stage, event }) {
     <Html
       position={[0, 24, 0]}
       center
-      distanceFactor={320}
+      distanceFactor={160}
       occlude={false}
       zIndexRange={[200, 300]}
       style={{ pointerEvents: 'none' }}
@@ -41,11 +41,11 @@ function SingleStageCard({ stage, event }) {
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         border: '1.5px solid rgba(250, 204, 21, 0.55)',
-        borderRadius: 18,
-        padding: '14px 18px',
-        minWidth: 190,
-        maxWidth: 240,
-        boxShadow: '0 12px 36px rgba(0, 0, 0, 0.7), 0 0 22px rgba(250, 204, 21, 0.25)',
+        borderRadius: 14,
+        padding: '10px 14px',
+        minWidth: 150,
+        maxWidth: 200,
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.7), 0 0 16px rgba(250, 204, 21, 0.25)',
         fontFamily: "'Inter','Segoe UI',sans-serif",
         textAlign: 'center',
         transformOrigin: 'bottom center',

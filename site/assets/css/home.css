@@ -143,7 +143,17 @@
   font-size: clamp(0.7rem, 1.2vw, 0.85rem);
   font-weight: 700;
   color: #000000;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: transform 0.2s ease, opacity 0.2s ease, color 0.4s ease;
 }
+
+a.college-location:hover {
+  opacity: 0.8;
+  transform: scale(1.04);
+}
+
 
 /* 5 — Small + italic */
 .college-naac {
