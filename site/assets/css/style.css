@@ -838,6 +838,8 @@ a.footer-college-info:hover {
   text-decoration: none;
   transition: all 0.3s ease;
   backdrop-filter: blur(4px);
+  width: 240px;
+  box-sizing: border-box;
 }
 
 .developer-avatar {
