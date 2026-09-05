@@ -34,7 +34,7 @@
     .event-circle { 
       width:360px; height:360px; border-radius:50%; overflow:hidden; 
       box-shadow: 0 0 30px rgba(0,0,0,0.6); 
-      position:relative; cursor:pointer; transition:transform 0.4s ease-in-out; 
+      position:relative; cursor:pointer; transition:transform 0.4s ease-in-out; z-index:20;
     }
     .event-circle img { width:100%;height:100%;object-fit:cover;display:block;pointer-events:none; }
     
@@ -415,7 +415,7 @@
       var ctx=tC.getContext('2d');
       var clr = eventColors[idx];
       
-      function rsz(){var r=circle.getBoundingClientRect(),s=Math.round(Math.max(r.width,r.height)*2.2);tC.width=s;tC.height=s;tC.style.width=s+'px';tC.style.height=s+'px';}
+      function rsz(){var r=circle.getBoundingClientRect(),s=Math.round(Math.max(r.width,r.height)*2.2);tC.width=s;tC.height=s;tC.style.width=s+'px';tC.style.height=s+'px';tC.style.top=(circle.offsetTop+circle.offsetHeight/2)+'px';}
       rsz();window.addEventListener('resize',rsz);
       
       var lightRaf = null;
