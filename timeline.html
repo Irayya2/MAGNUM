@@ -43,49 +43,7 @@
       z-index: 0;
     }
 
-    /* ── View Toggle Buttons in Navbar ── */
-    #view-toggle-wrap {
-      display: none;          /* hidden on mobile */
-      align-items: center;
-      gap: 3px;
-      background: rgba(2,6,23,0.75);
-      border: 1px solid rgba(250,204,21,0.35);
-      border-radius: 999px;
-      padding: 3px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 2px 12px rgba(0,0,0,0.4), 0 0 8px rgba(250,204,21,0.1);
-      flex-shrink: 0;
-    }
-    @media (min-width: 768px) {
-      #view-toggle-wrap {
-        display: inline-flex; /* show on tablet/desktop */
-      }
-    }
-    .view-btn {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 13px;
-      border-radius: 999px;
-      border: none;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      letter-spacing: 0.04em;
-      font-family: 'Inter','Segoe UI',sans-serif;
-      transition: all 0.22s ease;
-      user-select: none;
-      background: transparent;
-      color: #94a3b8;
-    }
-    .view-btn.active {
-      background: linear-gradient(135deg, #fef08a 0%, #eab308 100%);
-      color: #020617;
-      box-shadow: 0 2px 10px rgba(250,204,21,0.4);
-    }
-    .view-btn:hover:not(.active) {
-      color: #e2e8f0;
-    }
+
   </style>
 </head>
 
@@ -119,10 +77,7 @@
         <a class="nav-link active" href="/timeline">Timeline</a>
         <a class="nav-link" href="/contact">Contact</a>
       </nav>
-      <div id="view-toggle-wrap">
-        <button id="btn-3d" class="view-btn active" onclick="setTimelineView('3d')" aria-pressed="true">⛵ 3D</button>
-        <button id="btn-2d" class="view-btn" onclick="setTimelineView('2d')" aria-pressed="false">📋 2D</button>
-      </div>
+
       <button id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
@@ -135,11 +90,7 @@
       <a class="mobile-nav-link" href="/events">Events</a>
       <a class="mobile-nav-link active" href="/timeline">Timeline</a>
       <a class="mobile-nav-link" href="/contact">Contact</a>
-      <!-- View toggle inside mobile menu -->
-      <div id="view-toggle-mobile" style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(34,211,238,0.15);">
-        <button id="btn-3d-mob" class="view-btn active" onclick="setTimelineView('3d')" style="flex:1;justify-content:center;">⛵ 3D View</button>
-        <button id="btn-2d-mob" class="view-btn" onclick="setTimelineView('2d')" style="flex:1;justify-content:center;">📋 2D View</button>
-      </div>
+
     </div>
   </div>
 
@@ -150,27 +101,7 @@
   <script type="module" src="/src/main.jsx"></script>
   <script src="/assets/js/main.js"></script>
 
-  <script>
-    // ── Bridge: HTML navbar ↔ React view state ──────────────
-    function setTimelineView(v) {
-      // Desktop buttons
-      document.getElementById('btn-3d').classList.toggle('active', v === '3d');
-      document.getElementById('btn-2d').classList.toggle('active', v === '2d');
-      document.getElementById('btn-3d').setAttribute('aria-pressed', v === '3d');
-      document.getElementById('btn-2d').setAttribute('aria-pressed', v === '2d');
-      // Mobile buttons
-      document.getElementById('btn-3d-mob').classList.toggle('active', v === '3d');
-      document.getElementById('btn-2d-mob').classList.toggle('active', v === '2d');
-      window.dispatchEvent(new CustomEvent('timeline:setView', { detail: v }));
-    }
-    // Keep button state in sync when React changes the view internally
-    window.addEventListener('timeline:viewChanged', function(e) {
-      document.getElementById('btn-3d').classList.toggle('active', e.detail === '3d');
-      document.getElementById('btn-2d').classList.toggle('active', e.detail === '2d');
-      document.getElementById('btn-3d-mob').classList.toggle('active', e.detail === '3d');
-      document.getElementById('btn-2d-mob').classList.toggle('active', e.detail === '2d');
-    });
-  </script>
+
 </body>
 
 </html>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Timeline2D } from './Timeline2D';
 import { Scene3D }    from './Scene3D';
+import { ViewToggle } from './ViewToggle';
 
 /* ─── Main exported component ────────────────────────────────────────────── */
 export function TimelineScene() {
@@ -59,6 +60,16 @@ export function TimelineScene() {
           />
         </div>
       )}
+
+      {/* Floating View Toggle */}
+      <div style={{
+        position: 'absolute',
+        bottom: '24px',
+        right: '24px',
+        zIndex: 50
+      }}>
+        <ViewToggle view={view} setView={setView} />
+      </div>
     </div>
   );
 }

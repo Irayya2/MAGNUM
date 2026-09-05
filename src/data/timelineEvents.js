@@ -317,17 +317,6 @@ const RAW_EVENTS = [
     glow: GOLD_GLOW,
     category: "Technical",
     desc: "Harness generative AI models with precision prompts to synthesize solutions, code, and media.",
-  },
-  {
-    id: "cultural-event-group",
-    title: "GROUP EVENT (RHYTHM RAIDERS)",
-    shortName: "Rhythm Raiders",
-    logo: "/assets/images/Events/RHYTHM RAIDERS.png",
-    icon: "🎭",
-    accent: GOLD_ACCENT,
-    glow: GOLD_GLOW,
-    category: "Cultural",
-    desc: "Celebrate artistry, choreography, and group cultural performances on the grand stage.",
   }
 ];
 
