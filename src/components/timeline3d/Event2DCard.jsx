@@ -374,6 +374,7 @@ export function Event2DCard({ event, destinationIndex }) {
                         fontWeight: 800,
                         letterSpacing: '0.06em',
                         marginBottom: 8,
+                        whiteSpace: 'pre-line',
                       }}
                     >
                       🕒 {stepData.time}

@@ -1,4 +1,4 @@
-(function() {
+(function () {
   const COMMITTEE_MEMBERS = [
     // CORE COMMITTEE
     { name: "Chaitanya Shridhar Karekar", committee: "Core Committee" },
@@ -92,7 +92,7 @@
     { name: "Netra Patil", committee: "Cybersecurity Event" },
     { name: "Anuja Jadhav", committee: "Cybersecurity Event" },
     { name: "Janhvi Bhogulkar", committee: "Cybersecurity Event" },
-    { name: "Aishwary Gudi", committee: "Cybersecurity Event" },
+    { name: "Aishwarya Gudi", committee: "Cybersecurity Event" },
 
     // DATA ANALYTICS EVENT
     { name: "Sneha Parishwad", committee: "Data Analytics Event" },

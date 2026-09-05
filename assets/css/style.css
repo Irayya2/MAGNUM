@@ -1360,6 +1360,7 @@ body.night-mode .glass-card:hover {
   font-weight: 800;
   letter-spacing: 0.06em;
   margin-bottom: 8px;
+  white-space: pre-line;
 }
 
 .tl-round-title {

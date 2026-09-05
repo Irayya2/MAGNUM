@@ -160,20 +160,99 @@
     if (!dropdown || !container) return;
 
     const eventsData = [
-      { id: 'coding', title: 'CODING EVENT', icon: '💻', category: 'EVENT • TECHNICAL', desc: 'Test your algorithmic supremacy and problem-solving velocity in high-intensity coding challenges.' },
-      { id: 'comm', title: 'COMMUNICATION EVENT', icon: '🎙️', category: 'EVENT • SOFT SKILLS', desc: 'Master the art of persuasive speaking, debate, and strategic articulation under pressure.' },
-      { id: 'content', title: 'CONTENT CREATION EVENT', icon: '📹', category: 'EVENT • CREATIVE MEDIA', desc: 'Craft compelling digital media, narrative reels, and visual stories that captivate the audience.' },
-      { id: 'cyber', title: 'CYBERSECURITY EVENT', icon: '🛡️', category: 'EVENT • TECHNICAL', desc: 'Penetrate defenses, uncover vulnerabilities, and conquer Capture The Flag (CTF) security grids.' },
-      { id: 'data', title: 'DATA ANALYTICS EVENT', icon: '📊', category: 'EVENT • TECHNICAL', desc: 'Extract actionable intelligence, build predictive models, and decode complex datasets.' },
-      { id: 'design', title: 'DESIGNING EVENT', icon: '🎨', category: 'EVENT • CREATIVE MEDIA', desc: 'Engineers of visual beauty — craft intuitive UI/UX, brand identity, and graphics.' },
-      { id: 'gaming', title: 'GAMING EVENT', icon: '🎮', category: 'EVENT • ESPORTS', desc: 'Clash in tactical multiplayer battles and prove team coordination in the high-octane gaming arena.' },
-      { id: 'quiz', title: 'QUIZ EVENT', icon: '❓', category: 'EVENT • INTELLECTUAL', desc: 'Buzzer rounds, rapid-fire trivia, and deep technology knowledge showdowns.' },
-      { id: 'prompt', title: 'PROMPT ENGINEERING EVENT', icon: '⚡', category: 'EVENT • TECHNICAL', desc: 'Harness generative AI models with precision prompts to synthesize solutions, code, and media.' },
-      { id: 'cultural', title: 'CULTURAL EVENT (GROUP)', icon: '🎭', category: 'EVENT • CULTURAL', desc: 'Celebrate artistry, choreography, and group cultural performances on the grand stage.' }
+      { id: 'coding', title: 'CODING (CODEVOYAGE)', icon: '💻', category: 'EVENT • TECHNICAL', desc: 'Test your algorithmic supremacy and problem-solving velocity in high-intensity coding challenges.' },
+      { id: 'comm', title: 'COMMUNICATION (COMMUNICATION EVENT)', icon: '🎙️', category: 'EVENT • SOFT SKILLS', desc: 'Master the art of persuasive speaking, debate, and strategic articulation under pressure.' },
+      { id: 'content', title: 'CONTENT CREATION (CONTENT CREATION EVENT)', icon: '📹', category: 'EVENT • CREATIVE MEDIA', desc: 'Craft compelling digital media, narrative reels, and visual stories that captivate the audience.' },
+      { id: 'cyber', title: 'CYBER SECURITY (BLACK PEARL)', icon: '🛡️', category: 'EVENT • TECHNICAL', desc: 'Penetrate defenses, uncover vulnerabilities, and conquer Capture The Flag (CTF) security grids.' },
+      { id: 'data', title: 'DATA ANALYTICS (DATA CHRONICLES)', icon: '📊', category: 'EVENT • TECHNICAL', desc: 'Extract actionable intelligence, build predictive models, and decode complex datasets.' },
+      { id: 'design', title: 'DESIGNING (CAPTAIN\'S CANVAS)', icon: '🎨', category: 'EVENT • CREATIVE MEDIA', desc: 'Engineers of visual beauty — craft intuitive UI/UX, brand identity, and graphics.' },
+      { id: 'gaming', title: 'E-GAMING (PIRATES OF ARENA)', icon: '🎮', category: 'EVENT • ESPORTS', desc: 'Clash in tactical multiplayer battles and prove team coordination in the high-octane gaming arena.' },
+      { id: 'quiz', title: 'QUIZ (VOYAGE OF WISDOM)', icon: '❓', category: 'EVENT • INTELLECTUAL', desc: 'Buzzer rounds, rapid-fire trivia, and deep technology knowledge showdowns.' },
+      { id: 'prompt', title: 'PROMPT ENGINEERING (PROMPT MARINERS)', icon: '⚡', category: 'EVENT • TECHNICAL', desc: 'Harness generative AI models with precision prompts to synthesize solutions, code, and media.' },
+      { id: 'cultural', title: 'GROUP EVENT (RHYTHM RAIDERS)', icon: '🎭', category: 'EVENT • CULTURAL', desc: 'Celebrate artistry, choreography, and group cultural performances on the grand stage.' }
     ];
+
+    const eventSchedules = {
+      coding: {
+        venue: "Lab 2",
+        round1: "10:00 AM – 12:00 PM",
+        round2: "2:00 PM – 4:30 PM",
+        round3: "9:00 AM – 12:00 PM",
+      },
+      comm: {
+        round1: "10:00 AM – 12:00 PM",
+        round2: "2:00 PM – 4:00 PM",
+        round3: "9:00 AM – 11:00 AM",
+      },
+      content: {
+        round1: "10:00 AM – 1:00 PM",
+        round2: "2:00 PM – 4:00 PM",
+        round3: "8:30 AM – 11:30 AM",
+      },
+      cyber: {
+        round1: "10:00 AM – 12:30 PM",
+        round2: "1:30 PM – 4:30 PM",
+        round3: "9:00 AM – 12:00 PM",
+      },
+      data: {
+        round1: "10:00 AM – 12:30 PM",
+        round2: "2:00 PM – 4:30 PM",
+        round3: "9:00 AM – 12:00 PM",
+      },
+      design: {
+        round1: "10:00 AM – 12:00 PM",
+        round2: "2:00 PM – 5:00 PM",
+        round3: "9:00 AM – 12:00 PM",
+      },
+      gaming: {
+        round1: "10:00 AM – 11:00 AM",
+        round2: "2:00 PM – 3:00 PM",
+        round3: "Team 3A: 9:00 AM – 10:00 AM\nTeam 3B: 11:00 AM – 12:30 PM",
+        round3Desc: "Championship showdown — Team 3A: 9:00 AM – 10:00 AM | Team 3B: 11:00 AM – 12:30 PM. Top qualified finalist teams battle for top ranks, awards, and glory.",
+      },
+      quiz: {
+        round1: "10:00 AM – 11:00 AM",
+        round2: "2:00 PM – 4:00 PM",
+        round3: "9:00 AM – 11:00 AM",
+      },
+      prompt: {
+        round1: "10:00 AM – 12:00 PM",
+        round2: "2:00 PM – 4:00 PM",
+        round3: "8:30 AM – 12:00 PM",
+        round3Venue: "Seminar Hall",
+      },
+      cultural: {
+        round1: "Schedule to be announced",
+        round2: "Schedule to be announced",
+        round3: "Schedule to be announced",
+      }
+    };
+
+    function getSchedule(ev) {
+      const id = (ev?.id || "").toLowerCase();
+      const title = (ev?.title || "").toLowerCase();
+
+      if (id.includes('coding') || title.includes('coding') || title.includes('codevoyage')) return eventSchedules.coding;
+      if (id.includes('communication') || id === 'comm' || title.includes('communication')) return eventSchedules.comm;
+      if (id.includes('content') || title.includes('content')) return eventSchedules.content;
+      if (id.includes('cyber') || title.includes('cyber') || title.includes('black pearl')) return eventSchedules.cyber;
+      if (id.includes('data') || title.includes('data')) return eventSchedules.data;
+      if (id.includes('design') || title.includes('design')) return eventSchedules.design;
+      if (id.includes('gaming') || title.includes('gaming')) return eventSchedules.gaming;
+      if (id.includes('quiz') || title.includes('quiz')) return eventSchedules.quiz;
+      if (id.includes('prompt') || title.includes('prompt')) return eventSchedules.prompt;
+      if (id.includes('cultural') || id.includes('group') || title.includes('cultural')) return eventSchedules.cultural;
+
+      return eventSchedules.coding;
+    }
 
     function renderTimeline(eventIdx) {
       const ev = eventsData[eventIdx] || eventsData[0];
+      const sched = getSchedule(ev);
+      const round1Venue = sched.venue || sched.round1Venue || null;
+      const round2Venue = sched.venue || sched.round2Venue || null;
+      const round3Venue = sched.round3Venue || sched.venue || null;
+
       const steps = [
         {
           badge: "OPENING CEREMONY",
@@ -184,18 +263,20 @@
           desc: "Grand inauguration ceremony and official commencement of MAGNUM 2026.",
           icon: "🏛️",
           isBreak: false,
-          isFinal: false
+          isFinal: false,
+          venue: null
         },
         {
           badge: ev.category || 'EVENT COMPETITION',
           date: "8 SEPTEMBER",
-          time: "10:00 AM – 1:00 PM",
+          time: sched.round1,
           roundName: "ROUND 1",
           title: `${ev.title} — ROUND 1`,
           desc: `${ev.desc || 'Event activities begin for Round 1 preliminary challenges and qualification tasks.'}`,
           icon: ev.icon || "⚡",
           isBreak: false,
-          isFinal: false
+          isFinal: false,
+          venue: round1Venue
         },
         {
           badge: "MIDDAY RECHARGE",
@@ -206,29 +287,32 @@
           desc: "Recharge, interact with mentors and fellow participants, and prepare strategy for Round 2.",
           icon: "🍽️",
           isBreak: true,
-          isFinal: false
+          isFinal: false,
+          venue: null
         },
         {
           badge: ev.category || 'EVENT COMPETITION',
           date: "8 SEPTEMBER",
-          time: "2:00 PM – 5:00 PM",
+          time: sched.round2,
           roundName: "ROUND 2",
           title: `${ev.title} — ROUND 2`,
           desc: "High-intensity second competition round. Teams push their skills to qualify for Day 2 finals.",
           icon: ev.icon || "🔥",
           isBreak: false,
-          isFinal: false
+          isFinal: false,
+          venue: round2Venue
         },
         {
           badge: "CHAMPIONSHIP FINALS",
           date: "9 SEPTEMBER",
-          time: "9:00 AM – 1:00 PM",
+          time: sched.round3,
           roundName: "ROUND 3 — FINAL ROUND",
           title: `${ev.title} — FINAL ROUND`,
-          desc: "Championship showdown — Top qualified finalist teams battle for top ranks, awards, and glory.",
+          desc: sched.round3Desc || "Championship showdown — Top qualified finalist teams battle for top ranks, awards, and glory.",
           icon: "⚔️",
           isBreak: false,
-          isFinal: false
+          isFinal: false,
+          venue: round3Venue
         },
         {
           badge: "MIDDAY RECHARGE",
@@ -239,7 +323,8 @@
           desc: "Midday break and networking session before the final valedictory ceremony.",
           icon: "🍽️",
           isBreak: true,
-          isFinal: false
+          isFinal: false,
+          venue: null
         },
         {
           badge: "GRAND CLOSING",
@@ -250,7 +335,8 @@
           desc: "All event participants gather for the final closing ceremony and prize distribution.",
           icon: "🏆",
           isBreak: false,
-          isFinal: true
+          isFinal: true,
+          venue: "AUDITORIUM"
         }
       ];
 

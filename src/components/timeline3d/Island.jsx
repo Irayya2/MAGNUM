@@ -95,7 +95,7 @@ function SingleStageCard({ stage, event }) {
           📅 {stage.date}
         </div>
 
-        {/* 3. Time Slot (ONE TIMING ONLY) */}
+        {/* 3. Time Slot */}
         <div style={{
           display: 'inline-block',
           padding: '4px 12px',
@@ -107,6 +107,7 @@ function SingleStageCard({ stage, event }) {
           fontWeight: 800,
           letterSpacing: '0.04em',
           marginBottom: 8,
+          whiteSpace: 'pre-line',
         }}>
           🕒 {stage.time}
         </div>

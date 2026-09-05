@@ -22,10 +22,10 @@ export const harborBoatPositions = [
 /* ─── 7 Stage Island Positions (6 Stage Islands + 1 Final Common Destination) ────── */
 export const STAGE_ISLAND_POSITIONS = [
   [-120, 10, 250],   // 1. Inauguration (8 Sept, 9:00 AM – 10:00 AM)
-  [140,  10, 580],   // 2. Round 1 (8 Sept, 10:00 AM – 1:00 PM)
+  [140,  10, 580],   // 2. Round 1 (8 Sept, Event Specific Timing)
   [-160, 10, 910],   // 3. Lunch Break (8 Sept, 1:00 PM – 2:00 PM)
-  [160,  10, 1240],  // 4. Round 2 (8 Sept, 2:00 PM – 5:00 PM)
-  [-170, 10, 1570],  // 5. Round 3 Final (9 Sept, 9:00 AM – 1:00 PM)
+  [160,  10, 1240],  // 4. Round 2 (8 Sept, Event Specific Timing)
+  [-170, 10, 1570],  // 5. Round 3 Final (9 Sept, Event Specific Timing)
   [170,  10, 1900],  // 6. Lunch Break (9 Sept, 1:00 PM – 2:00 PM)
   [0,    25, 2300],  // 7. FINAL COMMON DESTINATION (Valedictory / Closing Ceremony + Prize Distribution)
 ];
