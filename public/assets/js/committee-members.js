@@ -1,8 +1,8 @@
 (function () {
   const COMMITTEE_MEMBERS = [
     // CORE COMMITTEE
-    { name: "Chaitanya Shridhar Karekar", committee: "Core Committee" },
-    { name: "Harshini M Hawaldarmath", committee: "Core Committee" },
+    { name: "Chaitanya Shridhar Karekar", committee: "General Secretary" },
+    { name: "Harshini M Hawaldarmath", committee: "Ladies Secretary" },
     { name: "Piyush Dalal", committee: "Core Committee" },
 
     // PRINTING AND DESIGNING COMMITTEE
