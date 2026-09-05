@@ -1,9 +1,9 @@
 (function () {
   const COMMITTEE_MEMBERS = [
     // CORE COMMITTEE
-    { name: "Chaitanya Shridhar Karekar", committee: "General Secretary" },
-    { name: "Harshini M Hawaldarmath", committee: "Ladies Secretary" },
-    { name: "Piyush Dalal", committee: "Core Committee" },
+    { name: "Chaitanya Shridhar Karekar", committee: "Core Committee", role: "General Secretary" },
+    { name: "Harshini M Hawaldarmath", committee: "Core Committee", role: "Ladies Secretary" },
+    { name: "Piyush Dalal", committee: "Core Committee", role: "Core Committee" },
 
     // PRINTING AND DESIGNING COMMITTEE
     { name: "Amogh Betsurmath", committee: "Printing And Designing Committee" },
@@ -193,7 +193,7 @@
             ${members.map(member => `
               <div class="person-card fade-up visible">
                 <h3 class="person-name">${member.name}</h3>
-                <p class="person-role">${member.committee}</p>
+                <p class="person-role">${member.role || member.committee}</p>
               </div>
             `).join('')}
           </div>
